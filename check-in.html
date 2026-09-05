@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check in</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        html, body {
+            height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: linear-gradient(90deg, #ff007f, #7928ca, #38bdf8);
+            padding: 0.6rem 1.2rem;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        main {
+            flex: 1;
+            padding: 0.8rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            height: calc(100vh - 50px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .screen {
+            display: none;
+            height: 100%;
+        }
+
+        .screen.active {
+            display: flex !important;
+            flex-direction: column;
+            gap: 0.8rem;
+            height: 100%;
+        }
+
+        #settings-screen.active, #overview-screen.active, #period-overview-screen.active, #edit-history-screen.active {
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            margin-bottom: 0.8rem;
+        }
+
+        .glass-card h2 {
+            font-size: 1.15rem;
+            color: #38bdf8;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 0.4rem;
+        }
+
+        .form-group {
+            margin-bottom: 0.8rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            font-size: 0.85rem;
+        }
+
+        input[type="text"], input[type="number"], input[type="date"], select, textarea {
+            width: 100%;
+            padding: 0.5rem 0.8rem;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: #fff;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus, input[type="date"]:focus, select:focus, textarea:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+        }
+
+        select option {
+            background: #1e1b4b;
+            color: #fff;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #7928ca, #ff007f);
+            color: white;
+            border: none;
+            padding: 0.55rem 1rem;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 0, 127, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .btn-sm {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.72rem;
+        }
+
+        .flex-actions {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        /* Check-in Board Screen */
+        .checkin-container-wrapper {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            height: 100%;
+            overflow: hidden;
+            gap: 0.8rem;
+        }
+
+        .checkin-header-bar {
+            background: linear-gradient(135deg, rgba(121, 40, 202, 0.35), rgba(255, 0, 127, 0.35));
+            border: 1px solid rgba(255, 0, 127, 0.4);
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            flex-shrink: 0;
+            text-align: center;
+        }
+
+        .checkin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 0.8rem;
+            overflow-y: auto;
+            flex: 1;
+            padding: 0.4rem;
+        }
+
+        .student-board-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-height: 110px;
+            user-select: none;
+            text-align: center;
+        }
+
+        .student-board-card:hover {
+            transform: translateY(-2px);
+            border-color: #38bdf8;
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
+        }
+
+        .student-board-card.checked-in {
+            background: rgba(16, 185, 129, 0.25);
+            border-color: #10b981;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .student-board-card .s-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 0.4rem;
+        }
+
+        .student-board-card .s-status {
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+        }
+
+        .student-board-card.checked-in .s-status {
+            background: #10b981;
+            color: white;
+        }
+
+        /* Bottom Teacher Controls Bar */
+        .teacher-bottom-bar {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Registration / Details / Edit Screen */
+        .mgmt-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 0.8rem;
+            overflow-y: auto;
+            flex: 1;
+            padding: 0.4rem;
+        }
+
+        .student-mgmt-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 0.6rem;
+        }
+
+        .student-mgmt-card.absent-card {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .mgmt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mgmt-name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #38bdf8;
+        }
+
+        .badges-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+            min-height: 28px;
+        }
+
+        .tag-badge {
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            background: #f59e0b;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .tag-badge.absent { background: #ef4444; }
+        .tag-badge.present { background: #10b981; }
+
+        .tags-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 4px;
+        }
+
+        .tag-toggle-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #cbd5e1;
+            font-size: 0.7rem;
+            padding: 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.15s;
+        }
+
+        .tag-toggle-btn.active {
+            background: #7928ca;
+            border-color: #ff007f;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* History & Overview Screen */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .history-item {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 8px;
+            padding: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: rgba(30, 27, 75, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 12px;
+            padding: 1.5rem;
+            width: 95%;
+            max-width: 550px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.7);
+            text-align: center;
+        }
+
+        .modal-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            color: #38bdf8;
+        }
+
+        .modal-card p {
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+            font-size: 0.92rem;
+            line-height: 1.4;
+        }
+
+        .welcome-popup-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fbbf24;
+            margin: 1rem 0;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>☑️ Check in</h1>
+        <div class="header-actions">
+            <button class="btn btn-secondary btn-sm" id="btn-to-settings" style="display: none;" onclick="showSettingsScreen()">⚙️ Class Setup</button>
+            <button class="btn btn-secondary btn-sm" id="btn-to-overview" onclick="showOverviewScreen()">📊 History</button>
+            <button class="btn btn-secondary btn-sm" id="btn-to-period" onclick="showPeriodOverviewScreen()">📅 Period Overview</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- 1. SETTINGS / START SCREEN -->
+        <div id="settings-screen" class="screen active">
+            <div class="glass-card">
+                <h2>👥 Manage Classes & Students</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+                    <div>
+                        <div class="form-group">
+                            <label for="class-select">Select Class:</label>
+                            <div style="display: flex; gap: 0.4rem;">
+                                <select id="class-select" onchange="loadSelectedClass()">
+                                </select>
+                                <button class="btn btn-danger btn-sm" onclick="confirmDeleteCurrentClass()">🗑️</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="class-name">Class Name (New / Edit):</label>
+                            <input type="text" id="class-name" placeholder="e.g. Grade 4A">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label for="students-input">Enter Students (1 per line):</label>
+                            <textarea id="students-input" rows="4" placeholder="Type or paste student names here..." oninput="previewStudentCount()"></textarea>
+                        </div>
+                        <div class="flex-actions" style="justify-content: space-between; align-items: center;">
+                            <span id="student-count-preview" style="font-size: 0.8rem; color: #94a3b8;">0 students</span>
+                            <button class="btn btn-secondary btn-sm" onclick="saveClassToStorage()">💾 Save Class</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 1rem;">
+                    <button class="btn btn-success" style="font-size: 1.1rem; padding: 0.8rem 2.5rem;" onclick="startCheckInSession()">
+                        🚀 Start Check-in Lesson ➔
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. CHECK-IN BOARD SCREEN (SCROLL-FREE) WITH BOTTOM TEACHER CONTROLS -->
+        <div id="checkin-screen" class="screen">
+            <div class="checkin-container-wrapper">
+                <div class="checkin-header-bar" style="flex-direction: column; justify-content: center; text-align: center;">
+                    <div style="font-size: 2.2rem; font-weight: 800; color: #38bdf8; margin-bottom: 0.2rem; text-align: center; width: 100%;" id="dynamic-greeting-text">Good morning / Good afternoon, please check in.</div>
+                    <div style="font-size: 1rem; font-weight: 600; color: #f8fafc;" id="checkin-class-title">Class</div>
+                </div>
+
+                <div id="checkin-grid-container" class="checkin-grid"></div>
+
+                <!-- Teacher Controls Bar at the Bottom -->
+                <div class="teacher-bottom-bar">
+                    <div style="font-size: 0.85rem; font-weight: 600; color: #cbd5e1;">Teacher Controls:</div>
+                    <div class="flex-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="showSettingsScreen()">⚙️ Back to Setup</button>
+                        <button class="btn btn-success" onclick="finishCheckIn()">Finish Check-in & Add Details ➔</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. REGISTRATION & DETAILS SCREEN -->
+        <div id="mgmt-screen" class="screen">
+            <div class="checkin-container-wrapper">
+                <div class="checkin-header-bar" style="flex-direction: column; justify-content: center; text-align: center;">
+                    <div style="font-size: 0.85rem; color: #cbd5e1; text-transform: uppercase;">Lesson Registration & Remarks</div>
+                    <div style="font-size: 1.2rem; font-weight: 800; color: #38bdf8;" id="mgmt-class-title">Class</div>
+                    <div style="font-size: 0.85rem; color: #94a3b8;">Unchecked students are automatically marked absent</div>
+                </div>
+
+                <div id="mgmt-grid-container" class="mgmt-grid"></div>
+
+                <!-- Teacher Controls Bar at the Bottom -->
+                <div class="teacher-bottom-bar">
+                    <div style="font-size: 0.85rem; font-weight: 600; color: #cbd5e1;">Teacher Controls:</div>
+                    <div class="flex-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="startCheckInSession()">⬅ Back to Board</button>
+                        <button class="btn btn-success" onclick="saveCurrentLessonSession()">💾 Save & Finish Lesson</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3B. EDIT HISTORY LESSON SCREEN -->
+        <div id="edit-history-screen" class="screen">
+            <div class="checkin-container-wrapper">
+                <div class="checkin-header-bar" style="flex-direction: column; justify-content: center; text-align: center;">
+                    <div style="font-size: 0.85rem; color: #cbd5e1; text-transform: uppercase;">Edit Saved Lesson Record</div>
+                    <div style="font-size: 1.2rem; font-weight: 800; color: #38bdf8;" id="edit-mgmt-class-title">Class</div>
+                </div>
+
+                <div id="edit-mgmt-grid-container" class="mgmt-grid"></div>
+
+                <!-- Teacher Controls Bar at the Bottom -->
+                <div class="teacher-bottom-bar">
+                    <div style="font-size: 0.85rem; font-weight: 600; color: #cbd5e1;">Teacher Controls:</div>
+                    <div class="flex-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="showOverviewScreen()">Cancel</button>
+                        <button class="btn btn-success" onclick="saveEditedLessonSession()">💾 Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. HISTORY & OVERVIEW SCREEN -->
+        <div id="overview-screen" class="screen">
+            <div class="glass-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.4rem;">
+                    <h2>📊 Saved Lessons History</h2>
+                    <button class="btn btn-secondary btn-sm" onclick="showSettingsScreen()">⬅ Back to Setup</button>
+                </div>
+                <div id="history-container" class="history-list">
+                    <!-- Dynamically loaded -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. PERIOD OVERVIEW SCREEN -->
+        <div id="period-overview-screen" class="screen">
+            <div class="glass-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.4rem;">
+                    <h2>📅 Period Registration Overview</h2>
+                    <div class="flex-actions">
+                        <button class="btn btn-success btn-sm" onclick="downloadPeriodPdf()">📥 Download Print-Friendly PDF</button>
+                        <button class="btn btn-secondary btn-sm" onclick="showSettingsScreen()">⬅ Back to Setup</button>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.8rem; margin-bottom: 1rem;">
+                    <div class="form-group">
+                        <label for="period-start">Start Date:</label>
+                        <input type="date" id="period-start" onchange="generatePeriodOverview()">
+                    </div>
+                    <div class="form-group">
+                        <label for="period-end">End Date:</label>
+                        <input type="date" id="period-end" onchange="generatePeriodOverview()">
+                    </div>
+                    <div class="form-group">
+                        <label for="period-class-filter">Filter Class:</label>
+                        <select id="period-class-filter" onchange="generatePeriodOverview()">
+                            <option value="">All Classes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="period-results-container" style="margin-top: 1rem;">
+                    <!-- Period overview results generated here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- WELCOME TEXT MODAL -->
+    <div id="welcome-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 id="welcome-student-name">Name</h3>
+            <div class="welcome-popup-text" id="welcome-msg-text">Welcome!</div>
+            <p style="color: #94a3b8; font-size: 0.85rem;">You have successfully checked in for this lesson.</p>
+            <div style="margin-top: 1rem;">
+                <button class="btn btn-success btn-sm" onclick="closeWelcomeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DETAIL / HISTORY OVERVIEW MODAL -->
+    <div id="detail-modal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 650px;">
+            <h3 id="detail-modal-title">Lesson Details</h3>
+            <div id="detail-modal-content" style="max-height: 400px; overflow-y: auto; text-align: left; margin: 1rem 0; font-size: 0.9rem;">
+            </div>
+            <div class="flex-actions" style="justify-content: center;">
+                <button class="btn btn-secondary" onclick="closeDetailModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SYSTEM MESSAGE MODAL -->
+    <div id="system-modal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 450px;">
+            <h3 id="sys-modal-title">Notification</h3>
+            <p id="sys-modal-desc"></p>
+            <div class="flex-actions" style="justify-content: center; margin-top: 1.2rem;" id="sys-modal-actions">
+                <button class="btn btn-primary" onclick="closeSystemModal()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const englishWelcomes = [
+            "Welcome! Great to see you!",
+            "Hello there! Ready for class?",
+            "Awesome that you are here!",
+            "Hi! Glad you made it on time!",
+            "Welcome aboard! Let's get started.",
+            "Good to see you! Have a great lesson.",
+            "Hello! Ready to learn something new?",
+            "Welcome! Fantastic energy today!"
+        ];
+
+        let activeClassName = "";
+        let currentStudentsData = []; // Array of objects: { name: string, checkedIn: boolean, tags: [] }
+        let editingLessonId = null;   // ID of history lesson currently being edited
+        let editingStudentsData = []; // Temporary data for the lesson being edited
+
+        const availableTags = [
+            { id: 'late', label: 'Late' },
+            { id: 'device_forgotten', label: 'Device forgotten' },
+            { id: 'book_forgotten', label: 'Book forgotten' },
+            { id: 'notebook_forgotten', label: 'Notebook forgotten' },
+            { id: 'pen_forgotten', label: 'Pen forgotten' },
+            { id: 'earphones_forgotten', label: 'Earphones forgotten' },
+            { id: 'sent_out', label: 'Sent out' }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            refreshClassDropdown();
+            loadSelectedClass();
+            setDefaultPeriodDates();
+        });
+
+        function setDefaultPeriodDates() {
+            const today = new Date();
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(today.getDate() - 30);
+
+            document.getElementById('period-end').value = today.toISOString().split('T')[0];
+            document.getElementById('period-start').value = thirtyDaysAgo.toISOString().split('T')[0];
+        }
+
+        function showAlertModal(title, text) {
+            document.getElementById('sys-modal-title').innerText = title;
+            document.getElementById('sys-modal-desc').innerText = text;
+            document.getElementById('sys-modal-actions').innerHTML = `
+                <button class="btn btn-primary" onclick="closeSystemModal()">OK</button>
+            `;
+            document.getElementById('system-modal').classList.add('active');
+        }
+
+        function showConfirmModal(title, text, onConfirm) {
+            document.getElementById('sys-modal-title').innerText = title;
+            document.getElementById('sys-modal-desc').innerText = text;
+            
+            const actions = document.getElementById('sys-modal-actions');
+            actions.innerHTML = '';
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.className = 'btn btn-secondary';
+            cancelBtn.innerText = 'Cancel';
+            cancelBtn.onclick = closeSystemModal;
+
+            const confirmBtn = document.createElement('button');
+            confirmBtn.className = 'btn btn-danger';
+            confirmBtn.innerText = 'Delete';
+            confirmBtn.onclick = () => {
+                closeSystemModal();
+                onConfirm();
+            };
+
+            actions.appendChild(cancelBtn);
+            actions.appendChild(confirmBtn);
+            document.getElementById('system-modal').classList.add('active');
+        }
+
+        function closeSystemModal() {
+            document.getElementById('system-modal').classList.remove('active');
+        }
+
+        function getSavedClasses() {
+            return JSON.parse(localStorage.getItem('teacher_classes') || '{}');
+        }
+
+        function getSavedHistory() {
+            return JSON.parse(localStorage.getItem('teacher_lesson_history') || '[]');
+        }
+
+        function refreshClassDropdown() {
+            const classes = getSavedClasses();
+            const select = document.getElementById('class-select');
+            const periodFilterSelect = document.getElementById('period-class-filter');
+            
+            select.innerHTML = '';
+            periodFilterSelect.innerHTML = '<option value="">All Classes</option>';
+            
+            const keys = Object.keys(classes);
+            if (keys.length === 0) {
+                const opt = document.createElement('option');
+                opt.value = "";
+                opt.innerText = "-- No class available --";
+                select.appendChild(opt);
+            } else {
+                keys.forEach(k => {
+                    const opt = document.createElement('option');
+                    opt.value = k;
+                    opt.innerText = k;
+                    select.appendChild(opt);
+
+                    const optPeriod = document.createElement('option');
+                    optPeriod.value = k;
+                    optPeriod.innerText = k;
+                    periodFilterSelect.appendChild(optPeriod);
+                });
+            }
+        }
+
+        function saveClassToStorage() {
+            const name = document.getElementById('class-name').value.trim();
+            if (!name) {
+                showAlertModal('Input Error', 'Please enter a class name.');
+                return;
+            }
+            const text = document.getElementById('students-input').value;
+            const classes = getSavedClasses();
+            classes[name] = text;
+            localStorage.setItem('teacher_classes', JSON.stringify(classes));
+            refreshClassDropdown();
+            document.getElementById('class-select').value = name;
+            showAlertModal('Saved', `Class '${name}' has been successfully saved!`);
+        }
+
+        function loadSelectedClass() {
+            const name = document.getElementById('class-select').value;
+            document.getElementById('class-name').value = name;
+            const classes = getSavedClasses();
+            if (classes[name] !== undefined) {
+                document.getElementById('students-input').value = classes[name];
+            } else {
+                document.getElementById('students-input').value = '';
+            }
+            previewStudentCount();
+        }
+
+        function previewStudentCount() {
+            const text = document.getElementById('students-input').value;
+            const list = text.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+            document.getElementById('student-count-preview').innerText = `${list.length} students`;
+        }
+
+        function confirmDeleteCurrentClass() {
+            const name = document.getElementById('class-select').value;
+            if (!name) return;
+            showConfirmModal(
+                'Delete Class',
+                `Are you sure you want to delete the class '${name}'?`,
+                deleteCurrentClass
+            );
+        }
+
+        function deleteCurrentClass() {
+            const name = document.getElementById('class-select').value;
+            if (!name) return;
+            const classes = getSavedClasses();
+            if (classes[name]) {
+                delete classes[name];
+                localStorage.setItem('teacher_classes', JSON.stringify(classes));
+                document.getElementById('class-name').value = '';
+                document.getElementById('students-input').value = '';
+                refreshClassDropdown();
+                loadSelectedClass();
+                showAlertModal('Deleted', `Class '${name}' has been deleted.`);
+            }
+        }
+
+        function hideAllScreens() {
+            document.getElementById('settings-screen').classList.remove('active');
+            document.getElementById('checkin-screen').classList.remove('active');
+            document.getElementById('mgmt-screen').classList.remove('active');
+            document.getElementById('edit-history-screen').classList.remove('active');
+            document.getElementById('overview-screen').classList.remove('active');
+            document.getElementById('period-overview-screen').classList.remove('active');
+        }
+
+        function showSettingsScreen() {
+            hideAllScreens();
+            document.getElementById('settings-screen').classList.add('active');
+            document.getElementById('btn-to-settings').style.display = 'none';
+        }
+
+        function showOverviewScreen() {
+            hideAllScreens();
+            document.getElementById('overview-screen').classList.add('active');
+            document.getElementById('btn-to-settings').style.display = 'inline-flex';
+            renderHistoryList();
+        }
+
+        function showPeriodOverviewScreen() {
+            hideAllScreens();
+            document.getElementById('period-overview-screen').classList.add('active');
+            document.getElementById('btn-to-settings').style.display = 'inline-flex';
+            generatePeriodOverview();
+        }
+
+        // Start check-in session
+        function startCheckInSession() {
+            const name = document.getElementById('class-select').value;
+            const text = document.getElementById('students-input').value;
+            const rawList = text.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+
+            if (!name || rawList.length === 0) {
+                showAlertModal('Start Error', 'Please select a class with at least one student to start.');
+                return;
+            }
+
+            activeClassName = name;
+            currentStudentsData = rawList.map(sName => ({
+                name: sName,
+                checkedIn: false,
+                tags: []
+            }));
+
+            const currentHour = new Date().getHours();
+            const timeGreeting = currentHour < 12 ? "Good morning" : "Good afternoon";
+            const greetingElement = document.getElementById('dynamic-greeting-text');
+            greetingElement.innerText = `${timeGreeting}, please check in.`;
+
+            document.getElementById('checkin-class-title').innerText = `Class: ${activeClassName}`;
+            
+            hideAllScreens();
+            document.getElementById('checkin-screen').classList.add('active');
+            document.getElementById('btn-to-settings').style.display = 'inline-flex';
+
+            renderCheckInGrid();
+        }
+
+        function renderCheckInGrid() {
+            const container = document.getElementById('checkin-grid-container');
+            container.innerHTML = '';
+
+            currentStudentsData.forEach((student, index) => {
+                const card = document.createElement('div');
+                card.className = `student-board-card ${student.checkedIn ? 'checked-in' : ''}`;
+                card.onclick = () => toggleCheckIn(index);
+
+                card.innerHTML = `
+                    <div class="s-name">${student.name}</div>
+                    <div class="s-status">${student.checkedIn ? 'Checked in ✓' : 'Click to check in'}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function toggleCheckIn(index) {
+            const student = currentStudentsData[index];
+            student.checkedIn = !student.checkedIn;
+            
+            if (student.checkedIn) {
+                const randomWelcome = englishWelcomes[Math.floor(Math.random() * englishWelcomes.length)];
+                document.getElementById('welcome-student-name').innerText = student.name;
+                document.getElementById('welcome-msg-text').innerText = randomWelcome;
+                document.getElementById('welcome-modal').classList.add('active');
+            }
+
+            renderCheckInGrid();
+        }
+
+        function closeWelcomeModal() {
+            document.getElementById('welcome-modal').classList.remove('active');
+        }
+
+        function finishCheckIn() {
+            currentStudentsData.forEach(student => {
+                if (!student.checkedIn) {
+                    if (!student.tags.includes('absent')) {
+                        student.tags.push('absent');
+                    }
+                } else {
+                    student.tags = student.tags.filter(t => t !== 'absent');
+                }
+            });
+
+            document.getElementById('mgmt-class-title').innerText = `Registration: ${activeClassName}`;
+            hideAllScreens();
+            document.getElementById('mgmt-screen').classList.add('active');
+            renderMgmtGrid();
+        }
+
+        function renderMgmtGrid() {
+            const container = document.getElementById('mgmt-grid-container');
+            container.innerHTML = '';
+
+            currentStudentsData.forEach((student, index) => {
+                const isAbsent = student.tags.includes('absent');
+                const card = document.createElement('div');
+                card.className = `student-mgmt-card ${isAbsent ? 'absent-card' : ''}`;
+
+                let badgesHTML = '';
+                if (isAbsent) {
+                    badgesHTML += `<span class="tag-badge absent">Absent</span>`;
+                } else {
+                    badgesHTML += `<span class="tag-badge present">Present</span>`;
+                }
+
+                student.tags.forEach(tagId => {
+                    if (tagId !== 'absent') {
+                        const tagObj = availableTags.find(t => t.id === tagId);
+                        if (tagObj) {
+                            badgesHTML += `<span class="tag-badge">${tagObj.label}</span>`;
+                        }
+                    }
+                });
+
+                let tagsSelectorHTML = '';
+                availableTags.forEach(tagObj => {
+                    const isActive = student.tags.includes(tagObj.id);
+                    tagsSelectorHTML += `
+                        <button class="tag-toggle-btn ${isActive ? 'active' : ''}" onclick="toggleStudentTag(${index}, '${tagObj.id}')">
+                            ${tagObj.label}
+                        </button>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div>
+                        <div class="mgmt-header">
+                            <span class="mgmt-name">${student.name}</span>
+                            <button class="btn btn-secondary btn-sm" onclick="toggleAbsentStatus(${index})">
+                                ${isAbsent ? 'Set Present' : 'Set Absent'}
+                            </button>
+                        </div>
+                        <div class="badges-container" style="margin-top: 0.5rem;">${badgesHTML}</div>
+                    </div>
+                    <div style="margin-top: 0.5rem;">
+                        <div style="font-size: 0.72rem; color: #94a3b8; margin-bottom: 0.3rem;">Add details / remarks:</div>
+                        <div class="tags-selector">${tagsSelectorHTML}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function toggleAbsentStatus(index) {
+            const student = currentStudentsData[index];
+            if (student.tags.includes('absent')) {
+                student.tags = student.tags.filter(t => t !== 'absent');
+                student.checkedIn = true;
+            } else {
+                student.tags.push('absent');
+                student.checkedIn = false;
+            }
+            renderMgmtGrid();
+        }
+
+        function toggleStudentTag(studentIndex, tagId) {
+            const student = currentStudentsData[studentIndex];
+            const idx = student.tags.indexOf(tagId);
+            if (idx > -1) {
+                student.tags.splice(idx, 1);
+            } else {
+                student.tags.push(tagId);
+            }
+            renderMgmtGrid();
+        }
+
+        function saveCurrentLessonSession() {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+            const lessonRecord = {
+                id: Date.now(),
+                timestamp: now.getTime(),
+                dateOnly: now.toISOString().split('T')[0],
+                className: activeClassName,
+                date: `${dateStr} at ${timeStr}`,
+                students: JSON.parse(JSON.stringify(currentStudentsData))
+            };
+
+            const history = getSavedHistory();
+            history.unshift(lessonRecord);
+            localStorage.setItem('teacher_lesson_history', JSON.stringify(history));
+
+            showAlertModal('Saved', `The registration for '${activeClassName}' has been successfully saved!`);
+            showOverviewScreen();
+        }
+
+        function openEditLesson(lessonId) {
+            const history = getSavedHistory();
+            const lesson = history.find(l => l.id === lessonId);
+            if (!lesson) return;
+
+            editingLessonId = lessonId;
+            editingStudentsData = JSON.parse(JSON.stringify(lesson.students));
+
+            document.getElementById('edit-mgmt-class-title').innerText = `Edit Class: ${lesson.className} (${lesson.date})`;
+            hideAllScreens();
+            document.getElementById('edit-history-screen').classList.add('active');
+            renderEditMgmtGrid();
+        }
+
+        function renderEditMgmtGrid() {
+            const container = document.getElementById('edit-mgmt-grid-container');
+            container.innerHTML = '';
+
+            editingStudentsData.forEach((student, index) => {
+                const isAbsent = student.tags.includes('absent');
+                const card = document.createElement('div');
+                card.className = `student-mgmt-card ${isAbsent ? 'absent-card' : ''}`;
+
+                let badgesHTML = '';
+                if (isAbsent) {
+                    badgesHTML += `<span class="tag-badge absent">Absent</span>`;
+                } else {
+                    badgesHTML += `<span class="tag-badge present">Present</span>`;
+                }
+
+                student.tags.forEach(tagId => {
+                    if (tagId !== 'absent') {
+                        const tagObj = availableTags.find(t => t.id === tagId);
+                        if (tagObj) {
+                            badgesHTML += `<span class="tag-badge">${tagObj.label}</span>`;
+                        }
+                    }
+                });
+
+                let tagsSelectorHTML = '';
+                availableTags.forEach(tagObj => {
+                    const isActive = student.tags.includes(tagObj.id);
+                    tagsSelectorHTML += `
+                        <button class="tag-toggle-btn ${isActive ? 'active' : ''}" onclick="toggleEditStudentTag(${index}, '${tagObj.id}')">
+                            ${tagObj.label}
+                        </button>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div>
+                        <div class="mgmt-header">
+                            <span class="mgmt-name">${student.name}</span>
+                            <button class="btn btn-secondary btn-sm" onclick="toggleEditAbsentStatus(${index})">
+                                ${isAbsent ? 'Set Present' : 'Set Absent'}
+                            </button>
+                        </div>
+                        <div class="badges-container" style="margin-top: 0.5rem;">${badgesHTML}</div>
+                    </div>
+                    <div style="margin-top: 0.5rem;">
+                        <div style="font-size: 0.72rem; color: #94a3b8; margin-bottom: 0.3rem;">Add details / remarks:</div>
+                        <div class="tags-selector">${tagsSelectorHTML}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function toggleEditAbsentStatus(index) {
+            const student = editingStudentsData[index];
+            if (student.tags.includes('absent')) {
+                student.tags = student.tags.filter(t => t !== 'absent');
+                student.checkedIn = true;
+            } else {
+                student.tags.push('absent');
+                student.checkedIn = false;
+            }
+            renderEditMgmtGrid();
+        }
+
+        function toggleEditStudentTag(studentIndex, tagId) {
+            const student = editingStudentsData[studentIndex];
+            const idx = student.tags.indexOf(tagId);
+            if (idx > -1) {
+                student.tags.splice(idx, 1);
+            } else {
+                student.tags.push(tagId);
+            }
+            renderEditMgmtGrid();
+        }
+
+        function saveEditedLessonSession() {
+            let history = getSavedHistory();
+            const index = history.findIndex(l => l.id === editingLessonId);
+            if (index > -1) {
+                history[index].students = JSON.parse(JSON.stringify(editingStudentsData));
+                localStorage.setItem('teacher_lesson_history', JSON.stringify(history));
+                showAlertModal('Updated', 'Changes to the lesson record have been successfully saved!');
+            }
+            showOverviewScreen();
+        }
+
+        function renderHistoryList() {
+            const container = document.getElementById('history-container');
+            container.innerHTML = '';
+            const history = getSavedHistory();
+
+            if (history.length === 0) {
+                container.innerHTML = '<div style="color: #94a3b8; font-size: 0.9rem;">No saved lessons available in history yet.</div>';
+                return;
+            }
+
+            history.forEach(lesson => {
+                const presentCount = lesson.students.filter(s => !s.tags.includes('absent')).length;
+                const totalCount = lesson.students.length;
+                const absentCount = totalCount - presentCount;
+
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                item.innerHTML = `
+                    <div>
+                        <div style="font-weight: 700; color: #38bdf8; font-size: 1rem;">${lesson.className}</div>
+                        <div style="font-size: 0.78rem; color: #cbd5e1;">Date: ${lesson.date} | Present: ${presentCount} | Absent: ${absentCount}</div>
+                    </div>
+                    <div class="flex-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="openDetailModal(${lesson.id})">🔍 View Overview</button>
+                        <button class="btn btn-warning btn-sm" onclick="openEditLesson(${lesson.id})">✏️ Bewerk</button>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function getFilteredLessonsForPeriod() {
+            const startDateVal = document.getElementById('period-start').value;
+            const endDateVal = document.getElementById('period-end').value;
+            const classFilter = document.getElementById('period-class-filter').value;
+
+            if (!startDateVal || !endDateVal) return [];
+
+            const startTime = new Date(startDateVal).setHours(0, 0, 0, 0);
+            const endTime = new Date(endDateVal).setHours(23, 59, 59, 999);
+
+            const history = getSavedHistory();
+            return history.filter(lesson => {
+                let lessonTime = lesson.timestamp;
+                if (!lessonTime) {
+                    lessonTime = new Date(lesson.dateOnly || lesson.id).getTime();
+                }
+                const matchesDate = lessonTime >= startTime && lessonTime <= endTime;
+                const matchesClass = !classFilter || lesson.className === classFilter;
+                return matchesDate && matchesClass;
+            });
+        }
+
+        function generatePeriodOverview() {
+            const startDateVal = document.getElementById('period-start').value;
+            const endDateVal = document.getElementById('period-end').value;
+            const container = document.getElementById('period-results-container');
+
+            if (!startDateVal || !endDateVal) {
+                container.innerHTML = '<div style="color: #94a3b8; font-size: 0.9rem;">Please select both a start and end date.</div>';
+                return;
+            }
+
+            const filteredLessons = getFilteredLessonsForPeriod();
+
+            if (filteredLessons.length === 0) {
+                container.innerHTML = '<div style="color: #94a3b8; font-size: 0.9rem;">No registrations found for the selected period and filters.</div>';
+                return;
+            }
+
+            const aggregated = {};
+
+            filteredLessons.forEach(lesson => {
+                const cName = lesson.className;
+                if (!aggregated[cName]) {
+                    aggregated[cName] = {};
+                }
+                lesson.students.forEach(s => {
+                    if (!aggregated[cName][s.name]) {
+                        aggregated[cName][s.name] = {
+                            lessonsCount: 0,
+                            absentCount: 0,
+                            tagsCount: {}
+                        };
+                    }
+                    const sRecord = aggregated[cName][s.name];
+                    sRecord.lessonsCount++;
+
+                    const isAbsent = s.tags.includes('absent');
+                    if (isAbsent) {
+                        sRecord.absentCount++;
+                    }
+
+                    s.tags.forEach(t => {
+                        if (t !== 'absent') {
+                            sRecord.tagsCount[t] = (sRecord.tagsCount[t] || 0) + 1;
+                        }
+                    });
+                });
+            });
+
+            let html = `<div style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 0.8rem;">Found <b>${filteredLessons.length}</b> lesson(s) in this period.</div>`;
+
+            for (const [className, studentsObj] of Object.entries(aggregated)) {
+                html += `
+                    <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                        <div style="font-size: 1.05rem; font-weight: 700; color: #38bdf8; margin-bottom: 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.3rem;">
+                            Class: ${className}
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                `;
+
+                for (const [studentName, stats] of Object.entries(studentsObj)) {
+                    let tagsSummary = '';
+                    if (stats.absentCount > 0) {
+                        tagsSummary += `<span class="tag-badge absent">Absent: ${stats.absentCount}</span> `;
+                    }
+                    for (const [tId, count] of Object.entries(stats.tagsCount)) {
+                        const foundTag = availableTags.find(at => at.id === tId);
+                        const label = foundTag ? foundTag.label : tId;
+                        tagsSummary += `<span class="tag-badge">${label}: ${count}</span> `;
+                    }
+                    if (!tagsSummary) {
+                        tagsSummary = `<span class="tag-badge present">All present / No remarks</span>`;
+                    }
+
+                    html += `
+                        <div style="background: rgba(255,255,255,0.04); padding: 0.6rem; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; flex-wrap: gap; gap: 0.5rem;">
+                            <div>
+                                <span style="font-weight: 600; font-size: 0.95rem;">${studentName}</span>
+                                <div style="font-size: 0.75rem; color: #94a3b8;">Total lessons registered: ${stats.lessonsCount}</div>
+                            </div>
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.3rem; justify-content: flex-end;">
+                                ${tagsSummary}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                html += `</div></div>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function downloadPeriodPdf() {
+            const startDateVal = document.getElementById('period-start').value;
+            const endDateVal = document.getElementById('period-end').value;
+            const classFilter = document.getElementById('period-class-filter').value || 'All Classes';
+            
+            if (!startDateVal || !endDateVal) {
+                showAlertModal('Error', 'Please select a start and end date first.');
+                return;
+            }
+
+            const filteredLessons = getFilteredLessonsForPeriod();
+            if (filteredLessons.length === 0) {
+                showAlertModal('Notice', 'No data found for the selected period to generate report.');
+                return;
+            }
+
+            const aggregated = {};
+            filteredLessons.forEach(lesson => {
+                const cName = lesson.className;
+                if (!aggregated[cName]) aggregated[cName] = {};
+                lesson.students.forEach(s => {
+                    if (!aggregated[cName][s.name]) {
+                        aggregated[cName][s.name] = { lessonsCount: 0, absentCount: 0, tagsCount: {} };
+                    }
+                    const sRecord = aggregated[cName][s.name];
+                    sRecord.lessonsCount++;
+                    if (s.tags.includes('absent')) sRecord.absentCount++;
+                    s.tags.forEach(t => {
+                        if (t !== 'absent') sRecord.tagsCount[t] = (sRecord.tagsCount[t] || 0) + 1;
+                    });
+                });
+            });
+
+            // Bouw printvriendelijk HTML document voor de PDF export
+            let printWindow = window.open('', '_blank');
+            let htmlContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Period Overview Report (${startDateVal} to ${endDateVal})</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; color: #333; padding: 20px; line-height: 1.4; }
+                        h1 { color: #1e1b4b; border-bottom: 2px solid #38bdf8; padding-bottom: 5px; font-size: 20px; }
+                        .meta { font-size: 13px; color: #666; margin-bottom: 20px; }
+                        .class-section { margin-bottom: 25px; border: 1px solid #ddd; border-radius: 6px; padding: 15px; }
+                        .class-title { font-size: 16px; font-weight: bold; color: #7928ca; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 13px; }
+                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                        th { background-color: #f4f4f4; color: #333; }
+                        .badge { display: inline-block; padding: 2px 6px; font-size: 11px; font-weight: bold; border-radius: 4px; margin-right: 3px; }
+                        .badge-absent { background: #fee2e2; color: #dc2626; }
+                        .badge-tag { background: #fef3c7; color: #d97706; }
+                        .badge-present { background: #d1fae5; color: #059669; }
+                        @media print {
+                            body { padding: 0; }
+                            button { display: none; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h1>Check-in Period Overview Report</h1>
+                    <div class="meta">
+                        <strong>Period:</strong> ${startDateVal} until ${endDateVal} | <strong>Class Filter:</strong> ${classFilter} | <strong>Generated on:</strong> ${new Date().toLocaleDateString()}
+                    </div>
+            `;
+
+            for (const [className, studentsObj] of Object.entries(aggregated)) {
+                htmlContent += `
+                    <div class="class-section">
+                        <div class="class-title">Class: ${className}</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Student Name</th>
+                                    <th>Total Lessons</th>
+                                    <th>Attendance & Remarks Summary</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                for (const [studentName, stats] of Object.entries(studentsObj)) {
+                    let badges = '';
+                    if (stats.absentCount > 0) {
+                        badges += `<span class="badge badge-absent">Absent: ${stats.absentCount}</span>`;
+                    }
+                    for (const [tId, count] of Object.entries(stats.tagsCount)) {
+                        const foundTag = availableTags.find(at => at.id === tId);
+                        const label = foundTag ? foundTag.label : tId;
+                        badges += `<span class="badge badge-tag">${label}: ${count}</span>`;
+                    }
+                    if (!badges) {
+                        badges = `<span class="badge badge-present">All present / No remarks</span>`;
+                    }
+
+                    htmlContent += `
+                        <tr>
+                            <td><strong>${studentName}</strong></td>
+                            <td>${stats.lessonsCount}</td>
+                            <td>${badges}</td>
+                        </tr>
+                    `;
+                }
+
+                htmlContent += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+
+            htmlContent += `
+                    <div style="margin-top: 30px; text-align: center;">
+                        <button onclick="window.print()" style="padding: 10px 20px; font-size: 14px; background: #7928ca; color: white; border: none; border-radius: 5px; cursor: pointer;">🖨️ Print / Save as PDF</button>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            printWindow.document.write(htmlContent);
+            printWindow.document.close();
+            printWindow.focus();
+        }
+
+        function openDetailModal(lessonId) {
+            const history = getSavedHistory();
+            const lesson = history.find(l => l.id === lessonId);
+            if (!lesson) return;
+
+            document.getElementById('detail-modal-title').innerText = `Overview: ${lesson.className} (${lesson.date})`;
+            
+            let contentHTML = '<div style="display: flex; flex-direction: column; gap: 0.5rem;">';
+            lesson.students.forEach(s => {
+                const isAbsent = s.tags.includes('absent');
+                let tagLabels = isAbsent ? '<span class="tag-badge absent">Absent</span>' : '<span class="tag-badge present">Present</span>';
+                
+                s.tags.forEach(t => {
+                    if (t !== 'absent') {
+                        const found = availableTags.find(at => at.id === t);
+                        if (found) tagLabels += ` <span class="tag-badge">${found.label}</span>`;
+                    }
+                });
+
+                contentHTML += `
+                    <div style="background: rgba(255,255,255,0.04); padding: 0.5rem; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-weight: 600;">${s.name}</span>
+                        <div>${tagLabels}</div>
+                    </div>
+                `;
+            });
+            contentHTML += '</div>';
+
+            document.getElementById('detail-modal-content').innerHTML = contentHTML;
+            document.getElementById('detail-modal').classList.add('active');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detail-modal').classList.remove('active');
+        }
+    </script>
+</body>
+</html>
