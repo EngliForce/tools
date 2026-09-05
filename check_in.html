@@ -11,7 +11,6 @@
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
         html, body {
             height: 100vh;
             overflow: hidden;
@@ -20,7 +19,6 @@
             display: flex;
             flex-direction: column;
         }
-
         header {
             background: linear-gradient(90deg, #ff007f, #7928ca, #38bdf8);
             padding: 0.6rem 1.2rem;
@@ -32,7 +30,6 @@
             justify-content: space-between;
             align-items: center;
         }
-
         header h1 {
             font-size: 1.3rem;
             text-transform: uppercase;
@@ -42,13 +39,11 @@
             align-items: center;
             gap: 0.5rem;
         }
-
         .header-actions {
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
         }
-
         main {
             flex: 1;
             padding: 0.8rem;
@@ -60,24 +55,20 @@
             flex-direction: column;
             overflow: hidden;
         }
-
         .screen {
             display: none;
             height: 100%;
         }
-
         .screen.active {
             display: flex !important;
             flex-direction: column;
             gap: 0.8rem;
             height: 100%;
         }
-
         #settings-screen.active, #overview-screen.active, #period-overview-screen.active, #edit-history-screen.active {
             overflow-y: auto;
             padding-right: 4px;
         }
-
         .glass-card {
             background: rgba(255, 255, 255, 0.07);
             backdrop-filter: blur(12px);
@@ -88,7 +79,6 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             margin-bottom: 0.8rem;
         }
-
         .glass-card h2 {
             font-size: 1.15rem;
             color: #38bdf8;
@@ -99,11 +89,9 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             padding-bottom: 0.4rem;
         }
-
         .form-group {
             margin-bottom: 0.8rem;
         }
-
         label {
             display: block;
             margin-bottom: 0.3rem;
@@ -111,7 +99,6 @@
             color: #cbd5e1;
             font-size: 0.85rem;
         }
-
         input[type="text"], input[type="number"], input[type="date"], select, textarea {
             width: 100%;
             padding: 0.5rem 0.8rem;
@@ -123,17 +110,14 @@
             outline: none;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
-
         input[type="text"]:focus, input[type="number"]:focus, input[type="date"]:focus, select:focus, textarea:focus {
             border-color: #38bdf8;
             box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
         }
-
         select option {
             background: #1e1b4b;
             color: #fff;
         }
-
         .btn {
             background: linear-gradient(135deg, #7928ca, #ff007f);
             color: white;
@@ -151,53 +135,43 @@
             justify-content: center;
             gap: 0.4rem;
         }
-
         .btn:hover:not(:disabled) {
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(255, 0, 127, 0.4);
         }
-
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none !important;
             box-shadow: none !important;
         }
-
         .btn-secondary {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-
         .btn-secondary:hover:not(:disabled) {
             background: rgba(255, 255, 255, 0.2);
             box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
         }
-
         .btn-danger {
             background: linear-gradient(135deg, #ef4444, #dc2626);
         }
-
         .btn-success {
             background: linear-gradient(135deg, #10b981, #059669);
         }
-
         .btn-warning {
             background: linear-gradient(135deg, #f59e0b, #d97706);
         }
-
         .btn-sm {
             padding: 0.3rem 0.6rem;
             font-size: 0.72rem;
         }
-
         .flex-actions {
             display: flex;
             gap: 0.6rem;
             flex-wrap: wrap;
         }
-
-        /* Check-in Board Screen */
+        
         .checkin-container-wrapper {
             display: flex;
             flex-direction: column;
@@ -206,7 +180,6 @@
             overflow: hidden;
             gap: 0.8rem;
         }
-
         .checkin-header-bar {
             background: linear-gradient(135deg, rgba(121, 40, 202, 0.35), rgba(255, 0, 127, 0.35));
             border: 1px solid rgba(255, 0, 127, 0.4);
@@ -220,7 +193,6 @@
             flex-shrink: 0;
             text-align: center;
         }
-
         .checkin-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -229,7 +201,6 @@
             flex: 1;
             padding: 0.4rem;
         }
-
         .student-board-card {
             background: rgba(255, 255, 255, 0.08);
             border: 2px solid rgba(255, 255, 255, 0.2);
@@ -245,26 +216,22 @@
             user-select: none;
             text-align: center;
         }
-
         .student-board-card:hover {
             transform: translateY(-2px);
             border-color: #38bdf8;
             box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
         }
-
         .student-board-card.checked-in {
             background: rgba(16, 185, 129, 0.25);
             border-color: #10b981;
             box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
         }
-
         .student-board-card .s-name {
             font-size: 1.1rem;
             font-weight: 700;
             color: #f8fafc;
             margin-bottom: 0.4rem;
         }
-
         .student-board-card .s-status {
             font-size: 0.75rem;
             font-weight: bold;
@@ -274,13 +241,11 @@
             background: rgba(255, 255, 255, 0.1);
             color: #cbd5e1;
         }
-
         .student-board-card.checked-in .s-status {
             background: #10b981;
             color: white;
         }
-
-        /* Bottom Teacher Controls Bar */
+        
         .teacher-bottom-bar {
             background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(10px);
@@ -292,9 +257,9 @@
             align-items: center;
             flex-shrink: 0;
             box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+            margin-top: auto; 
         }
-
-        /* Registration / Details / Edit Screen */
+        
         .mgmt-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -303,7 +268,6 @@
             flex: 1;
             padding: 0.4rem;
         }
-
         .student-mgmt-card {
             background: rgba(255, 255, 255, 0.06);
             border: 1px solid rgba(255, 255, 255, 0.15);
@@ -314,50 +278,43 @@
             justify-content: space-between;
             gap: 0.6rem;
         }
-
         .student-mgmt-card.absent-card {
             border-color: #ef4444;
             background: rgba(239, 68, 68, 0.1);
         }
-
         .mgmt-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
         .mgmt-name {
             font-size: 1rem;
             font-weight: 700;
             color: #38bdf8;
         }
-
         .badges-container {
             display: flex;
             flex-wrap: wrap;
             gap: 0.3rem;
             min-height: 28px;
         }
-
         .tag-badge {
             font-size: 0.65rem;
             padding: 2px 6px;
             border-radius: 4px;
             font-weight: bold;
-            background: #f59e0b;
+            background: #64748b;
             color: white;
             text-transform: uppercase;
         }
-
-        .tag-badge.absent { background: #ef4444; }
-        .tag-badge.present { background: #10b981; }
+        .tag-badge.absent { background: #ef4444 !important; }
+        .tag-badge.present { background: #10b981 !important; }
 
         .tags-selector {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 4px;
         }
-
         .tag-toggle-btn {
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.15);
@@ -369,21 +326,16 @@
             text-align: center;
             transition: all 0.15s;
         }
-
         .tag-toggle-btn.active {
-            background: #7928ca;
-            border-color: #ff007f;
             color: white;
             font-weight: bold;
         }
-
-        /* History & Overview Screen */
+        
         .history-list {
             display: flex;
             flex-direction: column;
             gap: 0.6rem;
         }
-
         .history-item {
             background: rgba(15, 23, 42, 0.6);
             border: 1px solid rgba(56, 189, 248, 0.3);
@@ -391,10 +343,9 @@
             padding: 0.8rem;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start; /* Changed for longer content */
         }
-
-        /* Modals */
+        
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -411,12 +362,10 @@
             pointer-events: none;
             transition: opacity 0.25s ease;
         }
-
         .modal-overlay.active {
             opacity: 1;
             pointer-events: auto;
         }
-
         .modal-card {
             background: rgba(30, 27, 75, 0.95);
             border: 1px solid rgba(255, 255, 255, 0.25);
@@ -427,20 +376,17 @@
             box-shadow: 0 10px 35px rgba(0, 0, 0, 0.7);
             text-align: center;
         }
-
         .modal-card h3 {
             font-size: 1.3rem;
             margin-bottom: 0.8rem;
             color: #38bdf8;
         }
-
         .modal-card p {
             color: #cbd5e1;
             margin-bottom: 1rem;
             font-size: 0.92rem;
             line-height: 1.4;
         }
-
         .welcome-popup-text {
             font-size: 1.5rem;
             font-weight: 800;
@@ -448,10 +394,17 @@
             margin: 1rem 0;
             text-shadow: 0 0 10px rgba(251, 191, 36, 0.4);
         }
+        .picker-name { 
+            font-size: 2.5rem; 
+            font-weight: bold; 
+            color: #fbbf24; 
+            margin: 2rem 0; 
+            min-height: 3.5rem;
+            text-shadow: 0 0 15px rgba(251, 191, 36, 0.5);
+        }
     </style>
 </head>
 <body>
-
     <header>
         <h1>☑️ Check in</h1>
         <div class="header-actions">
@@ -471,8 +424,7 @@
                         <div class="form-group">
                             <label for="class-select">Select Class:</label>
                             <div style="display: flex; gap: 0.4rem;">
-                                <select id="class-select" onchange="loadSelectedClass()">
-                                </select>
+                                <select id="class-select" onchange="loadSelectedClass()"></select>
                                 <button class="btn btn-danger btn-sm" onclick="confirmDeleteCurrentClass()">🗑️</button>
                             </div>
                         </div>
@@ -493,6 +445,14 @@
                     </div>
                 </div>
 
+                <div class="flex-actions" style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+                    <button class="btn btn-secondary btn-sm" onclick="exportData()">📥 Export JSON Backup</button>
+                    <label class="btn btn-secondary btn-sm" style="cursor: pointer; margin: 0;">
+                        📤 Import JSON Backup
+                        <input type="file" accept=".json" style="display: none;" onchange="importData(event)">
+                    </label>
+                </div>
+
                 <div style="margin-top: 1.5rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 1rem;">
                     <button class="btn btn-success" style="font-size: 1.1rem; padding: 0.8rem 2.5rem;" onclick="startCheckInSession()">
                         🚀 Start Check-in Lesson ➔
@@ -501,17 +461,16 @@
             </div>
         </div>
 
-        <!-- 2. CHECK-IN BOARD SCREEN (SCROLL-FREE) WITH BOTTOM TEACHER CONTROLS -->
+        <!-- 2. CHECK-IN BOARD SCREEN -->
         <div id="checkin-screen" class="screen">
             <div class="checkin-container-wrapper">
                 <div class="checkin-header-bar" style="flex-direction: column; justify-content: center; text-align: center;">
                     <div style="font-size: 2.2rem; font-weight: 800; color: #38bdf8; margin-bottom: 0.2rem; text-align: center; width: 100%;" id="dynamic-greeting-text">Good morning / Good afternoon, please check in.</div>
                     <div style="font-size: 1rem; font-weight: 600; color: #f8fafc;" id="checkin-class-title">Class</div>
                 </div>
-
+                
                 <div id="checkin-grid-container" class="checkin-grid"></div>
-
-                <!-- Teacher Controls Bar at the Bottom -->
+                
                 <div class="teacher-bottom-bar">
                     <div style="font-size: 0.85rem; font-weight: 600; color: #cbd5e1;">Teacher Controls:</div>
                     <div class="flex-actions">
@@ -530,13 +489,13 @@
                     <div style="font-size: 1.2rem; font-weight: 800; color: #38bdf8;" id="mgmt-class-title">Class</div>
                     <div style="font-size: 0.85rem; color: #94a3b8;">Unchecked students are automatically marked absent</div>
                 </div>
-
+                
                 <div id="mgmt-grid-container" class="mgmt-grid"></div>
-
-                <!-- Teacher Controls Bar at the Bottom -->
+                
                 <div class="teacher-bottom-bar">
                     <div style="font-size: 0.85rem; font-weight: 600; color: #cbd5e1;">Teacher Controls:</div>
                     <div class="flex-actions">
+                        <button class="btn btn-warning" onclick="openHomeworkPicker()">🎲 Random HW Picker</button>
                         <button class="btn btn-secondary btn-sm" onclick="startCheckInSession()">⬅ Back to Board</button>
                         <button class="btn btn-success" onclick="saveCurrentLessonSession()">💾 Save & Finish Lesson</button>
                     </div>
@@ -551,10 +510,9 @@
                     <div style="font-size: 0.85rem; color: #cbd5e1; text-transform: uppercase;">Edit Saved Lesson Record</div>
                     <div style="font-size: 1.2rem; font-weight: 800; color: #38bdf8;" id="edit-mgmt-class-title">Class</div>
                 </div>
-
+                
                 <div id="edit-mgmt-grid-container" class="mgmt-grid"></div>
-
-                <!-- Teacher Controls Bar at the Bottom -->
+                
                 <div class="teacher-bottom-bar">
                     <div style="font-size: 0.85rem; font-weight: 600; color: #cbd5e1;">Teacher Controls:</div>
                     <div class="flex-actions">
@@ -567,20 +525,27 @@
 
         <!-- 4. HISTORY & OVERVIEW SCREEN -->
         <div id="overview-screen" class="screen">
-            <div class="glass-card">
+            <div class="glass-card" style="height: 100%; display: flex; flex-direction: column;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.4rem;">
                     <h2>📊 Saved Lessons History</h2>
                     <button class="btn btn-secondary btn-sm" onclick="showSettingsScreen()">⬅ Back to Setup</button>
                 </div>
-                <div id="history-container" class="history-list">
-                    <!-- Dynamically loaded -->
+                
+                <!-- NEW: Filter for Class History -->
+                <div class="form-group" style="margin-bottom: 1rem; flex-shrink: 0;">
+                    <label for="history-class-filter">Filter Class:</label>
+                    <select id="history-class-filter" onchange="renderHistoryList()">
+                        <option value="">All Classes</option>
+                    </select>
                 </div>
+                
+                <div id="history-container" class="history-list" style="overflow-y: auto; flex: 1; padding-right: 5px;"></div>
             </div>
         </div>
 
         <!-- 5. PERIOD OVERVIEW SCREEN -->
         <div id="period-overview-screen" class="screen">
-            <div class="glass-card">
+            <div class="glass-card" style="height: 100%; display: flex; flex-direction: column;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.4rem;">
                     <h2>📅 Period Registration Overview</h2>
                     <div class="flex-actions">
@@ -605,10 +570,8 @@
                         </select>
                     </div>
                 </div>
-
-                <div id="period-results-container" style="margin-top: 1rem;">
-                    <!-- Period overview results generated here -->
-                </div>
+                
+                <div id="period-results-container" style="overflow-y: auto; flex: 1; padding-right: 5px;"></div>
             </div>
         </div>
     </main>
@@ -626,12 +589,24 @@
         </div>
     </div>
 
+    <!-- HOMEWORK PICKER MODAL -->
+    <div id="picker-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3>🎲 Random Homework Picker</h3>
+            <p style="color: #cbd5e1; font-size: 0.85rem;">Selecting a present student...</p>
+            <div id="picker-animation" class="picker-name">Ready...</div>
+            <div id="picker-actions" style="display: none; justify-content: center; gap: 1rem; margin-top: 1rem;">
+                <button class="btn btn-success" id="btn-hw-done">Well Done! 🌟</button>
+                <button class="btn btn-secondary" id="btn-hw-fail">Close</button>
+            </div>
+        </div>
+    </div>
+
     <!-- DETAIL / HISTORY OVERVIEW MODAL -->
     <div id="detail-modal" class="modal-overlay">
         <div class="modal-card" style="max-width: 650px;">
             <h3 id="detail-modal-title">Lesson Details</h3>
-            <div id="detail-modal-content" style="max-height: 400px; overflow-y: auto; text-align: left; margin: 1rem 0; font-size: 0.9rem;">
-            </div>
+            <div id="detail-modal-content" style="max-height: 400px; overflow-y: auto; text-align: left; margin: 1rem 0; font-size: 0.9rem;"></div>
             <div class="flex-actions" style="justify-content: center;">
                 <button class="btn btn-secondary" onclick="closeDetailModal()">Close</button>
             </div>
@@ -650,6 +625,11 @@
     </div>
 
     <script>
+        const esc = (str) => {
+            if (!str) return '';
+            return String(str).replace(/[&<>'"]/g, match => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'}[match]));
+        };
+
         const englishWelcomes = [
             "Welcome! Great to see you!",
             "Hello there! Ready for class?",
@@ -662,18 +642,24 @@
         ];
 
         let activeClassName = "";
-        let currentStudentsData = []; // Array of objects: { name: string, checkedIn: boolean, tags: [] }
-        let editingLessonId = null;   // ID of history lesson currently being edited
-        let editingStudentsData = []; // Temporary data for the lesson being edited
+        let currentStudentsData = []; 
+        let editingLessonId = null;   
+        let editingStudentsData = []; 
+        let welcomeTimeout;
+        let pickerInterval;
+        let pickedStudentIndex = -1;
 
         const availableTags = [
-            { id: 'late', label: 'Late' },
-            { id: 'device_forgotten', label: 'Device forgotten' },
-            { id: 'book_forgotten', label: 'Book forgotten' },
-            { id: 'notebook_forgotten', label: 'Notebook forgotten' },
-            { id: 'pen_forgotten', label: 'Pen forgotten' },
-            { id: 'earphones_forgotten', label: 'Earphones forgotten' },
-            { id: 'sent_out', label: 'Sent out' }
+            { id: 'late', label: 'Late', color: '#f97316' },
+            { id: 'device_forgotten', label: 'Device forgotten', color: '#64748b' },
+            { id: 'book_forgotten', label: 'Book forgotten', color: '#3b82f6' },
+            { id: 'notebook_forgotten', label: 'Notebook forgotten', color: '#0ea5e9' },
+            { id: 'pen_forgotten', label: 'Pen forgotten', color: '#14b8a6' },
+            { id: 'earphones_forgotten', label: 'Earphones forgotten', color: '#6366f1' },
+            { id: 'hw_forgotten', label: 'HW forgotten', color: '#f43f5e' },
+            { id: 'hw_done', label: 'HW Well Done', color: '#eab308' },
+            { id: 'sent_out', label: 'Sent out', color: '#991b1b' },
+            { id: 'good_behavior', label: 'Good behavior', color: '#8b5cf6' }
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -686,7 +672,6 @@
             const today = new Date();
             const thirtyDaysAgo = new Date();
             thirtyDaysAgo.setDate(today.getDate() - 30);
-
             document.getElementById('period-end').value = today.toISOString().split('T')[0];
             document.getElementById('period-start').value = thirtyDaysAgo.toISOString().split('T')[0];
         }
@@ -695,7 +680,7 @@
             document.getElementById('sys-modal-title').innerText = title;
             document.getElementById('sys-modal-desc').innerText = text;
             document.getElementById('sys-modal-actions').innerHTML = `
-                <button class="btn btn-primary" onclick="closeSystemModal()">OK</button>
+                <button class="btn btn-secondary" onclick="closeSystemModal()">OK</button>
             `;
             document.getElementById('system-modal').classList.add('active');
         }
@@ -703,15 +688,14 @@
         function showConfirmModal(title, text, onConfirm) {
             document.getElementById('sys-modal-title').innerText = title;
             document.getElementById('sys-modal-desc').innerText = text;
-            
             const actions = document.getElementById('sys-modal-actions');
             actions.innerHTML = '';
-
+            
             const cancelBtn = document.createElement('button');
             cancelBtn.className = 'btn btn-secondary';
             cancelBtn.innerText = 'Cancel';
             cancelBtn.onclick = closeSystemModal;
-
+            
             const confirmBtn = document.createElement('button');
             confirmBtn.className = 'btn btn-danger';
             confirmBtn.innerText = 'Delete';
@@ -719,7 +703,7 @@
                 closeSystemModal();
                 onConfirm();
             };
-
+            
             actions.appendChild(cancelBtn);
             actions.appendChild(confirmBtn);
             document.getElementById('system-modal').classList.add('active');
@@ -741,9 +725,11 @@
             const classes = getSavedClasses();
             const select = document.getElementById('class-select');
             const periodFilterSelect = document.getElementById('period-class-filter');
+            const historyFilterSelect = document.getElementById('history-class-filter');
             
             select.innerHTML = '';
             periodFilterSelect.innerHTML = '<option value="">All Classes</option>';
+            historyFilterSelect.innerHTML = '<option value="">All Classes</option>';
             
             const keys = Object.keys(classes);
             if (keys.length === 0) {
@@ -762,6 +748,11 @@
                     optPeriod.value = k;
                     optPeriod.innerText = k;
                     periodFilterSelect.appendChild(optPeriod);
+
+                    const optHistory = document.createElement('option');
+                    optHistory.value = k;
+                    optHistory.innerText = k;
+                    historyFilterSelect.appendChild(optHistory);
                 });
             }
         }
@@ -823,6 +814,39 @@
                 showAlertModal('Deleted', `Class '${name}' has been deleted.`);
             }
         }
+        
+        function exportData() {
+            const data = {
+                classes: getSavedClasses(),
+                history: getSavedHistory()
+            };
+            const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `checkin_backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.classes) localStorage.setItem('teacher_classes', JSON.stringify(data.classes));
+                    if (data.history) localStorage.setItem('teacher_lesson_history', JSON.stringify(data.history));
+                    refreshClassDropdown();
+                    loadSelectedClass();
+                    showAlertModal('Success', 'Data imported successfully!');
+                } catch (err) {
+                    showAlertModal('Error', 'Invalid JSON file format.');
+                }
+            };
+            reader.readAsText(file);
+        }
 
         function hideAllScreens() {
             document.getElementById('settings-screen').classList.remove('active');
@@ -853,7 +877,6 @@
             generatePeriodOverview();
         }
 
-        // Start check-in session
         function startCheckInSession() {
             const name = document.getElementById('class-select').value;
             const text = document.getElementById('students-input').value;
@@ -873,10 +896,8 @@
 
             const currentHour = new Date().getHours();
             const timeGreeting = currentHour < 12 ? "Good morning" : "Good afternoon";
-            const greetingElement = document.getElementById('dynamic-greeting-text');
-            greetingElement.innerText = `${timeGreeting}, please check in.`;
-
-            document.getElementById('checkin-class-title').innerText = `Class: ${activeClassName}`;
+            document.getElementById('dynamic-greeting-text').innerText = `${timeGreeting}, please check in.`;
+            document.getElementById('checkin-class-title').innerText = `Class: ${esc(activeClassName)}`;
             
             hideAllScreens();
             document.getElementById('checkin-screen').classList.add('active');
@@ -893,9 +914,8 @@
                 const card = document.createElement('div');
                 card.className = `student-board-card ${student.checkedIn ? 'checked-in' : ''}`;
                 card.onclick = () => toggleCheckIn(index);
-
                 card.innerHTML = `
-                    <div class="s-name">${student.name}</div>
+                    <div class="s-name">${esc(student.name)}</div>
                     <div class="s-status">${student.checkedIn ? 'Checked in ✓' : 'Click to check in'}</div>
                 `;
                 container.appendChild(card);
@@ -911,8 +931,10 @@
                 document.getElementById('welcome-student-name').innerText = student.name;
                 document.getElementById('welcome-msg-text').innerText = randomWelcome;
                 document.getElementById('welcome-modal').classList.add('active');
+                
+                clearTimeout(welcomeTimeout);
+                welcomeTimeout = setTimeout(closeWelcomeModal, 3000);
             }
-
             renderCheckInGrid();
         }
 
@@ -931,7 +953,7 @@
                 }
             });
 
-            document.getElementById('mgmt-class-title').innerText = `Registration: ${activeClassName}`;
+            document.getElementById('mgmt-class-title').innerText = `Registration: ${esc(activeClassName)}`;
             hideAllScreens();
             document.getElementById('mgmt-screen').classList.add('active');
             renderMgmtGrid();
@@ -957,7 +979,7 @@
                     if (tagId !== 'absent') {
                         const tagObj = availableTags.find(t => t.id === tagId);
                         if (tagObj) {
-                            badgesHTML += `<span class="tag-badge">${tagObj.label}</span>`;
+                            badgesHTML += `<span class="tag-badge" style="background-color: ${tagObj.color};">${esc(tagObj.label)}</span>`;
                         }
                     }
                 });
@@ -966,8 +988,10 @@
                 availableTags.forEach(tagObj => {
                     const isActive = student.tags.includes(tagObj.id);
                     tagsSelectorHTML += `
-                        <button class="tag-toggle-btn ${isActive ? 'active' : ''}" onclick="toggleStudentTag(${index}, '${tagObj.id}')">
-                            ${tagObj.label}
+                        <button class="tag-toggle-btn ${isActive ? 'active' : ''}" 
+                                style="${isActive ? `background-color: ${tagObj.color}; border-color: ${tagObj.color};` : ''}"
+                                onclick="toggleStudentTag(${index}, '${tagObj.id}')">
+                            ${esc(tagObj.label)}
                         </button>
                     `;
                 });
@@ -975,7 +999,7 @@
                 card.innerHTML = `
                     <div>
                         <div class="mgmt-header">
-                            <span class="mgmt-name">${student.name}</span>
+                            <span class="mgmt-name">${esc(student.name)}</span>
                             <button class="btn btn-secondary btn-sm" onclick="toggleAbsentStatus(${index})">
                                 ${isAbsent ? 'Set Present' : 'Set Absent'}
                             </button>
@@ -1013,6 +1037,61 @@
             }
             renderMgmtGrid();
         }
+        
+        function openHomeworkPicker() {
+            const presentStudents = currentStudentsData
+                .map((s, i) => ({ ...s, originalIndex: i }))
+                .filter(s => !s.tags.includes('absent'));
+                
+            if (presentStudents.length === 0) {
+                showAlertModal('Error', 'No present students to pick from.');
+                return;
+            }
+            
+            document.getElementById('picker-modal').classList.add('active');
+            document.getElementById('picker-actions').style.display = 'none';
+            const display = document.getElementById('picker-animation');
+            
+            let ticks = 0;
+            const maxTicks = 25;
+            
+            pickerInterval = setInterval(() => {
+                const rand = Math.floor(Math.random() * presentStudents.length);
+                display.innerText = presentStudents[rand].name;
+                ticks++;
+                
+                if (ticks >= maxTicks) {
+                    clearInterval(pickerInterval);
+                    pickedStudentIndex = presentStudents[rand].originalIndex;
+                    display.innerText = "🎉 " + presentStudents[rand].name + " 🎉";
+                    
+                    setHomeworkTag(pickedStudentIndex, 'hw_forgotten', false);
+                    
+                    document.getElementById('picker-actions').style.display = 'flex';
+                    
+                    document.getElementById('btn-hw-done').onclick = () => {
+                        setHomeworkTag(pickedStudentIndex, 'hw_done', true);
+                        closePickerModal();
+                    };
+                    document.getElementById('btn-hw-fail').onclick = () => {
+                        renderMgmtGrid();
+                        closePickerModal();
+                    };
+                }
+            }, 100);
+        }
+        
+        function setHomeworkTag(index, tagId, rerender) {
+            const student = currentStudentsData[index];
+            student.tags = student.tags.filter(t => t !== 'hw_done' && t !== 'hw_forgotten');
+            student.tags.push(tagId);
+            if(rerender) renderMgmtGrid();
+        }
+        
+        function closePickerModal() {
+            document.getElementById('picker-modal').classList.remove('active');
+            clearInterval(pickerInterval);
+        }
 
         function saveCurrentLessonSession() {
             const now = new Date();
@@ -1044,7 +1123,7 @@
             editingLessonId = lessonId;
             editingStudentsData = JSON.parse(JSON.stringify(lesson.students));
 
-            document.getElementById('edit-mgmt-class-title').innerText = `Edit Class: ${lesson.className} (${lesson.date})`;
+            document.getElementById('edit-mgmt-class-title').innerText = `Edit Class: ${esc(lesson.className)} (${esc(lesson.date)})`;
             hideAllScreens();
             document.getElementById('edit-history-screen').classList.add('active');
             renderEditMgmtGrid();
@@ -1070,7 +1149,7 @@
                     if (tagId !== 'absent') {
                         const tagObj = availableTags.find(t => t.id === tagId);
                         if (tagObj) {
-                            badgesHTML += `<span class="tag-badge">${tagObj.label}</span>`;
+                            badgesHTML += `<span class="tag-badge" style="background-color: ${tagObj.color};">${esc(tagObj.label)}</span>`;
                         }
                     }
                 });
@@ -1079,8 +1158,10 @@
                 availableTags.forEach(tagObj => {
                     const isActive = student.tags.includes(tagObj.id);
                     tagsSelectorHTML += `
-                        <button class="tag-toggle-btn ${isActive ? 'active' : ''}" onclick="toggleEditStudentTag(${index}, '${tagObj.id}')">
-                            ${tagObj.label}
+                        <button class="tag-toggle-btn ${isActive ? 'active' : ''}"
+                                style="${isActive ? `background-color: ${tagObj.color}; border-color: ${tagObj.color};` : ''}"
+                                onclick="toggleEditStudentTag(${index}, '${tagObj.id}')">
+                            ${esc(tagObj.label)}
                         </button>
                     `;
                 });
@@ -1088,7 +1169,7 @@
                 card.innerHTML = `
                     <div>
                         <div class="mgmt-header">
-                            <span class="mgmt-name">${student.name}</span>
+                            <span class="mgmt-name">${esc(student.name)}</span>
                             <button class="btn btn-secondary btn-sm" onclick="toggleEditAbsentStatus(${index})">
                                 ${isAbsent ? 'Set Present' : 'Set Absent'}
                             </button>
@@ -1141,10 +1222,16 @@
         function renderHistoryList() {
             const container = document.getElementById('history-container');
             container.innerHTML = '';
-            const history = getSavedHistory();
+            let history = getSavedHistory();
+            
+            // Apply dropdown filter
+            const classFilter = document.getElementById('history-class-filter').value;
+            if (classFilter) {
+                history = history.filter(lesson => lesson.className === classFilter);
+            }
 
             if (history.length === 0) {
-                container.innerHTML = '<div style="color: #94a3b8; font-size: 0.9rem;">No saved lessons available in history yet.</div>';
+                container.innerHTML = '<div style="color: #94a3b8; font-size: 0.9rem;">No saved lessons available for this selection.</div>';
                 return;
             }
 
@@ -1152,17 +1239,42 @@
                 const presentCount = lesson.students.filter(s => !s.tags.includes('absent')).length;
                 const totalCount = lesson.students.length;
                 const absentCount = totalCount - presentCount;
+                
+                // Get all registrations for this specific lesson
+                let remarksHtml = '';
+                lesson.students.forEach(s => {
+                    const sTags = s.tags.filter(t => t !== 'absent');
+                    if (sTags.length > 0) {
+                        const tagBadges = sTags.map(tId => {
+                            const tagDef = availableTags.find(at => at.id === tId);
+                            const label = tagDef ? tagDef.label : tId;
+                            const bgColor = tagDef ? tagDef.color : '#64748b';
+                            return `<span style="display: inline-block; background-color: ${bgColor}; color: white; padding: 2px 5px; border-radius: 4px; font-size: 0.65rem; font-weight: bold; margin-left: 4px;">${esc(label)}</span>`;
+                        });
+                        remarksHtml += `<div style="font-size: 0.8rem; margin-top: 0.3rem;"><strong>${esc(s.name)}:</strong> ${tagBadges.join('')}</div>`;
+                    }
+                });
+                
+                if (!remarksHtml) {
+                    remarksHtml = `<div style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.3rem; font-style: italic;">No remarks</div>`;
+                }
 
                 const item = document.createElement('div');
                 item.className = 'history-item';
+                item.style.alignItems = 'flex-start';
                 item.innerHTML = `
-                    <div>
-                        <div style="font-weight: 700; color: #38bdf8; font-size: 1rem;">${lesson.className}</div>
-                        <div style="font-size: 0.78rem; color: #cbd5e1;">Date: ${lesson.date} | Present: ${presentCount} | Absent: ${absentCount}</div>
+                    <div style="flex: 1; padding-right: 10px;">
+                        <div style="font-weight: 700; color: #38bdf8; font-size: 1rem;">${esc(lesson.className)}</div>
+                        <div style="font-size: 0.78rem; color: #cbd5e1; margin-bottom: 0.5rem;">Date: ${esc(lesson.date)} | Present: ${presentCount} | Absent: ${absentCount}</div>
+                        
+                        <div style="background: rgba(0,0,0,0.2); padding: 0.5rem; border-radius: 6px;">
+                            <div style="font-size: 0.7rem; text-transform: uppercase; color: #94a3b8; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.2rem; margin-bottom: 0.3rem;">Registrations:</div>
+                            ${remarksHtml}
+                        </div>
                     </div>
-                    <div class="flex-actions">
-                        <button class="btn btn-secondary btn-sm" onclick="openDetailModal(${lesson.id})">🔍 View Overview</button>
-                        <button class="btn btn-warning btn-sm" onclick="openEditLesson(${lesson.id})">✏️ Bewerk</button>
+                    <div class="flex-actions" style="flex-direction: column; justify-content: flex-start;">
+                        <button class="btn btn-secondary btn-sm" style="width: 100%;" onclick="openDetailModal(${lesson.id})">🔍 View Overview</button>
+                        <button class="btn btn-warning btn-sm" style="width: 100%;" onclick="openEditLesson(${lesson.id})">✏️ Edit</button>
                     </div>
                 `;
                 container.appendChild(item);
@@ -1245,7 +1357,7 @@
                 html += `
                     <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
                         <div style="font-size: 1.05rem; font-weight: 700; color: #38bdf8; margin-bottom: 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.3rem;">
-                            Class: ${className}
+                            Class: ${esc(className)}
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                 `;
@@ -1258,16 +1370,17 @@
                     for (const [tId, count] of Object.entries(stats.tagsCount)) {
                         const foundTag = availableTags.find(at => at.id === tId);
                         const label = foundTag ? foundTag.label : tId;
-                        tagsSummary += `<span class="tag-badge">${label}: ${count}</span> `;
+                        const bgColor = foundTag ? foundTag.color : '#64748b';
+                        tagsSummary += `<span class="tag-badge" style="background-color: ${bgColor};">${esc(label)}: ${count}</span> `;
                     }
                     if (!tagsSummary) {
                         tagsSummary = `<span class="tag-badge present">All present / No remarks</span>`;
                     }
 
                     html += `
-                        <div style="background: rgba(255,255,255,0.04); padding: 0.6rem; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; flex-wrap: gap; gap: 0.5rem;">
+                        <div style="background: rgba(255,255,255,0.04); padding: 0.6rem; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
                             <div>
-                                <span style="font-weight: 600; font-size: 0.95rem;">${studentName}</span>
+                                <span style="font-weight: 600; font-size: 0.95rem;">${esc(studentName)}</span>
                                 <div style="font-size: 0.75rem; color: #94a3b8;">Total lessons registered: ${stats.lessonsCount}</div>
                             </div>
                             <div style="display: flex; flex-wrap: wrap; gap: 0.3rem; justify-content: flex-end;">
@@ -1276,10 +1389,8 @@
                         </div>
                     `;
                 }
-
                 html += `</div></div>`;
             }
-
             container.innerHTML = html;
         }
 
@@ -1316,13 +1427,12 @@
                 });
             });
 
-            // Bouw printvriendelijk HTML document voor de PDF export
             let printWindow = window.open('', '_blank');
             let htmlContent = `
                 <!DOCTYPE html>
                 <html>
                 <head>
-                    <title>Period Overview Report (${startDateVal} to ${endDateVal})</title>
+                    <title>Period Overview Report (${esc(startDateVal)} to ${esc(endDateVal)})</title>
                     <style>
                         body { font-family: Arial, sans-serif; color: #333; padding: 20px; line-height: 1.4; }
                         h1 { color: #1e1b4b; border-bottom: 2px solid #38bdf8; padding-bottom: 5px; font-size: 20px; }
@@ -1332,27 +1442,27 @@
                         table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 13px; }
                         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
                         th { background-color: #f4f4f4; color: #333; }
-                        .badge { display: inline-block; padding: 2px 6px; font-size: 11px; font-weight: bold; border-radius: 4px; margin-right: 3px; }
-                        .badge-absent { background: #fee2e2; color: #dc2626; }
-                        .badge-tag { background: #fef3c7; color: #d97706; }
-                        .badge-present { background: #d1fae5; color: #059669; }
+                        .badge { display: inline-block; padding: 2px 6px; font-size: 11px; font-weight: bold; border-radius: 4px; margin-right: 3px; color: white; }
+                        .badge-absent { background: #dc2626; }
+                        .badge-present { background: #059669; }
                         @media print {
                             body { padding: 0; }
                             button { display: none; }
+                            .badge { color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
                         }
                     </style>
                 </head>
                 <body>
                     <h1>Check-in Period Overview Report</h1>
                     <div class="meta">
-                        <strong>Period:</strong> ${startDateVal} until ${endDateVal} | <strong>Class Filter:</strong> ${classFilter} | <strong>Generated on:</strong> ${new Date().toLocaleDateString()}
+                        <strong>Period:</strong> ${esc(startDateVal)} until ${esc(endDateVal)} | <strong>Class Filter:</strong> ${esc(classFilter)} | <strong>Generated on:</strong> ${new Date().toLocaleDateString()}
                     </div>
             `;
 
             for (const [className, studentsObj] of Object.entries(aggregated)) {
                 htmlContent += `
                     <div class="class-section">
-                        <div class="class-title">Class: ${className}</div>
+                        <div class="class-title">Class: ${esc(className)}</div>
                         <table>
                             <thead>
                                 <tr>
@@ -1372,7 +1482,8 @@
                     for (const [tId, count] of Object.entries(stats.tagsCount)) {
                         const foundTag = availableTags.find(at => at.id === tId);
                         const label = foundTag ? foundTag.label : tId;
-                        badges += `<span class="badge badge-tag">${label}: ${count}</span>`;
+                        const bgColor = foundTag ? foundTag.color : '#64748b';
+                        badges += `<span class="badge" style="background-color: ${bgColor};">${esc(label)}: ${count}</span>`;
                     }
                     if (!badges) {
                         badges = `<span class="badge badge-present">All present / No remarks</span>`;
@@ -1380,7 +1491,7 @@
 
                     htmlContent += `
                         <tr>
-                            <td><strong>${studentName}</strong></td>
+                            <td><strong>${esc(studentName)}</strong></td>
                             <td>${stats.lessonsCount}</td>
                             <td>${badges}</td>
                         </tr>
@@ -1412,7 +1523,7 @@
             const lesson = history.find(l => l.id === lessonId);
             if (!lesson) return;
 
-            document.getElementById('detail-modal-title').innerText = `Overview: ${lesson.className} (${lesson.date})`;
+            document.getElementById('detail-modal-title').innerText = `Overview: ${esc(lesson.className)} (${esc(lesson.date)})`;
             
             let contentHTML = '<div style="display: flex; flex-direction: column; gap: 0.5rem;">';
             lesson.students.forEach(s => {
@@ -1422,13 +1533,13 @@
                 s.tags.forEach(t => {
                     if (t !== 'absent') {
                         const found = availableTags.find(at => at.id === t);
-                        if (found) tagLabels += ` <span class="tag-badge">${found.label}</span>`;
+                        if (found) tagLabels += ` <span class="tag-badge" style="background-color: ${found.color};">${esc(found.label)}</span>`;
                     }
                 });
 
                 contentHTML += `
                     <div style="background: rgba(255,255,255,0.04); padding: 0.5rem; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-weight: 600;">${s.name}</span>
+                        <span style="font-weight: 600;">${esc(s.name)}</span>
                         <div>${tagLabels}</div>
                     </div>
                 `;
