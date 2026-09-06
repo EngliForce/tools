@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Picker - Ultimate Edition</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        html, body {
+            height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: linear-gradient(90deg, #ff0055, #7928ca, #00d4ff);
+            padding: 0.6rem 1.2rem;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .lang-switcher { display: flex; gap: 4px; }
+        .lang-btn {
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            color: #fff; cursor: pointer; padding: 4px 8px; border-radius: 4px;
+            font-size: 0.75rem; font-weight: bold; transition: 0.2s;
+        }
+        .lang-btn.active { background: #00d4ff; color: #0f172a; border-color: #00d4ff; }
+
+        main {
+            flex: 1;
+            padding: 0.8rem;
+            width: 100%;
+            height: calc(100vh - 50px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .screen {
+            display: none;
+            height: 100%;
+        }
+
+        .screen.active {
+            display: flex !important;
+            flex-direction: column;
+            gap: 0.8rem;
+            height: 100%;
+        }
+
+        #setup-screen.active {
+            overflow-y: auto;
+            padding-right: 4px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            margin-bottom: 0.8rem;
+        }
+
+        .glass-card h2 {
+            font-size: 1.15rem;
+            color: #00d4ff;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 0.4rem;
+        }
+
+        .form-group { margin-bottom: 0.8rem; }
+
+        label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            font-size: 0.85rem;
+        }
+
+        input[type="text"], input[type="number"], select, textarea {
+            width: 100%;
+            padding: 0.5rem 0.8rem;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: #fff;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #00d4ff;
+            box-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
+        }
+
+        select option { background: #1e1b4b; color: #fff; }
+
+        .btn {
+            background: linear-gradient(135deg, #7928ca, #ff0055);
+            color: white;
+            border: none;
+            padding: 0.55rem 1rem;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 0, 85, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .btn-success { background: linear-gradient(135deg, #10b981, #059669); }
+        .btn-accent { background: linear-gradient(135deg, #00d4ff, #008eb3); color: #0f172a; }
+        .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.72rem; }
+
+        #roulette-container {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(16px);
+            border-radius: 24px;
+            box-shadow: 0 0 50px rgba(0, 212, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+
+        .roulette-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+        }
+
+        .class-badge {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+            border: 1px solid rgba(0, 212, 255, 0.4);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .counter-badge {
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            display: flex;
+            gap: 12px;
+        }
+
+        #display-wrapper {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* SVG vult exact de beschikbare ruimte */
+        #display-wrapper svg {
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+            display: block;
+        }
+
+        .rolling {
+            animation: pulse 0.1s infinite;
+            filter: blur(2px);
+            opacity: 0.7;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.98); }
+            100% { transform: scale(1); }
+        }
+
+        .group-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); 
+            gap: 15px; 
+            width: 100%; 
+            max-height: 100%;
+            overflow-y: auto;
+        }
+
+        .group-box { 
+            background: rgba(255, 255, 255, 0.05); 
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 15px; 
+            border-radius: 12px; 
+            border-top: 4px solid #00d4ff;
+            backdrop-filter: blur(10px); 
+            animation: popIn 0.3s ease backwards;
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.9) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .group-title { font-weight: bold; font-size: 1.2rem; color: #00d4ff; margin-bottom: 8px; text-transform: uppercase; }
+        .group-names { font-size: 1rem; line-height: 1.4; color: #fff; }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding-top: 10px;
+            flex-shrink: 0;
+        }
+
+        .button-group-main {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .main-btn {
+            background: linear-gradient(135deg, #00d4ff, #008eb3);
+            color: #0f172a;
+            border: none;
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: 900;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #005f78, 0 0 15px rgba(0, 212, 255, 0.3);
+            transition: all 0.1s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .picker-btn {
+            background: linear-gradient(135deg, #fbbf24, #d97706);
+            color: #0f172a;
+            box-shadow: 0 5px 0 #b45309, 0 0 15px rgba(251, 191, 36, 0.3);
+        }
+
+        .teams-btn {
+            background: linear-gradient(135deg, #a855f7, #6b21a8);
+            color: #ffffff;
+            box-shadow: 0 5px 0 #4c1d95, 0 0 15px rgba(168, 85, 247, 0.3);
+        }
+
+        .reset-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: none;
+        }
+
+        .main-btn:active { transform: translateY(3px); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 id="ui-title">🎲 Class Picker</h1>
+        <div class="header-actions">
+            <div class="lang-switcher">
+                <button class="lang-btn active" onclick="setLanguage('en')">EN</button>
+                <button class="lang-btn" onclick="setLanguage('nl')">NL</button>
+                <button class="lang-btn" onclick="setLanguage('fr')">FR</button>
+                <button class="lang-btn" onclick="setLanguage('de')">DE</button>
+            </div>
+            <button class="btn btn-secondary btn-sm" id="btn-switch-setup" style="display: none;" onclick="showSetupScreen()">⚙️ <span id="ui-nav-setup">Instellingen</span></button>
+        </div>
+    </header>
+
+    <main>
+        <!-- INSTELLINGEN SCHERM -->
+        <div id="setup-screen" class="screen active">
+            <div class="glass-card">
+                <h2>🏫 <span id="ui-label-class">SELECT CLASS</span></h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem;">
+                    <div>
+                        <div class="form-group">
+                            <label for="classSelect">Kies Bestaande Klas:</label>
+                            <div style="display: flex; gap: 0.4rem;">
+                                <select id="classSelect" onchange="changeClass()"></select>
+                                <button class="btn btn-danger btn-sm" onclick="deleteClass()">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-accent btn-sm" style="width: 100%; height: 38px;" onclick="addClass()">➕ Nieuwe Klas Toevoegen</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 0.5rem;">
+                    <label for="nameInput">Leerlingen (1 per regel):</label>
+                    <textarea id="nameInput" rows="6" placeholder="Enter student names..." oninput="saveCurrentNames()"></textarea>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h2>👥 <span id="ui-label-teams">TEAM UP SETTINGS</span></h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <div class="form-group">
+                        <label for="mode">Modus:</label>
+                        <select id="mode">
+                            <option value="perGroup" id="ui-opt-per">Students per team</option>
+                            <option value="totalGroups" id="ui-opt-total">Total number of teams</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="groupValue">Aantal:</label>
+                        <input type="number" id="groupValue" value="3" min="1">
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 0.5rem;">
+                <button class="btn btn-success" style="font-size: 1.1rem; padding: 0.8rem 2.5rem;" onclick="startApp()">
+                    🚀 <span id="ui-start-btn">Start ➔</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- SPEELSCHERM -->
+        <div id="play-screen" class="screen">
+            <div id="roulette-container">
+                <div class="roulette-header">
+                    <span class="class-badge" id="active-class-display">Klas: -</span>
+                    <div class="counter-badge">
+                        <span>✅ <span id="cnt-done">0</span> <span id="lbl-done">geweest</span></span>
+                        <span>|</span>
+                        <span>⏳ <span id="cnt-left">0</span> <span id="lbl-left">te gaan</span></span>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" onclick="showSetupScreen()">⚙️ <span id="ui-btn-manage">Aanpassen</span></button>
+                </div>
+
+                <div id="display-wrapper"></div>
+
+                <div class="controls">
+                    <div class="button-group-main">
+                        <button class="main-btn picker-btn" id="ui-btn-pick" onclick="pickRandom()">LUCKY PICK 🎲</button>
+                        <button class="main-btn teams-btn" id="ui-btn-teams" onclick="makeGroups()">DEPLOY TEAMS 👥</button>
+                        <button class="main-btn reset-btn" id="ui-btn-reset" onclick="resetPickerHistory()">🔄 Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+<script>
+    let classes = JSON.parse(localStorage.getItem('myClasses')) || { "Default Class": "" };
+    let currentClassName = localStorage.getItem('currentClass') || "Default Class";
+    let drawnNames = [];
+
+    if (Object.keys(classes).length === 0) {
+        classes = { "Default Class": "" };
+        currentClassName = "Default Class";
+    }
+
+    const i18n = {
+        en: { title: "CLASS PICKER", navSetup: "Settings", placeholder: "Enter student names...", btnPick: "LUCKY PICK 🎲", labelTeams: "TEAM UP SETTINGS", optPer: "Students per team", optTotal: "Total number of teams", btnTeams: "DEPLOY TEAMS 👥", ready: "READY FOR CLASS", team: "TEAM", labelClass: "SELECT CLASS", promptNew: "Enter new class name:", confirmDel: "Delete class", btnManage: "Manage", startBtn: "Start Picker ➔", done: "done", left: "remaining", allDone: "EVERYONE HAS BEEN PICKED!" },
+        nl: { title: "KLAS MANAGER", navSetup: "Instellingen", placeholder: "Voer namen in...", btnPick: "START KEUZE 🎲", labelTeams: "TEAM INSTELLINGEN", optPer: "Leerlingen per team", optTotal: "Totaal aantal teams", btnTeams: "TEAMS MAKEN 👥", ready: "KLAAR VOOR DE LES", team: "TEAM", labelClass: "SELECTEER KLAS", promptNew: "Naam van nieuwe klas:", confirmDel: "Verwijder klas", btnManage: "Aanpassen", startBtn: "Start App ➔", done: "geweest", left: "te gaan", allDone: "IEDEREEN IS GEWEEST!" },
+        fr: { title: "SALLE DE CLASSE", navSetup: "Paramètres", placeholder: "Entrez les noms...", btnPick: "CHOIX CHANCEUX 🎲", labelTeams: "PARAMÈTRES D'ÉQUIPE", optPer: "Élèves par équipe", optTotal: "Nombre total d'équipes", btnTeams: "CRÉER ÉQUIPES 👥", ready: "PRÊT POUR LE COURS", team: "ÉQUIPE", labelClass: "CHOISIR LA CLASSE", promptNew: "Nom de la nouvelle classe:", confirmDel: "Supprimer la classe", btnManage: "Gérer", startBtn: "Démarrer ➔", done: "passés", left: "restants", allDone: "TOUT LE MONDE EST PASSÉ !" },
+        de: { title: "KLASSENZIMMER", navSetup: "Einstellungen", placeholder: "Namen eingeben...", btnPick: "GLÜCKSTREFFER 🎲", labelTeams: "TEAM-EINSTELLUNGEN", optPer: "Schüler pro Team", optTotal: "Gesamtzahl der Teams", btnTeams: "TEAMS ERSTELLEN 👥", ready: "BEREIT FÜR DEN UNTERRICHT", team: "TEAM", labelClass: "KLASSE WÄHLEN", promptNew: "Name der neuen Klasse:", confirmDel: "Klasse löschen", btnManage: "Bearbeiten", startBtn: "Starten ➔", done: "gewesen", left: "übrig", allDone: "ALLE WURDEN AUSGEWÄHLT!" }
+    };
+
+    let currentLang = 'en';
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        const t = i18n[lang];
+        document.getElementById('ui-title').innerText = t.title;
+        document.getElementById('ui-nav-setup').innerText = t.navSetup;
+        document.getElementById('nameInput').placeholder = t.placeholder;
+        document.getElementById('ui-btn-pick').innerText = t.btnPick;
+        document.getElementById('ui-label-teams').innerText = t.labelTeams;
+        document.getElementById('ui-opt-per').innerText = t.optPer;
+        document.getElementById('ui-opt-total').innerText = t.optTotal;
+        document.getElementById('ui-btn-teams').innerText = t.btnTeams;
+        document.getElementById('ui-label-class').innerText = t.labelClass;
+        document.getElementById('ui-btn-manage').innerText = t.btnManage;
+        document.getElementById('ui-start-btn').innerText = t.startBtn;
+        document.getElementById('lbl-done').innerText = t.done;
+        document.getElementById('lbl-left').innerText = t.left;
+
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.innerText.toLowerCase() === lang);
+        });
+    }
+
+    function initClassManager() {
+        const select = document.getElementById('classSelect');
+        select.innerHTML = '';
+        Object.keys(classes).forEach(name => {
+            const option = document.createElement('option');
+            option.value = name;
+            option.innerText = name;
+            if (name === currentClassName) option.selected = true;
+            select.appendChild(option);
+        });
+        document.getElementById('nameInput').value = classes[currentClassName] || "";
+    }
+
+    function changeClass() {
+        currentClassName = document.getElementById('classSelect').value;
+        document.getElementById('nameInput').value = classes[currentClassName] || "";
+        localStorage.setItem('currentClass', currentClassName);
+        drawnNames = [];
+        updateCounters();
+    }
+
+    function saveCurrentNames() {
+        classes[currentClassName] = document.getElementById('nameInput').value;
+        localStorage.setItem('myClasses', JSON.stringify(classes));
+        drawnNames = [];
+        updateCounters();
+    }
+
+    function addClass() {
+        const newName = prompt(i18n[currentLang].promptNew);
+        if (newName && newName.trim() !== "") {
+            if (classes[newName]) return alert("Class already exists!");
+            classes[newName] = "";
+            currentClassName = newName;
+            localStorage.setItem('myClasses', JSON.stringify(classes));
+            localStorage.setItem('currentClass', currentClassName);
+            drawnNames = [];
+            initClassManager();
+            updateCounters();
+        }
+    }
+
+    function deleteClass() {
+        if (Object.keys(classes).length <= 1) return alert("You must keep at least one class.");
+        if (confirm(i18n[currentLang].confirmDel + " " + currentClassName + "?")) {
+            delete classes[currentClassName];
+            currentClassName = Object.keys(classes)[0];
+            localStorage.setItem('myClasses', JSON.stringify(classes));
+            localStorage.setItem('currentClass', currentClassName);
+            drawnNames = [];
+            initClassManager();
+            updateCounters();
+        }
+    }
+
+    function getCleanNames() {
+        return document.getElementById('nameInput').value
+            .split('\n')
+            .map(n => n.trim())
+            .filter(n => n.length > 0);
+    }
+
+    function updateCounters() {
+        const allNames = getCleanNames();
+        document.getElementById('cnt-done').innerText = drawnNames.length;
+        document.getElementById('cnt-left').innerText = Math.max(0, allNames.length - drawnNames.length);
+    }
+
+    function resetPickerHistory() {
+        drawnNames = [];
+        updateCounters();
+        renderGiantText(i18n[currentLang].ready);
+    }
+
+    function startApp() {
+        document.getElementById('setup-screen').classList.remove('active');
+        document.getElementById('play-screen').classList.add('active');
+        document.getElementById('btn-switch-setup').style.display = 'inline-flex';
+        document.getElementById('active-class-display').innerText = `Klas: ${currentClassName}`;
+        renderGiantText(i18n[currentLang].ready);
+        updateCounters();
+    }
+
+    function showSetupScreen() {
+        document.getElementById('play-screen').classList.remove('active');
+        document.getElementById('setup-screen').classList.add('active');
+        document.getElementById('btn-switch-setup').style.display = 'none';
+    }
+
+    /* SVG-gebaseerde vergroting: Past zich exact aan de beschikbare ruimte aan */
+    function renderGiantText(text, isRolling = false) {
+        const wrapper = document.getElementById('display-wrapper');
+        
+        // Maak een canvas-meting om de exacte breedte en hoogte van de tekst te berekenen
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.font = "900 100px 'Arial Black', sans-serif";
+        const metrics = ctx.measureText(text);
+        
+        const textWidth = Math.max(metrics.width, 10);
+        const textHeight = 110;
+
+        wrapper.innerHTML = `
+            <svg viewBox="0 0 ${textWidth} ${textHeight}" preserveAspectRatio="xMidYMid meet" class="${isRolling ? 'rolling' : ''}">
+                <text x="50%" y="50%" 
+                      dominant-baseline="central" 
+                      text-anchor="middle" 
+                      font-family="'Arial Black', sans-serif" 
+                      font-weight="900" 
+                      fill="#ffffff" 
+                      style="filter: drop-shadow(0px 15px 30px rgba(0,0,0,0.8));">
+                    ${text}
+                </text>
+            </svg>
+        `;
+    }
+
+    function fireConfetti() {
+        const duration = 2.5 * 1000;
+        const end = Date.now() + duration;
+        (function frame() {
+            confetti({ particleCount: 4, angle: 60, spread: 55, origin: { x: 0, y: 0.7 }, colors: ['#00d4ff', '#ff0055'] });
+            confetti({ particleCount: 4, angle: 120, spread: 55, origin: { x: 1, y: 0.7 }, colors: ['#00d4ff', '#ff0055'] });
+            if (Date.now() < end) requestAnimationFrame(frame);
+        }());
+    }
+
+    function pickRandom() {
+        const allNames = getCleanNames();
+        if (allNames.length < 1) return;
+
+        const availableNames = allNames.filter(n => !drawnNames.includes(n));
+
+        if (availableNames.length === 0) {
+            renderGiantText(i18n[currentLang].allDone);
+            return;
+        }
+
+        let iterations = 0;
+        const maxIterations = 25;
+
+        const spin = setInterval(() => {
+            const randomName = allNames[Math.floor(Math.random() * allNames.length)];
+            renderGiantText(randomName, true);
+            iterations++;
+
+            if (iterations > maxIterations) {
+                clearInterval(spin);
+                const finalName = availableNames[Math.floor(Math.random() * availableNames.length)];
+                drawnNames.push(finalName);
+                
+                renderGiantText(finalName, false);
+                updateCounters();
+                fireConfetti();
+            }
+        }, 60);
+    }
+
+    function makeGroups() {
+        const names = getCleanNames().sort(() => Math.random() - 0.5);
+        if (names.length === 0) return;
+
+        const mode = document.getElementById('mode').value;
+        const val = Math.max(1, parseInt(document.getElementById('groupValue').value));
+        const wrapper = document.getElementById('display-wrapper');
+        
+        let groups = [];
+        if (mode === "perGroup") {
+            for (let i = 0; i < names.length; i += val) groups.push(names.slice(i, i + val));
+        } else {
+            for (let i = 0; i < val; i++) groups[i] = [];
+            names.forEach((name, index) => groups[index % val].push(name));
+        }
+
+        wrapper.innerHTML = '<div class="group-grid" id="grid"></div>';
+        const grid = document.getElementById('grid');
+
+        groups.forEach((group, index) => {
+            if (group.length > 0) {
+                setTimeout(() => {
+                    const box = document.createElement('div');
+                    box.className = 'group-box';
+                    box.innerHTML = `
+                        <div class="group-title">${i18n[currentLang].team} ${index + 1}</div>
+                        <div class="group-names">${group.join('<br>')}</div>
+                    `;
+                    grid.appendChild(box);
+                }, index * 100);
+            }
+        });
+    }
+
+    initClassManager();
+</script>
+</body>
+</html>
