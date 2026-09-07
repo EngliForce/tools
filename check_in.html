@@ -386,6 +386,7 @@
             margin-bottom: 1rem;
             font-size: 0.92rem;
             line-height: 1.4;
+            white-space: pre-wrap; /* Allows \n to render correctly */
         }
         .welcome-popup-text {
             font-size: 1.5rem;
@@ -647,6 +648,7 @@
         let welcomeTimeout;
         let pickerInterval;
         let pickedStudentIndex = -1;
+        let lessonToDelete = null;
 
         const availableTags = [
             { id: 'late', label: 'Late', color: '#f97316' },
@@ -661,47 +663,67 @@
             { id: 'behaviour', label: 'Behaviour', color: '#ea580c' }
         ];
 
-        // --- STAR CALCULATION UTILS --- //
+        // --- STATS CALCULATION UTILS --- //
 
-        // Berekent de totale sterren opgebouwd over de hele geschiedenis
-        function calculateAllTimeStars(history, className, studentName) {
+        // Berekent totale sterren en huidige streak over de geschiedenis chronologisch
+        function calculateAllTimeStats(history, className, studentName) {
             let stars = 0;
-            history.forEach(lesson => {
+            let streak = 0;
+            
+            // Omdat history de nieuwste lessen eerst heeft (unshift), draaien we het om voor berekening
+            const chronologicalHistory = [...history].sort((a, b) => a.timestamp - b.timestamp);
+            
+            chronologicalHistory.forEach(lesson => {
                 if (lesson.className === className) {
                     const s = lesson.students.find(stu => stu.name === studentName);
                     if (s && s.tags) {
-                        const isPresent = !s.tags.includes('absent');
+                        const isAbsent = s.tags.includes('absent');
                         // Alle tags behalve absent en hw_done tellen als negatief (waaronder de Behaviour en Forgotten tags)
                         const hasNegative = s.tags.some(t => t !== 'absent' && t !== 'hw_done');
                         
-                        // +1 ster voor een perfecte les (Aanwezig + geen negatieve meldingen)
-                        if (isPresent && !hasNegative) stars++;
-                        // +1 ster extra voor de HW Well Done actie
+                        // Sterren
+                        if (!isAbsent && !hasNegative) stars++;
                         if (s.tags.includes('hw_done')) stars++;
+                        
+                        // Streak
+                        if (hasNegative) {
+                            streak = 0; // Streak breekt
+                        } else if (!isAbsent) {
+                            streak++; // Streak groeit (aanwezig en geen negatieve dingen)
+                        }
+                        // Afwezig zonder negatieve tags doet niets met de streak (blijft behouden)
                     }
                 }
             });
-            return stars;
+            return { stars, streak };
         }
 
-        function formatStarsText(total) {
-            if (total === 0) return '';
-            return total === 1 ? ' ⭐' : ` ⭐ ${total}`;
+        function formatStatsText(stars, streak) {
+            let text = '';
+            if (stars > 0) text += (stars === 1 ? ' ⭐' : ` ⭐ ${stars}`);
+            if (streak > 0) text += ` 🔥 ${streak}`;
+            return text;
         }
 
-        // Berekent live de sterren (verleden + wat er live is aangeklikt via HW picker)
-        function getSessionStarDisplay(student) {
-            let total = (student.baseStars || 0);
+        // Live berekende tekst voor actieve of bewerk-sessie
+        function getSessionStarAndStreakDisplay(student) {
+            let stars = (student.baseStars || 0);
+            let streak = (student.baseStreak || 0);
             
-            // De automatische ster voor 'aanwezig en geen minpunten' wordt expres 
-            // NIET in deze live functie berekend, omdat ze deze pas achteraf krijgen 
-            // als de les wordt opgeslagen.
+            const hasNegative = student.tags.some(t => t !== 'absent' && t !== 'hw_done');
+            const isAbsent = !student.checkedIn; // in live sessie gebruiken we checkedIn
             
-            if (student.tags.includes('hw_done')) {
-                total++; // HW Well Done beloning is wel direct live zichtbaar
+            // Live toevoegingen
+            if (!isAbsent && !hasNegative) stars++;
+            if (student.tags.includes('hw_done')) stars++;
+            
+            if (hasNegative) {
+                streak = 0;
+            } else if (!isAbsent) {
+                streak++;
             }
             
-            return formatStarsText(total);
+            return formatStatsText(stars, streak);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -740,7 +762,7 @@
             
             const confirmBtn = document.createElement('button');
             confirmBtn.className = 'btn btn-danger';
-            confirmBtn.innerText = 'Delete';
+            confirmBtn.innerText = 'Confirm';
             confirmBtn.onclick = () => {
                 closeSystemModal();
                 onConfirm();
@@ -932,13 +954,16 @@
             activeClassName = name;
             const history = getSavedHistory();
             
-            // Build current students data with pre-calculated base historical stars
-            currentStudentsData = rawList.map(sName => ({
-                name: sName,
-                checkedIn: false,
-                tags: [],
-                baseStars: calculateAllTimeStars(history, activeClassName, sName)
-            }));
+            currentStudentsData = rawList.map(sName => {
+                const stats = calculateAllTimeStats(history, activeClassName, sName);
+                return {
+                    name: sName,
+                    checkedIn: false,
+                    tags: [],
+                    baseStars: stats.stars,
+                    baseStreak: stats.streak
+                };
+            });
 
             const currentHour = new Date().getHours();
             const timeGreeting = currentHour < 12 ? "Good morning" : "Good afternoon";
@@ -961,7 +986,7 @@
                 card.className = `student-board-card ${student.checkedIn ? 'checked-in' : ''}`;
                 card.onclick = () => toggleCheckIn(index);
                 card.innerHTML = `
-                    <div class="s-name">${esc(student.name)}${getSessionStarDisplay(student)}</div>
+                    <div class="s-name">${esc(student.name)}${getSessionStarAndStreakDisplay(student)}</div>
                     <div class="s-status">${student.checkedIn ? 'Checked in ✓' : 'Click to check in'}</div>
                 `;
                 container.appendChild(card);
@@ -974,7 +999,7 @@
             
             if (student.checkedIn) {
                 const randomWelcome = englishWelcomes[Math.floor(Math.random() * englishWelcomes.length)];
-                document.getElementById('welcome-student-name').innerText = student.name + getSessionStarDisplay(student);
+                document.getElementById('welcome-student-name').innerText = student.name + getSessionStarAndStreakDisplay(student);
                 document.getElementById('welcome-msg-text').innerText = randomWelcome;
                 document.getElementById('welcome-modal').classList.add('active');
                 
@@ -1045,7 +1070,7 @@
                 card.innerHTML = `
                     <div>
                         <div class="mgmt-header">
-                            <span class="mgmt-name">${esc(student.name)}${getSessionStarDisplay(student)}</span>
+                            <span class="mgmt-name">${esc(student.name)}${getSessionStarAndStreakDisplay(student)}</span>
                             <button class="btn btn-secondary btn-sm" onclick="toggleAbsentStatus(${index})">
                                 ${isAbsent ? 'Set Present' : 'Set Absent'}
                             </button>
@@ -1144,8 +1169,24 @@
             const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
             const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
-            // We do not save baseStars into history, it remains a dynamically calculated value.
+            let streakAlerts = [];
+
             const stDataClean = currentStudentsData.map(s => {
+                // Bereken even de verse streak om te kijken of we een 10-mijlpaal hebben bereikt
+                const hasNegative = s.tags.some(t => t !== 'absent' && t !== 'hw_done');
+                const isAbsent = !s.checkedIn;
+                
+                let newStreak = s.baseStreak || 0;
+                if (hasNegative) {
+                    newStreak = 0;
+                } else if (!isAbsent) {
+                    newStreak++;
+                }
+
+                if (newStreak > 0 && newStreak % 10 === 0 && (s.baseStreak || 0) % 10 !== 0) {
+                    streakAlerts.push(`${esc(s.name)} has reached a streak of ${newStreak}! 🔥`);
+                }
+
                 return { name: s.name, checkedIn: s.checkedIn, tags: s.tags };
             });
 
@@ -1162,8 +1203,32 @@
             history.unshift(lessonRecord);
             localStorage.setItem('teacher_lesson_history', JSON.stringify(history));
 
-            showAlertModal('Saved', `The registration for '${activeClassName}' has been successfully saved!`);
+            let alertMsg = `The registration for '${activeClassName}' has been successfully saved!`;
+            if (streakAlerts.length > 0) {
+                alertMsg += `\n\n🏆 Streak Milestones:\n- ` + streakAlerts.join('\n- ');
+            }
+
+            showAlertModal('Saved', alertMsg);
             showOverviewScreen();
+        }
+
+        function confirmDeleteLesson(id) {
+            lessonToDelete = id;
+            showConfirmModal(
+                'Delete Lesson',
+                'Are you sure you want to delete this saved lesson? This cannot be undone.',
+                performDeleteLesson
+            );
+        }
+
+        function performDeleteLesson() {
+            if (!lessonToDelete) return;
+            let history = getSavedHistory();
+            history = history.filter(l => l.id !== lessonToDelete);
+            localStorage.setItem('teacher_lesson_history', JSON.stringify(history));
+            lessonToDelete = null;
+            showAlertModal('Deleted', 'The lesson record has been deleted.');
+            renderHistoryList();
         }
 
         function openEditLesson(lessonId) {
@@ -1174,24 +1239,15 @@
             editingLessonId = lessonId;
             editingStudentsData = JSON.parse(JSON.stringify(lesson.students));
             
-            // Bereken basale sterren voor het bewerk-scherm door de huidige les te negeren
+            // Haal tijdelijk de te bewerken les eruit om baseStars & baseStreak correct te voorspellen
+            const historyWithoutEdit = history.filter(l => l.id !== lessonId);
+
             editingStudentsData.forEach(s => {
-                let historicalStars = 0;
-                history.forEach(l => {
-                    if (l.id === lessonId) return; // Negeer huidige bewerk-les
-                    if (l.className === lesson.className) {
-                        const stu = l.students.find(x => x.name === s.name);
-                        if (stu && stu.tags) {
-                            const isPresent = !stu.tags.includes('absent');
-                            const hasNegative = stu.tags.some(t => t !== 'absent' && t !== 'hw_done');
-                            if (isPresent && !hasNegative) historicalStars++;
-                            if (stu.tags.includes('hw_done')) historicalStars++;
-                        }
-                    }
-                });
-                s.baseStars = historicalStars;
+                const stats = calculateAllTimeStats(historyWithoutEdit, lesson.className, s.name);
+                s.baseStars = stats.stars;
+                s.baseStreak = stats.streak;
                 
-                // Activeer checkedIn status correct voor bewerken
+                // Zorg dat checkedIn correct staat voor live edit
                 if (!s.tags.includes('absent')) s.checkedIn = true;
             });
 
@@ -1241,7 +1297,7 @@
                 card.innerHTML = `
                     <div>
                         <div class="mgmt-header">
-                            <span class="mgmt-name">${esc(student.name)}${getSessionStarDisplay(student)}</span>
+                            <span class="mgmt-name">${esc(student.name)}${getSessionStarAndStreakDisplay(student)}</span>
                             <button class="btn btn-secondary btn-sm" onclick="toggleEditAbsentStatus(${index})">
                                 ${isAbsent ? 'Set Present' : 'Set Absent'}
                             </button>
@@ -1326,7 +1382,8 @@
                             const bgColor = tagDef ? tagDef.color : '#64748b';
                             return `<span style="display: inline-block; background-color: ${bgColor}; color: white; padding: 2px 5px; border-radius: 4px; font-size: 0.65rem; font-weight: bold; margin-left: 4px;">${esc(label)}</span>`;
                         });
-                        const allTimeStars = formatStarsText(calculateAllTimeStars(fullHistory, lesson.className, s.name));
+                        const stats = calculateAllTimeStats(fullHistory, lesson.className, s.name);
+                        const allTimeStars = formatStatsText(stats.stars, stats.streak);
                         remarksHtml += `<div style="font-size: 0.8rem; margin-top: 0.3rem;"><strong>${esc(s.name)}${allTimeStars}:</strong> ${tagBadges.join('')}</div>`;
                     }
                 });
@@ -1349,8 +1406,9 @@
                         </div>
                     </div>
                     <div class="flex-actions" style="flex-direction: column; justify-content: flex-start;">
-                        <button class="btn btn-secondary btn-sm" style="width: 100%;" onclick="openDetailModal(${lesson.id})">🔍 View Overview</button>
+                        <button class="btn btn-secondary btn-sm" style="width: 100%;" onclick="openDetailModal(${lesson.id})">🔍 View</button>
                         <button class="btn btn-warning btn-sm" style="width: 100%;" onclick="openEditLesson(${lesson.id})">✏️ Edit</button>
+                        <button class="btn btn-danger btn-sm" style="width: 100%;" onclick="confirmDeleteLesson(${lesson.id})">🗑️ Delete</button>
                     </div>
                 `;
                 container.appendChild(item);
@@ -1453,7 +1511,8 @@
                         tagsSummary = `<span class="tag-badge present">All present / No remarks</span>`;
                     }
                     
-                    const allTimeStars = formatStarsText(calculateAllTimeStars(fullHistory, className, studentName));
+                    const statValues = calculateAllTimeStats(fullHistory, className, studentName);
+                    const allTimeStars = formatStatsText(statValues.stars, statValues.streak);
 
                     html += `
                         <div style="background: rgba(255,255,255,0.04); padding: 0.6rem; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
@@ -1569,7 +1628,8 @@
                         badges = `<span class="badge badge-present">All present / No remarks</span>`;
                     }
                     
-                    const allTimeStars = formatStarsText(calculateAllTimeStars(fullHistory, className, studentName));
+                    const statValues = calculateAllTimeStats(fullHistory, className, studentName);
+                    const allTimeStars = formatStatsText(statValues.stars, statValues.streak);
 
                     htmlContent += `
                         <tr>
@@ -1619,7 +1679,8 @@
                     }
                 });
                 
-                const allTimeStars = formatStarsText(calculateAllTimeStars(history, lesson.className, s.name));
+                const statValues = calculateAllTimeStats(history, lesson.className, s.name);
+                const allTimeStars = formatStatsText(statValues.stars, statValues.streak);
 
                 contentHTML += `
                     <div style="background: rgba(255,255,255,0.04); padding: 0.5rem; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
