@@ -162,6 +162,9 @@
         .btn-warning {
             background: linear-gradient(135deg, #f59e0b, #d97706);
         }
+        .btn-info {
+            background: linear-gradient(135deg, #0ea5e9, #2563eb);
+        }
         .btn-sm {
             padding: 0.3rem 0.6rem;
             font-size: 0.72rem;
@@ -386,7 +389,7 @@
             margin-bottom: 1rem;
             font-size: 0.92rem;
             line-height: 1.4;
-            white-space: pre-wrap; /* Allows \n to render correctly */
+            white-space: pre-wrap; 
         }
         .welcome-popup-text {
             font-size: 1.5rem;
@@ -396,12 +399,15 @@
             text-shadow: 0 0 10px rgba(251, 191, 36, 0.4);
         }
         .picker-name { 
-            font-size: 2.5rem; 
+            font-size: 1.5rem; 
             font-weight: bold; 
             color: #fbbf24; 
             margin: 2rem 0; 
             min-height: 3.5rem;
             text-shadow: 0 0 15px rgba(251, 191, 36, 0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
         }
     </style>
 </head>
@@ -496,9 +502,10 @@
                 <div class="teacher-bottom-bar">
                     <div style="font-size: 0.85rem; font-weight: 600; color: #cbd5e1;">Teacher Controls:</div>
                     <div class="flex-actions">
-                        <button class="btn btn-warning" onclick="openHomeworkPicker()">🎲 Random HW Picker</button>
+                        <button class="btn btn-info" onclick="openAmountSelector('random')">🎲 Pick Student</button>
+                        <button class="btn btn-warning" onclick="openAmountSelector('hw')">🎲 Random HW Picker</button>
                         <button class="btn btn-secondary btn-sm" onclick="startCheckInSession()">⬅ Back to Board</button>
-                        <button class="btn btn-success" onclick="saveCurrentLessonSession()">💾 Save & Finish Lesson</button>
+                        <button class="btn btn-success" onclick="saveCurrentLessonSession()">💾 Save & Finish</button>
                     </div>
                 </div>
             </div>
@@ -589,15 +596,48 @@
         </div>
     </div>
 
-    <!-- HOMEWORK PICKER MODAL -->
-    <div id="picker-modal" class="modal-overlay">
+    <!-- AMOUNT SELECTOR MODAL -->
+    <div id="amount-selector-modal" class="modal-overlay">
         <div class="modal-card">
-            <h3>🎲 Random Homework Picker</h3>
-            <p style="color: #cbd5e1; font-size: 0.85rem;">Selecting a present student...</p>
-            <div id="picker-animation" class="picker-name">Ready...</div>
-            <div id="picker-actions" style="display: none; justify-content: center; gap: 1rem; margin-top: 1rem;">
-                <button class="btn btn-success" id="btn-hw-done">Well Done! 🌟</button>
-                <button class="btn btn-secondary" id="btn-hw-fail">Keep HW missing & Close</button>
+            <h3>Select Amount</h3>
+            <p style="color: #cbd5e1; font-size: 0.9rem;">How many students do you want to pick?</p>
+            <div class="flex-actions" style="justify-content: center; margin-top: 1rem; margin-bottom: 1.5rem;">
+                <button class="btn btn-info" onclick="startPicker(1)">1</button>
+                <button class="btn btn-info" onclick="startPicker(2)">2</button>
+                <button class="btn btn-info" onclick="startPicker(3)">3</button>
+                <button class="btn btn-info" onclick="startPicker(4)">4</button>
+                <button class="btn btn-info" onclick="startPicker(5)">5</button>
+            </div>
+            <div>
+                <button class="btn btn-secondary btn-sm" onclick="closeAmountSelector()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HW PICKER MODAL -->
+    <div id="hw-picker-modal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 600px;">
+            <h3>🎲 Random HW Picker</h3>
+            <div id="hw-picker-animation" class="picker-name">Ready...</div>
+            <div id="hw-picker-results" style="display: none; flex-direction: column; gap: 0.8rem; margin-top: 1rem; text-align: left;">
+                <!-- Populated via JS -->
+            </div>
+            <div style="margin-top: 1.5rem;">
+                <button class="btn btn-secondary" onclick="closeHwPicker()">Done / Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RANDOM PICKER MODAL -->
+    <div id="random-picker-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3>🎲 Random Student Picker</h3>
+            <div id="random-picker-animation" class="picker-name">Ready...</div>
+            <div id="random-picker-results" style="display: none; flex-direction: column; gap: 0.5rem; margin-top: 1rem;">
+                <!-- Populated via JS -->
+            </div>
+            <div style="margin-top: 1.5rem;">
+                <button class="btn btn-secondary" onclick="closeRandomPicker()">Close</button>
             </div>
         </div>
     </div>
@@ -646,8 +686,9 @@
         let editingLessonId = null;   
         let editingStudentsData = []; 
         let welcomeTimeout;
+        
         let pickerInterval;
-        let pickedStudentIndex = -1;
+        let pickerMode = ''; // 'hw' or 'random'
         let lessonToDelete = null;
 
         const availableTags = [
@@ -665,12 +706,10 @@
 
         // --- STATS CALCULATION UTILS --- //
 
-        // Berekent totale sterren en huidige streak over de geschiedenis chronologisch
         function calculateAllTimeStats(history, className, studentName) {
             let stars = 0;
             let streak = 0;
             
-            // Omdat history de nieuwste lessen eerst heeft (unshift), draaien we het om voor berekening
             const chronologicalHistory = [...history].sort((a, b) => a.timestamp - b.timestamp);
             
             chronologicalHistory.forEach(lesson => {
@@ -678,7 +717,6 @@
                     const s = lesson.students.find(stu => stu.name === studentName);
                     if (s && s.tags) {
                         const isAbsent = s.tags.includes('absent');
-                        // Alle tags behalve absent en hw_done tellen als negatief (waaronder de Behaviour en Forgotten tags)
                         const hasNegative = s.tags.some(t => t !== 'absent' && t !== 'hw_done');
                         
                         // Sterren
@@ -687,11 +725,10 @@
                         
                         // Streak
                         if (hasNegative) {
-                            streak = 0; // Streak breekt
+                            streak = 0;
                         } else if (!isAbsent) {
-                            streak++; // Streak groeit (aanwezig en geen negatieve dingen)
+                            streak++;
                         }
-                        // Afwezig zonder negatieve tags doet niets met de streak (blijft behouden)
                     }
                 }
             });
@@ -705,15 +742,13 @@
             return text;
         }
 
-        // Live berekende tekst voor actieve of bewerk-sessie
         function getSessionStarAndStreakDisplay(student) {
             let stars = (student.baseStars || 0);
             let streak = (student.baseStreak || 0);
             
             const hasNegative = student.tags.some(t => t !== 'absent' && t !== 'hw_done');
-            const isAbsent = !student.checkedIn; // in live sessie gebruiken we checkedIn
+            const isAbsent = !student.checkedIn; 
             
-            // Live toevoegingen
             if (!isAbsent && !hasNegative) stars++;
             if (student.tags.includes('hw_done')) stars++;
             
@@ -1108,8 +1143,21 @@
             }
             renderMgmtGrid();
         }
-        
-        function openHomeworkPicker() {
+
+        // --- DYNAMIC PICKERS (1-5 AMOUNT) --- //
+
+        function openAmountSelector(mode) {
+            pickerMode = mode;
+            document.getElementById('amount-selector-modal').classList.add('active');
+        }
+
+        function closeAmountSelector() {
+            document.getElementById('amount-selector-modal').classList.remove('active');
+        }
+
+        function startPicker(amount) {
+            closeAmountSelector();
+            
             const presentStudents = currentStudentsData
                 .map((s, i) => ({ ...s, originalIndex: i }))
                 .filter(s => !s.tags.includes('absent'));
@@ -1119,49 +1167,111 @@
                 return;
             }
             
-            document.getElementById('picker-modal').classList.add('active');
-            document.getElementById('picker-actions').style.display = 'none';
-            const display = document.getElementById('picker-animation');
+            let actualAmount = Math.min(amount, presentStudents.length);
+            
+            const modalId = pickerMode === 'hw' ? 'hw-picker-modal' : 'random-picker-modal';
+            const animId = pickerMode === 'hw' ? 'hw-picker-animation' : 'random-picker-animation';
+            const resultsId = pickerMode === 'hw' ? 'hw-picker-results' : 'random-picker-results';
+            
+            document.getElementById(modalId).classList.add('active');
+            document.getElementById(resultsId).style.display = 'none';
+            document.getElementById(animId).style.display = 'flex';
             
             let ticks = 0;
             const maxTicks = 25;
             
             pickerInterval = setInterval(() => {
-                const rand = Math.floor(Math.random() * presentStudents.length);
-                display.innerText = presentStudents[rand].name;
                 ticks++;
+                // Animatie effect (willekeurige namen tonen)
+                let scrambleHtml = '';
+                for(let i=0; i < actualAmount; i++){
+                    const randName = presentStudents[Math.floor(Math.random() * presentStudents.length)].name;
+                    scrambleHtml += `<div>${randName}</div>`;
+                }
+                document.getElementById(animId).innerHTML = scrambleHtml;
                 
                 if (ticks >= maxTicks) {
                     clearInterval(pickerInterval);
-                    pickedStudentIndex = presentStudents[rand].originalIndex;
-                    display.innerText = "🎉 " + presentStudents[rand].name + " 🎉";
                     
-                    setHomeworkTag(pickedStudentIndex, 'hw_forgotten', false);
+                    // Kies daadwerkelijk unieke studenten
+                    let shuffled = [...presentStudents].sort(() => 0.5 - Math.random());
+                    let picked = shuffled.slice(0, actualAmount);
                     
-                    document.getElementById('picker-actions').style.display = 'flex';
+                    document.getElementById(animId).style.display = 'none';
+                    document.getElementById(resultsId).style.display = 'flex';
                     
-                    document.getElementById('btn-hw-done').onclick = () => {
-                        setHomeworkTag(pickedStudentIndex, 'hw_done', true);
-                        closePickerModal();
-                    };
-                    document.getElementById('btn-hw-fail').onclick = () => {
-                        renderMgmtGrid();
-                        closePickerModal();
-                    };
+                    if (pickerMode === 'hw') {
+                        renderHwPickerResults(picked);
+                    } else {
+                        renderRandomPickerResults(picked);
+                    }
                 }
             }, 100);
         }
-        
+
+        function closeRandomPicker() {
+            document.getElementById('random-picker-modal').classList.remove('active');
+        }
+
+        function renderRandomPickerResults(pickedStudents) {
+            const container = document.getElementById('random-picker-results');
+            container.innerHTML = '';
+            pickedStudents.forEach((student) => {
+                const row = document.createElement('div');
+                row.style = "font-size: 1.5rem; font-weight: bold; color: #fbbf24; text-align: center; margin: 0.2rem 0;";
+                row.innerText = "🎉 " + student.name + " 🎉";
+                container.appendChild(row);
+            });
+            document.getElementById('random-picker-actions').style.display = 'flex';
+        }
+
+        function closeHwPicker() {
+            document.getElementById('hw-picker-modal').classList.remove('active');
+        }
+
+        function renderHwPickerResults(pickedStudents) {
+            const container = document.getElementById('hw-picker-results');
+            container.innerHTML = '';
+            pickedStudents.forEach((student) => {
+                const row = document.createElement('div');
+                row.style = "background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;";
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.style = "font-size: 1.1rem; font-weight: bold; color: #fbbf24;";
+                nameSpan.innerText = student.name;
+                
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = "flex-actions";
+                actionsDiv.id = `hw-actions-${student.originalIndex}`;
+                
+                actionsDiv.innerHTML = `
+                    <button class="btn btn-success btn-sm" onclick="handleHwAction(${student.originalIndex}, 'hw_done')">Well Done! 🌟</button>
+                    <button class="btn btn-danger btn-sm" onclick="handleHwAction(${student.originalIndex}, 'hw_forgotten')">Missing HW ❌</button>
+                `;
+                
+                row.appendChild(nameSpan);
+                row.appendChild(actionsDiv);
+                container.appendChild(row);
+            });
+        }
+
+        function handleHwAction(index, tagId) {
+            setHomeworkTag(index, tagId, true);
+            const actionDiv = document.getElementById(`hw-actions-${index}`);
+            if (actionDiv) {
+                if (tagId === 'hw_done') {
+                    actionDiv.innerHTML = `<span class="tag-badge present" style="font-size:0.8rem;">Well Done! 🌟</span>`;
+                } else {
+                    actionDiv.innerHTML = `<span class="tag-badge absent" style="font-size:0.8rem;">Missing HW ❌</span>`;
+                }
+            }
+        }
+
         function setHomeworkTag(index, tagId, rerender) {
             const student = currentStudentsData[index];
             student.tags = student.tags.filter(t => t !== 'hw_done' && t !== 'hw_forgotten');
             student.tags.push(tagId);
             if(rerender) renderMgmtGrid();
-        }
-        
-        function closePickerModal() {
-            document.getElementById('picker-modal').classList.remove('active');
-            clearInterval(pickerInterval);
         }
 
         function saveCurrentLessonSession() {
@@ -1172,7 +1282,6 @@
             let streakAlerts = [];
 
             const stDataClean = currentStudentsData.map(s => {
-                // Bereken even de verse streak om te kijken of we een 10-mijlpaal hebben bereikt
                 const hasNegative = s.tags.some(t => t !== 'absent' && t !== 'hw_done');
                 const isAbsent = !s.checkedIn;
                 
@@ -1239,7 +1348,6 @@
             editingLessonId = lessonId;
             editingStudentsData = JSON.parse(JSON.stringify(lesson.students));
             
-            // Haal tijdelijk de te bewerken les eruit om baseStars & baseStreak correct te voorspellen
             const historyWithoutEdit = history.filter(l => l.id !== lessonId);
 
             editingStudentsData.forEach(s => {
@@ -1247,7 +1355,6 @@
                 s.baseStars = stats.stars;
                 s.baseStreak = stats.streak;
                 
-                // Zorg dat checkedIn correct staat voor live edit
                 if (!s.tags.includes('absent')) s.checkedIn = true;
             });
 
