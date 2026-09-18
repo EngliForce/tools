@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neon Glass Bingo - Irregular Verbs</title>
+  <style>
+    :root {
+      --bg-color: #0d0e15;
+      --neon-cyan: #00f3ff;
+      --neon-pink: #ff007f;
+      --neon-green: #39ff14;
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 10px;
+    }
+
+    /* Achtergrond neon sfeerbollen */
+    body::before, body::after {
+      content: '';
+      position: absolute;
+      width: 40vmax;
+      height: 40vmax;
+      border-radius: 50%;
+      filter: blur(100px);
+      z-index: -1;
+      opacity: 0.7;
+    }
+    body::before {
+      background: var(--neon-pink);
+      top: -10%;
+      left: -10%;
+    }
+    body::after {
+      background: var(--neon-cyan);
+      bottom: -10%;
+      right: -10%;
+    }
+
+    /* Container Glassmorphism */
+    .container {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5),
+                  0 0 15px rgba(0, 243, 255, 0.2);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 480px;
+      max-height: 96vh;
+      max-height: 96dvh;
+    }
+
+    h1 {
+      font-size: clamp(1.2rem, 4vh, 2rem);
+      margin-bottom: 10px;
+      letter-spacing: 3px;
+      color: #fff;
+      text-shadow: 0 0 10px var(--neon-cyan),
+                   0 0 20px var(--neon-cyan);
+    }
+
+    /* Bingo Grid */
+    .bingo-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      width: 100%;
+      aspect-ratio: 1;
+      margin-bottom: 15px;
+    }
+
+    /* Cell Styles */
+    .cell {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(0.7rem, 2.2vh, 1rem);
+      font-weight: bold;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      line-height: 1.1;
+      padding: 4px;
+      word-break: break-word;
+    }
+
+    .cell:hover:not(.marked):not(.free-space) {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 8px var(--neon-cyan);
+      transform: scale(1.02);
+    }
+
+    /* Free Space */
+    .cell.free-space {
+      background: rgba(255, 0, 127, 0.15);
+      border-color: var(--neon-pink);
+      color: var(--neon-pink);
+      font-size: clamp(0.6rem, 1.8vh, 0.8rem);
+      text-shadow: 0 0 6px var(--neon-pink);
+      cursor: default;
+      box-shadow: inset 0 0 8px rgba(255, 0, 127, 0.3);
+    }
+
+    /* Marked / Weggestreept */
+    .cell.marked {
+      background: rgba(57, 255, 20, 0.12);
+      border-color: var(--neon-green);
+      color: #fff;
+      box-shadow: 0 0 10px rgba(57, 255, 20, 0.4);
+    }
+
+    /* Neon streep door het woord */
+    .cell.marked::before {
+      content: '';
+      position: absolute;
+      width: 85%;
+      height: 3px;
+      background-color: var(--neon-green);
+      box-shadow: 0 0 8px var(--neon-green);
+      transform: rotate(-20deg);
+      border-radius: 2px;
+    }
+
+    /* Klein neon checkicoontje */
+    .cell.marked::after {
+      content: '✓';
+      position: absolute;
+      top: 2px;
+      right: 4px;
+      font-size: clamp(0.6rem, 1.8vh, 0.75rem);
+      color: var(--neon-green);
+      text-shadow: 0 0 5px var(--neon-green);
+    }
+
+    /* Reset knop */
+    .btn-new {
+      background: transparent;
+      color: var(--neon-cyan);
+      border: 2px solid var(--neon-cyan);
+      padding: clamp(8px, 1.8vh, 12px) 24px;
+      font-size: clamp(0.8rem, 2vh, 1rem);
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-shadow: 0 0 8px var(--neon-cyan);
+      box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+    }
+
+    .btn-new:hover {
+      background: var(--neon-cyan);
+      color: var(--bg-color);
+      box-shadow: 0 0 20px var(--neon-cyan);
+      text-shadow: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>IRREGULAR VERBS BINGO</h1>
+    <div class="bingo-grid" id="bingoGrid"></div>
+    <button class="btn-new" onclick="generateBingoCard()">NIEUWE KAART</button>
+  </div>
+
+  <script>
+    // Alle onregelmatige werkwoorden uit de lijst
+    const irregularVerbs = [
+      ["shut", "shut", "shut"],
+      ["cost", "cost", "cost"],
+      ["let", "let", "let"],
+      ["read", "read", "read"],
+      ["put", "put", "put"],
+      ["hurt", "hurt", "hurt"],
+      ["hit", "hit", "hit"],
+      ["cut", "cut", "cut"],
+      ["quit", "quit", "quit"],
+      ["split", "split", "split"],
+      ["beat", "beat", "beaten"],
+      ["come", "came", "come"],
+      ["become", "became", "become"],
+      ["run", "ran", "run"],
+      ["dig", "dug", "dug"],
+      ["get", "got", "got"],
+      ["lay", "laid", "laid"],
+      ["pay", "paid", "paid"],
+      ["say", "said", "said"],
+      ["sit", "sat", "sat"],
+      ["win", "won", "won"],
+      ["buy", "bought", "bought"],
+      ["bend", "bent", "bent"],
+      ["feel", "felt", "felt"],
+      ["find", "found", "found"],
+      ["hang", "hung", "hung"],
+      ["have", "had", "had"],
+      ["hear", "heard", "heard"],
+      ["hold", "held", "held"],
+      ["keep", "kept", "kept"],
+      ["lead", "led", "led"],
+      ["lend", "lent", "lent"],
+      ["lose", "lost", "lost"],
+      ["mean", "meant", "meant"],
+      ["meet", "met", "met"],
+      ["sell", "sold", "sold"],
+      ["send", "sent", "sent"],
+      ["make", "made", "made"],
+      ["tell", "told", "told"],
+      ["breed", "bred", "bred"],
+      ["bring", "brought", "brought"],
+      ["build", "built", "built"],
+      ["catch", "caught", "caught"],
+      ["dream", "dreamt", "dreamt"],
+      ["fight", "fought", "fought"],
+      ["learn", "learnt", "learnt"],
+      ["leave", "left", "left"],
+      ["smell", "smelt", "smelt"],
+      ["spend", "spent", "spent"],
+      ["stand", "stood", "stood"],
+      ["stick", "stuck", "stuck"],
+      ["sting", "stung", "stung"],
+      ["sweep", "swept", "swept"],
+      ["teach", "taught", "taught"],
+      ["think", "thought", "thought"],
+      ["sleep", "slept", "slept"],
+      ["do", "did", "done"],
+      ["go", "went", "gone"],
+      ["be", "was/were", "been"],
+      ["eat", "ate", "eaten"],
+      ["see", "saw", "seen"],
+      ["fly", "flew", "flown"],
+      ["lie", "lay", "lain"],
+      ["bite", "bit", "bitten"],
+      ["blow", "blew", "blown"],
+      ["draw", "drew", "drawn"],
+      ["fall", "fell", "fallen"],
+      ["give", "gave", "given"],
+      ["grow", "grew", "grown"],
+      ["know", "knew", "known"],
+      ["ring", "rang", "rung"],
+      ["ride", "rode", "ridden"],
+      ["sing", "sang", "sung"],
+      ["sink", "sank", "sunk"],
+      ["swim", "swam", "swum"],
+      ["take", "took", "taken"],
+      ["tear", "tore", "torn"],
+      ["wear", "wore", "worn"],
+      ["begin", "began", "begun"],
+      ["break", "broke", "broken"],
+      ["choose", "chose", "chosen"],
+      ["drink", "drank", "drunk"],
+      ["drive", "drove", "driven"],
+      ["forget", "forgot", "forgotten"],
+      ["freeze", "froze", "frozen"],
+      ["speak", "spoke", "spoken"],
+      ["steal", "stole", "stolen"],
+      ["throw", "threw", "thrown"],
+      ["write", "wrote", "written"],
+      ["wake up", "woke up", "woken up"]
+    ];
+
+    function generateBingoCard() {
+      const grid = document.getElementById('bingoGrid');
+      grid.innerHTML = '';
+
+      // Shuffle en selecteer 24 werkwoorden
+      const shuffledVerbs = [...irregularVerbs].sort(() => Math.random() - 0.5);
+      const selectedVerbs = shuffledVerbs.slice(0, 24);
+
+      let verbIndex = 0;
+      for (let i = 0; i < 25; i++) {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+
+        // Middelste vakje (index 12) is de Free Space
+        if (i === 12) {
+          cell.classList.add('free-space');
+          cell.innerText = 'FREE\nSPACE';
+        } else {
+          const verbForms = selectedVerbs[verbIndex];
+          // Kies alleen één willekeurige vorm (alleen het woord zelf)
+          const randomWord = verbForms[Math.floor(Math.random() * verbForms.length)];
+          
+          cell.innerText = randomWord;
+          verbIndex++;
+
+          cell.addEventListener('click', () => {
+            cell.classList.toggle('marked');
+          });
+        }
+
+        grid.appendChild(cell);
+      }
+    }
+
+    window.onload = generateBingoCard;
+  </script>
+</body>
+</html>
