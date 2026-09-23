@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Time Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;600&family=Share+Tech+Mono&family=Inter:wght@400;500;600&display=swap');
+
+        :root {
+            --cyan: #06b6d4;
+            --fuchsia: #d946ef;
+            --dark-bg: #050810;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--dark-bg);
+            color: #e2e8f0;
+            overflow: hidden; 
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sci-fi-font { font-family: 'Orbitron', sans-serif; }
+        .digital-font { font-family: 'Share Tech Mono', monospace; }
+        .reading-font { font-family: 'Inter', sans-serif; } /* Nieuw lettertype voor betere leesbaarheid */
+
+        .glass-panel {
+            background: rgba(10, 15, 30, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(6, 182, 212, 0.1);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { text-shadow: 0 0 10px #06b6d4, 0 0 20px #06b6d4; }
+            50% { text-shadow: 0 0 20px #06b6d4, 0 0 40px #06b6d4; }
+        }
+        .text-glow-cyan { animation: pulse-glow 2s infinite; }
+
+        .tech-input {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid var(--cyan);
+            color: var(--cyan);
+            text-shadow: 0 0 5px var(--cyan);
+            box-shadow: inset 0 0 15px rgba(6, 182, 212, 0.3), 0 0 15px rgba(6, 182, 212, 0.2);
+            transition: all 0.3s ease;
+        }
+        .tech-input:focus {
+            outline: none;
+            box-shadow: inset 0 0 25px rgba(6, 182, 212, 0.6), 0 0 30px rgba(6, 182, 212, 0.6);
+        }
+
+        .tech-button {
+            background: linear-gradient(45deg, transparent 5%, var(--fuchsia) 5%);
+            color: white;
+            box-shadow: 6px 0px 0px #00e6f6;
+            transition: all 0.2s ease;
+        }
+        .tech-button:hover {
+            box-shadow: 6px 0px 0px #d946ef;
+            background: linear-gradient(45deg, transparent 5%, #00e6f6 5%);
+        }
+        .tech-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Numpad Styles */
+        .num-btn {
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.4);
+            color: var(--cyan);
+            text-shadow: 0 0 5px var(--cyan);
+            transition: all 0.2s ease;
+            box-shadow: inset 0 0 5px rgba(6, 182, 212, 0.2);
+        }
+        .num-btn:hover {
+            background: rgba(6, 182, 212, 0.3);
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.5), inset 0 0 10px rgba(6, 182, 212, 0.4);
+        }
+        .num-btn:active {
+            transform: scale(0.9);
+            background: var(--cyan);
+            color: #000;
+        }
+        .del-btn {
+            border-color: rgba(217, 70, 239, 0.4);
+            color: var(--fuchsia);
+            text-shadow: 0 0 5px var(--fuchsia);
+        }
+        .del-btn:hover {
+            background: rgba(217, 70, 239, 0.3);
+            box-shadow: 0 0 10px rgba(217, 70, 239, 0.5);
+        }
+        .del-btn:active {
+            background: var(--fuchsia);
+            color: #000;
+        }
+
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.3;
+            z-index: -1;
+            animation: float 12s infinite alternate ease-in-out;
+        }
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, -60px) scale(1.3); }
+        }
+
+        .scanlines::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 20;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+        }
+        
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Aangepaste scrollbar voor leesbaarheid */
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.3); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-orb w-[500px] h-[500px] bg-cyan-600 top-[-20%] left-[-10%]"></div>
+    <div class="bg-orb w-[400px] h-[400px] bg-fuchsia-600 bottom-[-20%] right-[-10%]" style="animation-delay: -6s;"></div>
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl h-[95vh] flex flex-col relative z-10">
+        
+        <header class="text-center mb-6">
+            <h1 class="sci-fi-font text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-fuchsia-500 uppercase tracking-widest text-glow">
+                Quantum Portal
+            </h1>
+            <p class="digital-font text-cyan-300 tracking-widest text-sm mt-2 opacity-80">SYS.VER. 4.1.0 // HISTORY DATABANK</p>
+        </header>
+
+        <div class="glass-panel rounded-2xl p-6 md:p-8 flex-grow flex flex-col relative overflow-hidden shadow-2xl">
+            
+            <!-- Input Area -->
+            <div class="flex flex-col md:flex-row gap-4 mb-4 relative z-30 justify-center items-center">
+                <div class="relative w-full max-w-sm">
+                    <span class="absolute left-4 top-1/2 transform -translate-y-1/2 digital-font text-cyan-500 opacity-80 text-lg">YEAR:</span>
+                    <!-- inputmode="none" zorgt ervoor dat het mobiele toetsenbord niet naar boven komt! -->
+                    <input type="number" id="year-input" inputmode="none" class="tech-input w-full bg-transparent rounded-lg pl-20 pr-4 py-4 text-3xl digital-font tracking-widest font-bold" placeholder="YYYY" onkeypress="handleKeyPress(event)">
+                </div>
+                <button onclick="initiateTravel()" class="tech-button sci-fi-font px-10 py-4 text-2xl font-bold uppercase tracking-wider h-full rounded">
+                    Engage
+                </button>
+            </div>
+
+            <!-- Numpad Area -->
+            <div class="flex flex-wrap justify-center gap-2 md:gap-3 mb-6 relative z-30 w-full max-w-2xl mx-auto">
+                <button onclick="appendNumber('1')" class="num-btn digital-font w-10 h-10 md:w-14 md:h-12 rounded flex items-center justify-center text-xl md:text-2xl font-bold">1</button>
+                <button onclick="appendNumber('2')" class="num-btn digital-font w-10 h-10 md:w-14 md:h-12 rounded flex items-center justify-center text-xl md:text-2xl font-bold">2</button>
+                <button onclick="appendNumber('3')" class="num-btn digital-font w-10 h-10 md:w-14 md:h-12 rounded flex items-center justify-center text-xl md:text-2xl font-bold">3</button>
+                <button onclick="appendNumber('4')" class="num-btn digital-font w-10 h-10 md:w-14 md:h-12 rounded flex items-center justify-center text-xl md:text-2xl font-bold">4</button>
+                <button onclick="appendNumber('5')" class="num-btn digital-font w-10 h-10 md:w-14 md:h-12 rounded flex items-center justify-center text-xl md:text-2xl font-bold">5</button>
+                <button onclick="appendNumber('6')" class="num-btn digital-font w-10 h-10 md:w-14 md:h-12 rounded flex items-center justify-center text-xl md:text-2xl font-bold">6</button>
+                <button onclick="appendNumber('7')" class="num-btn digital-font w-10 h-10 md:w-14 md:h-12 rounded flex items-center justify-center text-xl md:text-2xl font-bold">7</button>
+                <button onclick="appendNumber('8')" class="num-btn digital-font w-10 h-10 md:w-14 md:h-12 rounded flex items-center justify-center text-xl md:text-2xl font-bold">8</button>
+                <button onclick="appendNumber('9')" class="num-btn digital-font w-10 h-10 md:w-14 md:h-12 rounded flex items-center justify-center text-xl md:text-2xl font-bold">9</button>
+                <button onclick="appendNumber('0')" class="num-btn digital-font w-10 h-10 md:w-14 md:h-12 rounded flex items-center justify-center text-xl md:text-2xl font-bold">0</button>
+                <button onclick="deleteNumber()" class="num-btn del-btn digital-font px-4 md:px-6 h-10 md:h-12 rounded flex items-center justify-center text-lg md:text-xl font-bold uppercase">DELETE</button>
+            </div>
+
+            <div class="relative flex-grow border border-cyan-800/60 rounded-xl bg-black/80 overflow-hidden scanlines shadow-[inset_0_0_80px_rgba(0,0,0,0.9)]">
+                
+                <div class="absolute top-3 left-5 digital-font text-sm opacity-50 text-cyan-300">DATA FEED_</div>
+                <div class="absolute top-3 right-5 digital-font text-sm opacity-80 text-fuchsia-400 text-glow">REC ●</div>
+                
+                <!-- Warp Tunnel Animation Overlay (Hidden by default) -->
+                <div id="travel-overlay" class="hidden absolute inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm overflow-hidden rounded-lg">
+                    <canvas id="warpCanvas" class="absolute inset-0 z-0 w-full h-full"></canvas>
+                    <h2 class="text-4xl md:text-6xl sci-fi-font text-white z-10 text-center uppercase tracking-widest" style="text-shadow: 0 0 20px #fff;">
+                        Initiating<br><span class="text-pink-400 mt-2 block">Time Jump</span>
+                    </h2>
+                </div>
+
+                <!-- Error/Glitch Animation Overlay (Hidden by default) -->
+                <div id="error-anim-overlay" class="hidden absolute inset-0 z-50 flex items-center justify-center bg-black/95 overflow-hidden rounded-lg">
+                    <canvas id="glitchCanvas" class="absolute inset-0 z-0 w-full h-full opacity-80"></canvas>
+                    <div class="z-10 text-center bg-black/70 p-8 border-y-4 border-red-600 w-full backdrop-blur-md">
+                        <h2 class="text-5xl md:text-7xl sci-fi-font text-red-500 uppercase tracking-widest animate-pulse" style="text-shadow: 0 0 30px #ef4444;">
+                            SYSTEM<br>GLITCH
+                        </h2>
+                        <p class="text-red-300 mt-4 digital-font text-2xl tracking-widest">ERROR DETECTED...</p>
+                    </div>
+                </div>
+
+                <div id="screen-content" class="h-full flex flex-col z-10 relative p-6 md:p-10">
+                    
+                    <!-- State: Waiting -->
+                    <div id="state-waiting" class="h-full flex flex-col items-center justify-center text-center opacity-80">
+                        <svg class="w-24 h-24 text-cyan-500 mb-6 animate-pulse opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <h2 class="sci-fi-font text-3xl text-cyan-400 mb-4 tracking-wider text-glow">Awaiting Coordinates</h2>
+                        <p class="text-gray-300 max-w-lg text-lg reading-font">Please enter a valid target year from your mission briefing and press <strong>ENGAGE</strong> to initiate a temporal shift.</p>
+                    </div>
+
+                    <!-- State: Data (Hidden) -->
+                    <div id="state-data" class="hidden h-full flex flex-col overflow-y-auto pr-4 custom-scrollbar">
+                        <div class="border-b-2 border-cyan-800 pb-4 mb-6 flex items-end justify-between">
+                            <h2 id="display-title" class="sci-fi-font text-3xl md:text-4xl text-cyan-300 text-glow">Event Title</h2>
+                            <span id="display-year" class="digital-font text-5xl text-fuchsia-400 text-glow">YYYY</span>
+                        </div>
+                        
+                        <div class="bg-cyan-950/40 border border-cyan-700/50 rounded-lg p-6 mb-6 shadow-lg shadow-cyan-900/20">
+                            <h3 class="digital-font text-cyan-400 mb-3 text-lg uppercase tracking-wider">Historical Record:</h3>
+                            <div id="display-desc" class="reading-font text-xl leading-relaxed text-gray-100 font-medium">
+                                <!-- Description goes here. -->
+                            </div>
+                        </div>
+
+                        <div class="mt-auto border border-fuchsia-800 bg-fuchsia-950/30 rounded-lg p-6 shadow-lg shadow-fuchsia-900/20">
+                            <h3 class="digital-font text-fuchsia-400 mb-4 flex items-center gap-3 text-xl">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                                Vocabulary Scanner
+                            </h3>
+                            <!-- Verhoogde leesbaarheid: grotere tekst, meer ruimte -->
+                            <ul id="display-vocab" class="list-none text-gray-100 space-y-3 reading-font text-lg font-medium">
+                                <!-- Vocab items injected here -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- State: Error (Hidden) -->
+                    <div id="state-error" class="hidden h-full flex flex-col items-center justify-center text-center">
+                        <svg class="w-28 h-28 text-red-500 mb-6 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        <h2 class="sci-fi-font text-4xl text-red-400 mb-3 text-glow">Error 404</h2>
+                        <p class="text-red-200/80 digital-font text-2xl">Year <span id="error-year" class="text-white font-bold"></span> not found.</p>
+                        <p class="text-gray-300 mt-6 text-lg reading-font max-w-md">Please check the coordinates on your mission worksheet and try again.</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const historyData = {
+            "43": {
+                title: "The Roman Invasion",
+                desc: "<p class='mb-4'>In the year 43, the Roman army arrived in Britain. They came with thousands of strong soldiers in big ships. This historical event completely changed how the people in Britain lived. Before the Romans, people lived in small wooden houses and simple villages.</p><p class='mb-4'>The Romans brought new ideas and technology to the country. They built long straight roads across the land. They also created large towns with big stone walls, baths, and beautiful houses. The Romans were very good builders and organizers.</p><p>Sometimes, the local British people fought against the Romans, and towns were broken. But the Romans were always quick to rebuild them stronger with heavy stone. They stayed in Britain for almost 400 years and left a massive mark on the country's history.</p>",
+                vocab: ["event: gebeurtenis", "to rebuild: herbouwen", "soldiers: soldaten"]
+            },
+            "1066": {
+                title: "The Battle of Hastings",
+                desc: "<p class='mb-4'>In 1066, a famous leader named William the Conqueror came across the sea from France. He wanted to be the King of England. He brought a large army of brave men and strong horses with him. This started a very famous event in history.</p><p class='mb-4'>The current English King, King Harold, stood ready with his own army. The two huge armies met in the south of England. They fought all day on a large green hill. It was a very hard and bloody battle.</p><p>In the end, King Harold died after an arrow hit his eye. As a result, William won the great battle and became the new King of England. He changed the laws, built big castles, and introduced the French language to the country.</p>",
+                vocab: ["result: resultaat / gevolg", "event: gebeurtenis", "battle: groot gevecht"]
+            },
+            "1348": {
+                title: "The Black Death",
+                desc: "<p class='mb-4'>In 1348, a highly dangerous sickness arrived in Britain on trading ships. It was called the plague, or the Black Death. This terrible disease was carried by small fleas that lived on black rats. Nobody knew this at the time.</p><p class='mb-4'>The sickness spread very fast from town to town and city to city. People got very sick with black spots on their bodies. Because there was no good medicine, most people who got the sickness died in just a few days.</p><p>It was a very dark time for the country. Sadly, almost half of all the people in Britain died from this disease. Entire villages were left empty. It took the country hundreds of years to recover from this massive tragedy.</p>",
+                vocab: ["terrible: vreselijk", "to recover: herstellen / genezen", "sickness: ziekte (illness)"]
+            },
+            "1534": {
+                title: "The Church of England",
+                desc: "<p class='mb-4'>King Henry VIII was a very powerful and famous English king. He wanted a divorce from his first wife because she did not give him a son. But the Pope, who was the boss of the Catholic Church in Rome, said no to the divorce.</p><p class='mb-4'>Henry was very angry about this. He decided to break away from the Catholic Church completely. He created his own new church and made himself the highest boss of it. This is the origin of the new Church of England.</p><p>This important event changed religion in the country forever. The King closed down the old Catholic monasteries and took their gold and land. From that moment on, England was no longer a Catholic country.</p>",
+                vocab: ["origin: oorsprong", "event: gebeurtenis", "divorce: echtscheiding"]
+            },
+            "1605": {
+                title: "The Gunpowder Plot",
+                desc: "<p class='mb-4'>A man named Guy Fawkes and his friends were very angry with King James I. They made a secret plan to kill the King and all the important politicians. They placed 36 barrels of dangerous explosive powder under the Parliament building in London.</p><p class='mb-4'>They wanted to blow up the whole building when the King was inside. But, someone sent an anonymous warning letter to one of the politicians. Because of this letter, the king's guards searched the dark rooms under the building at night.</p><p>The guards found Guy Fawkes just in time and stopped a sudden explosion. They caught him, and the King was completely safe. Today, British people still celebrate this on November 5th with large fires and fireworks.</p>",
+                vocab: ["warning: waarschuwing", "sudden: plotseling", "safe: veilig"]
+            },
+            "1642": {
+                title: "The English Civil War",
+                desc: "<p class='mb-4'>In 1642, a massive war started inside England. King Charles I and the politicians in Parliament could not agree on how to run the country. The King wanted all the power, but Parliament wanted the people to have a voice.</p><p class='mb-4'>People in England chose sides and fought each other. Neighbors and families were suddenly enemies in the streets and fields. This civil war was going to cause a lot of pain and damage to towns and families everywhere.</p><p>After years of fighting, the army of the Parliament won the war. King Charles I lost his head, and England had no king for eleven years. The country was ruled by a man named Oliver Cromwell instead.</p>",
+                vocab: ["to cause: veroorzaken", "damage: schade", "war: oorlog"]
+            },
+            "1665": {
+                title: "The Great Plague",
+                desc: "<p class='mb-4'>A deadly disease returned to the streets of London in 1665. The streets were very dirty, and there was rubbish everywhere. Rats and small insects carried the sickness into people's homes. It spread extremely fast through the crowded city.</p><p class='mb-4'>People were very scared and locked themselves in their houses. Anyone who had money tried to escape the dirty, infected city. The King and many rich people went far away to the clean countryside to be safe.</p><p>The poor people had to stay in London and suffered greatly. Red crosses were painted on the doors of sick families. Sadly, around 100,000 people lost their lives before the cold winter finally stopped the disease.</p>",
+                vocab: ["to escape: ontsnappen / vluchten", "safe: veilig", "disease: ernstige ziekte"]
+            },
+            "1666": {
+                title: "Great Fire of London",
+                desc: "<p class='mb-4'>On a hot summer night, a small fire started in a bakery on Pudding Lane. Because the houses in London were made of dry wood and built very close together, the flames jumped from roof to roof. The fire grew very fast.</p><p class='mb-4'>This massive disaster burned for four long days. It destroyed thousands of homes, 87 churches, and the famous St Paul's Cathedral. This terrible fire caused incredible damage to the city, but surprisingly, only a few people died.</p><p>Many people had to escape by boats on the River Thames. After the fire finally stopped, they had to rebuild the city. This time, they used strong stone and brick so that the houses could not burn down so easily again.</p>",
+                vocab: ["disaster: ramp", "damage: schade", "to escape: ontsnappen / vluchten", "to rebuild: herbouwen"]
+            },
+            "1805": {
+                title: "The Battle of Trafalgar",
+                desc: "<p class='mb-4'>The British navy was fighting a huge war against the ships of France and Spain. Admiral Horatio Nelson was the brave and clever leader of the British ships. The big sea battle happened near the coast of Spain, at a place called Trafalgar.</p><p class='mb-4'>Nelson used a very smart trick to attack the enemy ships. The fighting was loud and dangerous, with lots of cannons firing. During the heavy fighting, a French sniper shot Admiral Nelson on his ship, and he sadly died.</p><p>Even though their great leader died, Britain completely destroyed the enemy ships and won the battle. As a result, the British navy was the most powerful in the whole world, and they ruled the oceans for a very long time.</p>",
+                vocab: ["result: resultaat / gevolg", "navy: de zeemacht", "brave: moedig"]
+            },
+            "1837": {
+                title: "Queen Victoria's Reign",
+                desc: "<p class='mb-4'>Princess Victoria became the Queen of the United Kingdom when she was only 18 years old. She ruled the country for almost 64 years. This long period of time is known as the Victorian Era, and it changed the country completely.</p><p class='mb-4'>During her time as Queen, the country grew very rich and powerful. People built many large, smoky factories and the first fast steam trains. The British Empire became so big that it covered a quarter of the whole world.</p><p>Life changed very fast. The origin of many modern inventions, like the telephone, the lightbulb, and the first cars, comes from this busy Victorian time. It was an age of great science, building, and new ideas.</p>",
+                vocab: ["origin: oorsprong", "reign: periode als vorst", "factories: fabrieken"]
+            },
+            "1845": {
+                title: "The Great Famine",
+                desc: "<p class='mb-4'>In Ireland, the potato was the most important food for millions of poor farming families. But in 1845, a strange plant sickness arrived. It ruined all the potato plants in the ground, making them black and impossible to eat.</p><p class='mb-4'>This agricultural disaster meant that many families had absolutely no food. It was a terrible and heartbreaking time. People were starving, and there was a lot of sickness in the cold, wet winter months. The government did not help enough.</p><p>Over one million people died of hunger and disease. To survive, millions of others tried to escape the hunger by traveling on old boats to America, Canada, and England. The population of Ireland changed forever.</p>",
+                vocab: ["disaster: ramp", "terrible: vreselijk", "to escape: ontsnappen / vluchten"]
+            },
+            "1879": {
+                title: "The Tay Bridge Disaster",
+                desc: "<p class='mb-4'>The Tay Bridge was a very long and famous train bridge over the water in Scotland. It was a dark and freezing winter night in December 1879. A heavy storm with extremely strong winds was blowing across the water.</p><p class='mb-4'>A passenger train was driving on the high bridge during this bad weather. Suddenly, the middle part of the bridge broke and collapsed. This sudden and shocking accident was a nightmare. The whole train fell deep into the freezing, dark water below.</p><p>Sadly, all 75 people on the train died in the cold water. Nobody survived. After this tragedy, engineers learned that the bridge was not built strong enough for heavy storms, and they changed how they build bridges in the future.</p>",
+                vocab: ["sudden: plotseling", "accident: ongeluk", "collapsed: stortte in"]
+            },
+            "1912": {
+                title: "The Titanic Sinks",
+                desc: "<p class='mb-4'>The Titanic was a huge, beautiful, and famous new ship. People said it was impossible to sink. On its first trip across the cold Atlantic Ocean to America, the captain received a radio warning about dangerous ice blocks in the water, but he ignored it.</p><p class='mb-4'>In the dark night, the ship hit a massive iceberg. The ice cut a big hole in the side of the ship, and cold water started pouring in. This terrible and famous accident meant the great ship was slowly going down into the ocean.</p><p>There were not enough small lifeboats for all the passengers. Other ships came to rescue the people in the boats, but many could not to escape in time. Over 1,500 people lost their lives in the freezing water that night.</p>",
+                vocab: ["warning: waarschuwing", "terrible: vreselijk", "accident: ongeluk", "to rescue: redden", "to escape: ontsnappen / vluchten"]
+            },
+            "1914": {
+                title: "World War I Begins",
+                desc: "<p class='mb-4'>In 1914, Britain entered a massive and frightening global war against Germany and its friends. This was the First World War. Millions of young British men left their jobs and families to become soldiers and fight in Europe.</p><p class='mb-4'>The soldiers had to live and fight in deep, muddy holes in the ground called trenches. The new and powerful weapons, like machine guns and poison gas, were going to cause horrific injuries and death on a scale the world had never seen.</p><p>The brutal war lasted for four very long years. When it finally ended in 1918, millions of people were dead. It took the whole country and the families many years to recover from this dark, sad, and exhausting time.</p>",
+                vocab: ["to cause: veroorzaken", "to recover: herstellen / genezen", "trenches: loopgraven"]
+            },
+            "1940": {
+                title: "The Blitz (WWII)",
+                desc: "<p class='mb-4'>During the Second World War, enemy German planes flew over Britain to drop heavy bombs on cities. This period was called 'The Blitz'. London and other big cities were bombed for many months, causing massive destruction to homes and factories.</p><p class='mb-4'>These loud and terrifying attacks often happened at night. There were loud sirens to warn the people. Many families slept deep underground in the train stations to stay safe from the sudden explosions above them.</p><p>The brave people of Britain did not give up. After the war finally ended in 1945, the cities were in ruins. People worked together to rebuild all their broken houses, streets, and normal lives in the years of peace that followed.</p>",
+                vocab: ["sudden: plotseling", "safe: veilig", "to rebuild: herbouwen"]
+            },
+            "1952": {
+                title: "The Great Smog",
+                desc: "<p class='mb-4'>In the winter of 1952, a very thick, yellow, and poisonous fog covered the entire city of London. It lasted for five long days. You could not even see your own hands, and the sun completely disappeared from the sky.</p><p class='mb-4'>This terrible fog was made by black smoke from thousands of coal fires and factory chimneys mixing with cold winter weather. This environmental disaster made the air very dirty and dangerous. It was very bad for people's breathing and lungs.</p><p>The poisonous air was going to cause thousands of deaths before the wind finally blew the fog away. Because of this scary event, the government made strict new laws to stop air pollution and keep the sky clean.</p>",
+                vocab: ["disaster: ramp", "to cause: veroorzaken", "poisonous: giftig"]
+            },
+            "1953": {
+                title: "The North Sea Flood",
+                desc: "<p class='mb-4'>A huge and angry storm in the North Sea created very high and dangerous waves. This water crashed into the coasts of England, Scotland, and the Netherlands in the middle of a cold winter night. People were sleeping in their beds.</p><p class='mb-4'>There was absolutely no warning on the radio. The fast, cold water was going to cause extreme damage to coastal towns and villages. The sea broke the walls and rushed into houses, filling the rooms with freezing saltwater very quickly.</p><p>People had to climb onto the roofs of their houses to stay alive. Brave teams in helicopters and small boats worked all day to rescue the freezing families from the rooftops. Over 300 British people sadly lost their lives in the water.</p>",
+                vocab: ["warning: waarschuwing", "to cause: veroorzaken", "damage: schade", "to rescue: redden"]
+            },
+            "1987": {
+                title: "The Great Storm",
+                desc: "<p class='mb-4'>In 1987, a massive hurricane hit the south of England in the middle of a dark October night. This was very unusual for Britain. The weather forecast on the evening television gave the public no warning about the dangerous weather.</p><p class='mb-4'>While people were sleeping, the sudden and violent wind reached over 100 miles per hour. The scary wind was so incredibly strong that it blew down millions of large, old trees all across the country.</p><p>The fallen trees crushed cars, blocked major roads, and caused terrible damage to roofs and houses. The next morning, the country looked like a disaster zone. People had to work together for weeks to clean up the terrible mess.</p>",
+                vocab: ["warning: waarschuwing", "sudden: plotseling", "damage: schade"]
+            },
+            "1997": {
+                title: "Death of Princess Diana",
+                desc: "<p class='mb-4'>Princess Diana was very famous and loved by people all around the world. She did a lot of wonderful charity work to help sick and poor people. The paparazzi (photographers) always followed her everywhere she went to take pictures.</p><p class='mb-4'>In August 1997, she died in a tragic and sudden car accident inside a dark tunnel in Paris. Her driver was going too fast to get away from the photographers. This incredibly sad event completely shocked everyone in Britain and the world.</p><p>Millions of crying people came to her home at Kensington Palace in London. They brought millions of flowers to show their love and respect. Her funeral on television was watched by billions of sad people around the globe.</p>",
+                vocab: ["accident: ongeluk", "event: gebeurtenis", "popular: geliefd"]
+            },
+            "2005": {
+                title: "The 7/7 Bombings",
+                desc: "<p class='mb-4'>On the morning of July 7th, 2005, London was very busy. Thousands of normal people were travelling to work and school on the underground trains. Secret terrorists brought homemade bombs in their backpacks onto the public transport.</p><p class='mb-4'>They exploded the bombs on three underground trains and one red double-decker bus. This terrible and frightening event caused chaos and darkness in the tunnels. Brave emergency workers hurried deep underground to rescue the shocked and injured people.</p><p>Fifty-two innocent people lost their lives that sad morning. As a result of this attack, security in the city and on public transport changed forever. The people of London showed great strength and unity after the attacks.</p>",
+                vocab: ["terrible: vreselijk", "event: gebeurtenis", "to rescue: redden", "result: resultaat / gevolg"]
+            }
+        };
+
+        const inputField = document.getElementById('year-input');
+        const stateWaiting = document.getElementById('state-waiting');
+        const stateData = document.getElementById('state-data');
+        const stateError = document.getElementById('state-error');
+        
+        const travelOverlay = document.getElementById('travel-overlay');
+        const errorAnimOverlay = document.getElementById('error-anim-overlay');
+        
+        const warpCanvas = document.getElementById('warpCanvas');
+        const glitchCanvas = document.getElementById('glitchCanvas');
+        let warpAnimId;
+        let glitchAnimId;
+        let stars = [];
+        
+        const displayTitle = document.getElementById('display-title');
+        const displayYear = document.getElementById('display-year');
+        const displayDesc = document.getElementById('display-desc');
+        const displayVocab = document.getElementById('display-vocab');
+        const errorYearText = document.getElementById('error-year');
+
+        // --- NUMPAD LOGIC ---
+        function appendNumber(num) {
+            // Zorg dat het maximaal 4 cijfers zijn
+            if (inputField.value.length < 4) {
+                inputField.value += num;
+            }
+        }
+
+        function deleteNumber() {
+            inputField.value = inputField.value.slice(0, -1);
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') {
+                initiateTravel();
+            }
+        }
+
+        function initiateTravel() {
+            const year = inputField.value.trim();
+            if (!year) return;
+
+            // Hide all current states
+            stateWaiting.classList.add('hidden');
+            stateData.classList.add('hidden');
+            stateError.classList.add('hidden');
+
+            if (historyData[year]) {
+                // Correct Year - Show warp animation
+                travelOverlay.classList.remove('hidden');
+                initWarp();
+                animateWarp();
+
+                // Wait 2.5 seconds for the travel animation to finish
+                setTimeout(() => {
+                    cancelAnimationFrame(warpAnimId);
+                    travelOverlay.classList.add('hidden');
+                    showData(historyData[year], year);
+                }, 2500);
+            } else {
+                // Incorrect Year - Show glitch/error animation
+                errorAnimOverlay.classList.remove('hidden');
+                initGlitch();
+                animateGlitch();
+
+                // Wait 2 seconds for the glitch animation to finish
+                setTimeout(() => {
+                    cancelAnimationFrame(glitchAnimId);
+                    errorAnimOverlay.classList.add('hidden');
+                    showError(year);
+                }, 2000);
+            }
+        }
+
+        function initWarp() {
+            warpCanvas.width = travelOverlay.clientWidth;
+            warpCanvas.height = travelOverlay.clientHeight;
+            stars = [];
+            for (let i = 0; i < 400; i++) {
+                const rand = Math.random();
+                let starColor = '#ffffff'; 
+                if (rand > 0.7) starColor = '#06b6d4'; 
+                else if (rand > 0.4) starColor = '#ec4899'; 
+
+                stars.push({
+                    x: Math.random() * 2000 - 1000,
+                    y: Math.random() * 2000 - 1000,
+                    z: Math.random() * 2000,
+                    color: starColor
+                });
+            }
+        }
+
+        function animateWarp() {
+            const ctx = warpCanvas.getContext('2d');
+            ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
+            ctx.fillRect(0, 0, warpCanvas.width, warpCanvas.height);
+            
+            const cx = warpCanvas.width / 2;
+            const cy = warpCanvas.height / 2;
+            
+            for (let star of stars) {
+                let px = star.x / star.z * 500 + cx;
+                let py = star.y / star.z * 500 + cy;
+                
+                star.z -= 30; 
+                
+                if (star.z <= 1) {
+                    star.x = Math.random() * 2000 - 1000;
+                    star.y = Math.random() * 2000 - 1000;
+                    star.z = 2000;
+                    continue;
+                }
+                
+                let nx = star.x / star.z * 500 + cx;
+                let ny = star.y / star.z * 500 + cy;
+                
+                ctx.beginPath();
+                ctx.moveTo(px, py);
+                ctx.lineTo(nx, ny);
+                ctx.strokeStyle = star.color;
+                ctx.lineWidth = Math.max(0.5, (2000 - star.z) / 250);
+                ctx.stroke();
+            }
+            
+            warpAnimId = requestAnimationFrame(animateWarp);
+        }
+
+        function initGlitch() {
+            glitchCanvas.width = errorAnimOverlay.clientWidth;
+            glitchCanvas.height = errorAnimOverlay.clientHeight;
+        }
+
+        function animateGlitch() {
+            const ctx = glitchCanvas.getContext('2d');
+            
+            ctx.fillStyle = Math.random() > 0.8 ? 'rgba(40, 0, 0, 0.5)' : 'rgba(10, 0, 0, 0.5)';
+            ctx.fillRect(0, 0, glitchCanvas.width, glitchCanvas.height);
+
+            for (let i = 0; i < 25; i++) {
+                const rand = Math.random();
+                if (rand > 0.8) ctx.fillStyle = '#ef4444'; 
+                else if (rand > 0.5) ctx.fillStyle = '#ffffff'; 
+                else ctx.fillStyle = '#7f1d1d'; 
+                
+                let x = Math.random() * glitchCanvas.width;
+                let y = Math.random() * glitchCanvas.height;
+                let w = Math.random() * 300 + 10;
+                let h = Math.random() * 8 + 1;
+                
+                ctx.fillRect(x, y, w, h);
+            }
+
+            if (Math.random() > 0.9) {
+                ctx.translate(Math.random() * 10 - 5, Math.random() * 10 - 5);
+            } else {
+                ctx.setTransform(1, 0, 0, 1, 0, 0); 
+            }
+            
+            glitchAnimId = requestAnimationFrame(animateGlitch);
+        }
+
+        function showData(data, yearStr) {
+            displayTitle.textContent = data.title;
+            displayYear.textContent = yearStr;
+            displayDesc.innerHTML = boldKeywords(data.desc, data.vocab); // Markeer woorden dikgedrukt
+            
+            displayVocab.innerHTML = '';
+            data.vocab.forEach(item => {
+                const li = document.createElement('li');
+                const parts = item.split(':');
+                if (parts.length === 2) {
+                    // Verbeterde styling voor de woordenlijst met een pijltje
+                    li.innerHTML = `<span class="text-cyan-400 font-bold inline-block min-w-[120px]">${parts[0]}</span> 
+                                    <span class="text-fuchsia-400 mx-2">➞</span> 
+                                    <span class="text-gray-200">${parts[1]}</span>`;
+                } else {
+                    li.textContent = item;
+                }
+                displayVocab.appendChild(li);
+            });
+
+            stateData.classList.remove('hidden');
+        }
+
+        // Functie om de doelwoorden automatisch dikgedrukt te maken in de tekst
+        function boldKeywords(text, vocabList) {
+            let boldedText = text;
+            vocabList.forEach(item => {
+                const word = item.split(':')[0].trim();
+                // Simpele regex om het woord (hoofdlettergevoelig of niet) te vinden en bold te maken
+                const regex = new RegExp(`\\b(${word})\\b`, 'gi');
+                boldedText = boldedText.replace(regex, '<strong class="text-cyan-300">$1</strong>');
+            });
+            return boldedText;
+        }
+
+        function showError(year) {
+            errorYearText.textContent = year;
+            stateError.classList.remove('hidden');
+            inputField.value = '';
+            inputField.focus();
+        }
+
+        // Handle resizing for canvases
+        window.addEventListener('resize', () => {
+            if (!travelOverlay.classList.contains('hidden')) initWarp();
+            if (!errorAnimOverlay.classList.contains('hidden')) initGlitch();
+        });
+    </script>
+</body>
+</html>
