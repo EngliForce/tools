@@ -65,7 +65,7 @@
             gap: 0.8rem;
             height: 100%;
         }
-        #settings-screen.active, #overview-screen.active, #period-overview-screen.active, #edit-history-screen.active {
+        #settings-screen.active, #overview-screen.active, #period-overview-screen.active, #edit-history-screen.active, #student-overview-screen.active {
             overflow-y: auto;
             padding-right: 4px;
         }
@@ -153,27 +153,12 @@
             background: rgba(255, 255, 255, 0.2);
             box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
         }
-        .btn-danger {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-        }
-        .btn-success {
-            background: linear-gradient(135deg, #10b981, #059669);
-        }
-        .btn-warning {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-        }
-        .btn-info {
-            background: linear-gradient(135deg, #0ea5e9, #2563eb);
-        }
-        .btn-sm {
-            padding: 0.3rem 0.6rem;
-            font-size: 0.72rem;
-        }
-        .flex-actions {
-            display: flex;
-            gap: 0.6rem;
-            flex-wrap: wrap;
-        }
+        .btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .btn-success { background: linear-gradient(135deg, #10b981, #059669); }
+        .btn-warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .btn-info { background: linear-gradient(135deg, #0ea5e9, #2563eb); }
+        .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.72rem; }
+        .flex-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
         
         .checkin-container-wrapper {
             display: flex;
@@ -229,185 +214,77 @@
             border-color: #10b981;
             box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
         }
-        .student-board-card .s-name {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #f8fafc;
-            margin-bottom: 0.4rem;
-        }
+        .student-board-card .s-name { font-size: 1.1rem; font-weight: 700; color: #f8fafc; margin-bottom: 0.4rem; }
         .student-board-card .s-status {
-            font-size: 0.75rem;
-            font-weight: bold;
-            padding: 3px 8px;
-            border-radius: 6px;
-            text-transform: uppercase;
-            background: rgba(255, 255, 255, 0.1);
-            color: #cbd5e1;
+            font-size: 0.75rem; font-weight: bold; padding: 3px 8px; border-radius: 6px;
+            text-transform: uppercase; background: rgba(255, 255, 255, 0.1); color: #cbd5e1;
         }
-        .student-board-card.checked-in .s-status {
-            background: #10b981;
-            color: white;
-        }
+        .student-board-card.checked-in .s-status { background: #10b981; color: white; }
         
         .teacher-bottom-bar {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            padding: 0.8rem 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-shrink: 0;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px;
+            padding: 0.8rem 1.2rem; display: flex; justify-content: space-between;
+            align-items: center; flex-shrink: 0; box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
             margin-top: auto; 
         }
         
         .mgmt-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 0.8rem;
-            overflow-y: auto;
-            flex: 1;
-            padding: 0.4rem;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 0.8rem; overflow-y: auto; flex: 1; padding: 0.4rem;
         }
         .student-mgmt-card {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 10px;
-            padding: 0.9rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            gap: 0.6rem;
+            background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px; padding: 0.9rem; display: flex; flex-direction: column;
+            justify-content: space-between; gap: 0.6rem;
         }
-        .student-mgmt-card.absent-card {
-            border-color: #ef4444;
-            background: rgba(239, 68, 68, 0.1);
-        }
-        .mgmt-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .mgmt-name {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #38bdf8;
-        }
-        .badges-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.3rem;
-            min-height: 28px;
-        }
+        .student-mgmt-card.absent-card { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+        .mgmt-header { display: flex; justify-content: space-between; align-items: center; }
+        .mgmt-name { font-size: 1rem; font-weight: 700; color: #38bdf8; }
+        .badges-container { display: flex; flex-wrap: wrap; gap: 0.3rem; min-height: 28px; }
         .tag-badge {
-            font-size: 0.65rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: bold;
-            background: #64748b;
-            color: white;
-            text-transform: uppercase;
+            font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: bold;
+            background: #64748b; color: white; text-transform: uppercase;
         }
         .tag-badge.absent { background: #ef4444 !important; }
         .tag-badge.present { background: #10b981 !important; }
 
-        .tags-selector {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 4px;
-        }
+        .tags-selector { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; }
         .tag-toggle-btn {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #cbd5e1;
-            font-size: 0.7rem;
-            padding: 4px;
-            border-radius: 4px;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.15s;
+            background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #cbd5e1; font-size: 0.7rem; padding: 4px; border-radius: 4px;
+            cursor: pointer; text-align: center; transition: all 0.15s;
         }
-        .tag-toggle-btn.active {
-            color: white;
-            font-weight: bold;
-        }
+        .tag-toggle-btn.active { color: white; font-weight: bold; }
         
-        .history-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-        }
+        .history-list { display: flex; flex-direction: column; gap: 0.6rem; }
         .history-item {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            border-radius: 8px;
-            padding: 0.8rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+            background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 8px; padding: 0.8rem; display: flex; justify-content: space-between; align-items: flex-start;
         }
         
         .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.25s ease;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
         }
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-card {
-            background: rgba(30, 27, 75, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            border-radius: 12px;
-            padding: 1.5rem;
-            width: 95%;
-            max-width: 550px;
-            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.7);
-            text-align: center;
+            background: rgba(30, 27, 75, 0.95); border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 12px; padding: 1.5rem; width: 95%; max-width: 550px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.7); text-align: center;
         }
-        .modal-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 0.8rem;
-            color: #38bdf8;
-        }
-        .modal-card p {
-            color: #cbd5e1;
-            margin-bottom: 1rem;
-            font-size: 0.92rem;
-            line-height: 1.4;
-            white-space: pre-wrap; 
-        }
+        .modal-card h3 { font-size: 1.3rem; margin-bottom: 0.8rem; color: #38bdf8; }
+        .modal-card p { color: #cbd5e1; margin-bottom: 1rem; font-size: 0.92rem; line-height: 1.4; white-space: pre-wrap; }
         .welcome-popup-text {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #fbbf24;
-            margin: 1rem 0;
+            font-size: 1.5rem; font-weight: 800; color: #fbbf24; margin: 1rem 0;
             text-shadow: 0 0 10px rgba(251, 191, 36, 0.4);
         }
         .picker-name { 
-            font-size: 1.5rem; 
-            font-weight: bold; 
-            color: #fbbf24; 
-            margin: 2rem 0; 
-            min-height: 3.5rem;
-            text-shadow: 0 0 15px rgba(251, 191, 36, 0.5);
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
+            font-size: 1.5rem; font-weight: bold; color: #fbbf24; margin: 2rem 0; 
+            min-height: 3.5rem; text-shadow: 0 0 15px rgba(251, 191, 36, 0.5);
+            display: flex; flex-direction: column; gap: 0.3rem;
         }
     </style>
 </head>
@@ -416,6 +293,7 @@
         <h1>☑️ Check in</h1>
         <div class="header-actions">
             <button class="btn btn-secondary btn-sm" id="btn-to-settings" style="display: none;" onclick="showSettingsScreen()">⚙️ Class Setup</button>
+            <button class="btn btn-secondary btn-sm" id="btn-to-student" onclick="showStudentOverviewScreen()">🧑‍🎓 Student Info</button>
             <button class="btn btn-secondary btn-sm" id="btn-to-overview" onclick="showOverviewScreen()">📊 History</button>
             <button class="btn btn-secondary btn-sm" id="btn-to-period" onclick="showPeriodOverviewScreen()">📅 Period Overview</button>
         </div>
@@ -581,6 +459,31 @@
                 <div id="period-results-container" style="overflow-y: auto; flex: 1; padding-right: 5px;"></div>
             </div>
         </div>
+
+        <!-- 6. INDIVIDUAL STUDENT OVERVIEW SCREEN -->
+        <div id="student-overview-screen" class="screen">
+            <div class="glass-card" style="height: 100%; display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.4rem;">
+                    <h2>🧑‍🎓 Individual Student Record</h2>
+                    <button class="btn btn-secondary btn-sm" onclick="showSettingsScreen()">⬅ Back to Setup</button>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.8rem; margin-bottom: 1rem;">
+                    <div class="form-group">
+                        <label for="student-overview-class">Select Class:</label>
+                        <select id="student-overview-class" onchange="populateStudentOverviewDropdown()"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="student-overview-name">Select Student:</label>
+                        <select id="student-overview-name" onchange="generateStudentOverview()"></select>
+                    </div>
+                </div>
+
+                <div id="student-overview-results" style="overflow-y: auto; flex: 1; padding-right: 5px; display: flex; flex-direction: column; gap: 0.6rem;">
+                    <!-- individual remarks will go here -->
+                </div>
+            </div>
+        </div>
     </main>
 
     <!-- WELCOME TEXT MODAL -->
@@ -733,6 +636,20 @@
                 }
             });
             return { stars, streak };
+        }
+
+        function countNegativeLessons(history, className, studentName) {
+            let count = 0;
+            history.forEach(lesson => {
+                if (lesson.className === className) {
+                    const s = lesson.students.find(stu => stu.name === studentName);
+                    if (s && s.tags) {
+                        const hasNegative = s.tags.some(t => t !== 'absent' && t !== 'hw_done');
+                        if (hasNegative) count++;
+                    }
+                }
+            });
+            return count;
         }
 
         // Genereert de records van mijlpalen IN een specifieke les (voor geschiedenis)
@@ -989,6 +906,7 @@
             document.getElementById('edit-history-screen').classList.remove('active');
             document.getElementById('overview-screen').classList.remove('active');
             document.getElementById('period-overview-screen').classList.remove('active');
+            document.getElementById('student-overview-screen').classList.remove('active');
         }
 
         function showSettingsScreen() {
@@ -1009,6 +927,107 @@
             document.getElementById('period-overview-screen').classList.add('active');
             document.getElementById('btn-to-settings').style.display = 'inline-flex';
             generatePeriodOverview();
+        }
+
+        function showStudentOverviewScreen() {
+            hideAllScreens();
+            document.getElementById('student-overview-screen').classList.add('active');
+            document.getElementById('btn-to-settings').style.display = 'inline-flex';
+            populateStudentOverviewClassDropdown();
+        }
+
+        function populateStudentOverviewClassDropdown() {
+            const classes = getSavedClasses();
+            const select = document.getElementById('student-overview-class');
+            select.innerHTML = '<option value="">-- Select Class --</option>';
+            Object.keys(classes).forEach(k => {
+                select.innerHTML += `<option value="${k}">${k}</option>`;
+            });
+            document.getElementById('student-overview-name').innerHTML = '<option value="">-- Select Student --</option>';
+            document.getElementById('student-overview-results').innerHTML = '';
+        }
+
+        function populateStudentOverviewDropdown() {
+            const className = document.getElementById('student-overview-class').value;
+            const selectName = document.getElementById('student-overview-name');
+            selectName.innerHTML = '<option value="">-- Select Student --</option>';
+            document.getElementById('student-overview-results').innerHTML = '';
+
+            if (!className) return;
+
+            const classes = getSavedClasses();
+            const studentsStr = classes[className] || '';
+            const studentsList = studentsStr.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+
+            studentsList.forEach(name => {
+                selectName.innerHTML += `<option value="${name}">${name}</option>`;
+            });
+        }
+
+        function generateStudentOverview() {
+            const className = document.getElementById('student-overview-class').value;
+            const studentName = document.getElementById('student-overview-name').value;
+            const container = document.getElementById('student-overview-results');
+
+            if (!className || !studentName) {
+                container.innerHTML = '';
+                return;
+            }
+
+            const history = getSavedHistory();
+            const studentLessons = history.filter(lesson => lesson.className === className && lesson.students.some(s => s.name === studentName));
+
+            if (studentLessons.length === 0) {
+                container.innerHTML = '<div style="color: #94a3b8; font-size: 0.9rem;">No records found for this student.</div>';
+                return;
+            }
+
+            let html = `<div style="font-size: 1.1rem; color: #38bdf8; margin-bottom: 0.5rem; font-weight: bold;">Record for ${esc(studentName)}</div>`;
+
+            studentLessons.sort((a, b) => b.timestamp - a.timestamp); // Ensure chronological sort
+
+            let negativeLessonsCount = 0;
+            let listHtml = '';
+
+            studentLessons.forEach(lesson => {
+                const sData = lesson.students.find(s => s.name === studentName);
+                if (!sData) return;
+
+                const isAbsent = sData.tags.includes('absent');
+                let tagBadges = isAbsent ? '<span class="tag-badge absent">Absent</span>' : '<span class="tag-badge present">Present</span>';
+
+                let hasNeg = false;
+                sData.tags.forEach(tId => {
+                    if (tId !== 'absent') {
+                        const tagDef = availableTags.find(at => at.id === tId);
+                        const label = tagDef ? tagDef.label : tId;
+                        const bgColor = tagDef ? tagDef.color : '#64748b';
+                        tagBadges += ` <span class="tag-badge" style="background-color: ${bgColor};">${esc(label)}</span>`;
+
+                        if (tId !== 'hw_done') {
+                            hasNeg = true;
+                        }
+                    }
+                });
+
+                if (hasNeg) negativeLessonsCount++;
+
+                listHtml += `
+                    <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; border-left: 4px solid ${hasNeg ? '#ef4444' : (isAbsent ? '#f59e0b' : '#10b981')};">
+                        <div style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 0.4rem; font-weight: bold;">📅 ${esc(lesson.date)}</div>
+                        <div>${tagBadges}</div>
+                    </div>
+                `;
+            });
+
+            let summary = `
+                <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.2); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <div><strong>Total Lessons Registered:</strong> ${studentLessons.length}</div>
+                    <div><strong>Lessons with Negative Remarks:</strong> <span style="color: ${negativeLessonsCount >= 3 ? '#ef4444' : '#10b981'}; font-weight: bold;">${negativeLessonsCount}</span></div>
+                </div>
+            `;
+
+            container.innerHTML = html + summary + listHtml;
         }
 
         function startCheckInSession() {
@@ -1313,11 +1332,26 @@
             const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
             let streakAlerts = [];
+            let negativeAlerts = []; // Array for storing warnings about 3x negative remarks
+
+            const history = getSavedHistory();
 
             const stDataClean = currentStudentsData.map(s => {
                 const hasNegative = s.tags.some(t => t !== 'absent' && t !== 'hw_done');
                 const isAbsent = !s.checkedIn;
                 
+                // Alert logic for multiple negative lessons
+                if (hasNegative) {
+                    const pastNegativeCount = countNegativeLessons(history, activeClassName, s.name);
+                    const newTotalNegativeCount = pastNegativeCount + 1;
+
+                    // Trigger alert if the count is a multiple of 3
+                    if (newTotalNegativeCount > 0 && newTotalNegativeCount % 3 === 0) {
+                        negativeAlerts.push(`⚠️ Let op: ${esc(s.name)} heeft nu in ${newTotalNegativeCount} verschillende lessen een negatieve aantekening gehad!`);
+                    }
+                }
+
+                // Streak logic
                 let newStreak = s.baseStreak || 0;
                 if (hasNegative) {
                     newStreak = 0;
@@ -1341,11 +1375,15 @@
                 students: stDataClean
             };
 
-            const history = getSavedHistory();
             history.unshift(lessonRecord);
             localStorage.setItem('teacher_lesson_history', JSON.stringify(history));
 
             let alertMsg = `The registration for '${activeClassName}' has been successfully saved!`;
+            
+            // Append warnings to the alert message
+            if (negativeAlerts.length > 0) {
+                alertMsg += `\n\n🚨 Waarschuwingen (Negatief gedrag):\n- ` + negativeAlerts.join('\n- ');
+            }
             if (streakAlerts.length > 0) {
                 alertMsg += `\n\n🏆 Streak Milestones:\n- ` + streakAlerts.join('\n- ');
             }
