@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,7 +17,7 @@
 
         body {
             font-family: 'Nunito', sans-serif;
-            background-color: #0f172a;
+            background-color: #0b0f19;
             color: #f8fafc;
             width: 100vw;
             height: 100vh;
@@ -30,108 +30,63 @@
             font-family: 'Baloo 2', cursive;
         }
 
-        /* 4 rows with 6 columns: 24 cards exactly fitting the screen */
+        /* 3 rows by 9 columns: exactly 27 cards fitted to screen height */
         #grid-container {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            grid-template-rows: repeat(4, 1fr);
+            grid-template-columns: repeat(9, 1fr);
+            grid-template-rows: repeat(3, 1fr);
             gap: 0.5rem;
             width: 100%;
             height: 100%;
-            min-height: 0; /* Prevents overflow inside flex containers */
+            min-height: 0;
         }
 
-        /* Card container */
         .character-card {
-            background-color: #ffffff;
-            border-radius: 0.6rem;
-            border: 3px solid #334155;
+            background-color: #1e293b;
+            border-radius: 0.5rem;
+            border: 2px solid #334155;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
             user-select: none;
-            transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+            transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
             position: relative;
             overflow: hidden;
             min-height: 0;
             height: 100%;
+            padding: 3px;
         }
 
         .character-card:hover {
             transform: translateY(-2px);
             border-color: #38bdf8;
-            box-shadow: 0 8px 16px -2px rgba(56, 189, 248, 0.3);
+            box-shadow: 0 6px 14px -2px rgba(56, 189, 248, 0.4);
             z-index: 10;
         }
 
-        /* SVG image container inside the card */
-        .image-box {
-            flex: 1 1 0%;
-            min-height: 0;
-            width: 100%;
-            background-color: #e2e8f0; /* Clear soft neutral contrast */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            padding: 2px;
-        }
-
-        .image-box svg {
+        /* Ensures the portrait card/image is fully visible without clipping or cropping */
+        .card-image {
             width: 100%;
             height: 100%;
-            max-height: 100%;
+            object-fit: contain;
             display: block;
             pointer-events: none;
+            border-radius: 0.35rem;
+            transition: filter 0.2s ease, opacity 0.2s ease;
         }
 
-        /* Name label box pinned to bottom */
-        .name-box {
-            background-color: #ffffff;
-            border-top: 2px solid #cbd5e1;
-            text-align: center;
-            padding: 0.15rem 0.25rem;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .name-text {
-            font-size: clamp(0.75rem, 1.35vw, 1.25rem);
-            line-height: 1.1;
-            font-weight: 800;
-            color: #0f172a;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* Eliminated / knocked down state */
+        /* Eliminated / crossed-off status */
         .eliminated {
-            border-color: #1e293b;
-            opacity: 0.45;
-            background-color: #0f172a;
+            border-color: #050811;
+            opacity: 0.35;
+            background-color: #050811;
         }
         
-        .eliminated .image-box {
-            filter: grayscale(100%) contrast(85%);
-            background-color: #94a3b8;
+        .eliminated .card-image {
+            filter: grayscale(100%) brightness(0.6);
         }
 
-        .eliminated .name-box {
-            background-color: #cbd5e1;
-        }
-
-        .eliminated .name-text {
-            color: #64748b;
-            text-decoration: line-through;
-            text-decoration-thickness: 2.5px;
-            text-decoration-color: #ef4444;
-        }
-
-        /* Big Red Cross Overlay */
         .red-x-overlay {
             position: absolute;
             inset: 0;
@@ -151,186 +106,71 @@
         }
 
         .modal-overlay {
-            backdrop-filter: blur(6px);
-            background-color: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(8px);
+            background-color: rgba(11, 15, 25, 0.85);
         }
     </style>
 </head>
 
 <body>
-    <!-- Top Bar with Compact Game Controls -->
-    <header class="bg-slate-900 border-b border-slate-700 px-4 py-2 flex items-center justify-between shadow-md shrink-0">
+    <!-- Top Bar with English Game Controls -->
+    <header class="bg-slate-900 border-b border-slate-700 px-4 py-2.5 flex items-center justify-between shadow-md shrink-0">
         <div class="flex items-center gap-3">
-            <span class="text-2xl">🔍</span>
+            <span class="text-2xl">🕵️</span>
             <div>
                 <h1 class="text-lg md:text-xl font-black font-baloo leading-none text-sky-400 m-0 tracking-wide">
                     Guess Who?
                 </h1>
                 <p class="text-xs text-slate-400 font-semibold hidden sm:block">
-                    Click on a character to cross him/her out.
+                    Click any card to cross it out. 3 rows of 9 (27 characters).
                 </p>
             </div>
         </div>
 
         <div class="flex items-center gap-2">
-            <button onclick="pickMysteryCharacter()" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-3 py-1.5 rounded-lg shadow-sm text-xs sm:text-sm transition-transform active:scale-95 flex items-center gap-1.5 border-b-2 border-amber-600">
+            <button onclick="pickMysteryCharacter()" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-3.5 py-1.5 rounded-lg shadow-sm text-xs sm:text-sm transition-transform active:scale-95 flex items-center gap-1.5 border-b-2 border-amber-600">
                 <span>🎭</span>
-                <span>Choose Character</span>
+                <span>Choose Secret Character</span>
             </button>
-            <button onclick="resetBoard()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 px-3 py-1.5 rounded-lg shadow-sm text-xs sm:text-sm font-bold transition-colors active:scale-95 flex items-center gap-1">
-                <span>↺</span>
-                <span>Restart</span>
+            <button onclick="resetBoard()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 px-3.5 py-1.5 rounded-lg shadow-sm text-xs sm:text-sm font-bold transition-colors active:scale-95 flex items-center gap-1">
+                <span>🔄</span>
+                <span>Reset</span>
             </button>
         </div>
     </header>
 
-    <!-- Fullscreen 6x4 Game Grid (4 rows of 6 faces) -->
     <main class="flex-1 p-2 md:p-3 overflow-hidden min-h-0 bg-slate-950 flex flex-col">
         <div id="grid-container">
-            <!-- 24 cards injected dynamically via JavaScript -->
+            <!-- 27 character cards are generated here -->
         </div>
     </main>
 
-    <!-- Pop-up Modal for the Mystery Character -->
     <div id="mystery-modal" class="modal-overlay fixed inset-0 z-50 hidden items-center justify-center p-4">
         <div class="bg-slate-900 border-2 border-amber-400 rounded-2xl shadow-2xl p-5 w-80 max-w-[90vw] flex flex-col items-center text-center relative">
             <button onclick="closeMysteryModal()" class="absolute top-3 right-3 text-slate-400 hover:text-white bg-slate-800 rounded-full p-1.5 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
 
-            <span class="text-xs uppercase tracking-widest text-amber-400 font-extrabold mb-1">Your Character</span>
-            <div id="modal-avatar" class="w-36 h-36 bg-slate-200 rounded-xl border-2 border-slate-400 overflow-hidden shadow-inner flex items-center justify-center p-2 my-2">
-                <!-- Secret avatar SVG injected here -->
+            <span class="text-xs uppercase tracking-widest text-amber-400 font-extrabold mb-2">Your Secret Card</span>
+            
+            <div class="h-64 w-full bg-slate-950 rounded-xl border border-slate-700 overflow-hidden shadow-inner flex items-center justify-center p-2 my-2">
+                <img id="modal-image" src="" alt="Secret Character" class="max-h-full max-w-full object-contain rounded-lg">
             </div>
-            <h2 id="modal-name" class="text-2xl font-black font-baloo text-white mb-3"></h2>
+            
+            <p id="modal-info" class="text-sm font-semibold text-slate-400 mb-3"></p>
             
             <button onclick="closeMysteryModal()" class="w-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold py-2 rounded-lg text-sm shadow transition-colors">
-                Save & Close
+                Got it & Close
             </button>
         </div>
     </div>
 
     <script>
-        // Palette definitions
-        const C = {
-            skin: { pale: '#ffdfc4', brown: '#c68642', dark: '#8d5524' },
-            eye:  { blue: '#0284c7', brown: '#713f12', green: '#16a34a' },
-            hair: { black: '#1e293b', brown: '#78350f', blonde: '#fbbf24', red: '#ea580c', white: '#f8fafc' }
-        };
-
-        // Exactly 24 characters (6 columns x 4 rows)
-        const characters = [
-            { name: "Alex", gender: "m", skin: C.skin.pale, eye: C.eye.brown, hair: C.hair.black, style: "short", faceHair: "mustache", glasses: false, hat: false, freckles: false },
-            { name: "Anita", gender: "f", skin: C.skin.pale, eye: C.eye.blue, hair: C.hair.blonde, style: "long", faceHair: "none", glasses: false, hat: false, freckles: true },
-            { name: "Bernard", gender: "m", skin: C.skin.pale, eye: C.eye.brown, hair: C.hair.brown, style: "short", faceHair: "none", glasses: false, hat: true, freckles: false },
-            { name: "Bill", gender: "m", skin: C.skin.pale, eye: C.eye.brown, hair: C.hair.red, style: "bald", faceHair: "beard", glasses: false, hat: false, freckles: true },
-            { name: "Charles", gender: "m", skin: C.skin.pale, eye: C.eye.brown, hair: C.hair.blonde, style: "short", faceHair: "mustache", glasses: false, hat: false, freckles: false },
-            { name: "Claire", gender: "f", skin: C.skin.pale, eye: C.eye.brown, hair: C.hair.red, style: "short", faceHair: "none", glasses: true, hat: true, freckles: false },
-            { name: "David", gender: "m", skin: C.skin.pale, eye: C.eye.brown, hair: C.hair.blonde, style: "short", faceHair: "beard", glasses: false, hat: false, freckles: false },
-            { name: "Emma", gender: "f", skin: C.skin.dark, eye: C.eye.green, hair: C.hair.black, style: "long", faceHair: "none", glasses: true, hat: false, freckles: false },
-            { name: "Eric", gender: "m", skin: C.skin.pale, eye: C.eye.brown, hair: C.hair.blonde, style: "short", faceHair: "none", glasses: false, hat: true, freckles: false },
-            { name: "Frans", gender: "m", skin: C.skin.pale, eye: C.eye.brown, hair: C.hair.red, style: "curly", faceHair: "none", glasses: false, hat: false, freckles: true },
-            { name: "George", gender: "m", skin: C.skin.pale, eye: C.eye.brown, hair: C.hair.white, style: "short", faceHair: "none", glasses: false, hat: true, freckles: false },
-            { name: "Herman", gender: "m", skin: C.skin.pale, eye: C.eye.brown, hair: C.hair.red, style: "bald", faceHair: "none", glasses: false, hat: false, freckles: false },
-            { name: "Joe", gender: "m", skin: C.skin.pale, eye: C.eye.brown, hair: C.hair.blonde, style: "curly", faceHair: "none", glasses: true, hat: false, freckles: false },
-            { name: "Lisa", gender: "f", skin: C.skin.brown, eye: C.eye.brown, hair: C.hair.black, style: "curly", faceHair: "none", glasses: false, hat: false, freckles: false },
-            { name: "Maria", gender: "f", skin: C.skin.pale, eye: C.eye.green, hair: C.hair.brown, style: "long", faceHair: "none", glasses: false, hat: true, freckles: false },
-            { name: "Max", gender: "m", skin: C.skin.pale, eye: C.eye.brown, hair: C.hair.black, style: "curly", faceHair: "mustache", glasses: false, hat: false, freckles: false },
-            { name: "Paul", gender: "m", skin: C.skin.pale, eye: C.eye.brown, hair: C.hair.white, style: "short", faceHair: "none", glasses: true, hat: false, freckles: false },
-            { name: "Peter", gender: "m", skin: C.skin.pale, eye: C.eye.blue, hair: C.hair.white, style: "short", faceHair: "none", glasses: false, hat: false, freckles: false },
-            { name: "Philip", gender: "m", skin: C.skin.brown, eye: C.eye.brown, hair: C.hair.black, style: "short", faceHair: "beard", glasses: false, hat: false, freckles: false },
-            { name: "Richard", gender: "m", skin: C.skin.pale, eye: C.eye.brown, hair: C.hair.brown, style: "bald", faceHair: "beard", glasses: false, hat: false, freckles: false },
-            { name: "Robert", gender: "m", skin: C.skin.pale, eye: C.eye.blue, hair: C.hair.brown, style: "short", faceHair: "none", glasses: false, hat: false, freckles: true },
-            { name: "Sam", gender: "m", skin: C.skin.pale, eye: C.eye.brown, hair: C.hair.white, style: "bald", faceHair: "none", glasses: true, hat: false, freckles: false },
-            { name: "Susan", gender: "f", skin: C.skin.pale, eye: C.eye.brown, hair: C.hair.white, style: "long", faceHair: "none", glasses: false, hat: false, freckles: false },
-            { name: "Tom", gender: "m", skin: C.skin.pale, eye: C.eye.blue, hair: C.hair.black, style: "bald", faceHair: "none", glasses: true, hat: false, freckles: false }
-        ];
-
-        function generateFaceSVG(char) {
-            let svg = '';
-            const stroke = `stroke="#0f172a" stroke-width="1.8"`;
-
-            // 1. Back hair (for long hair styles)
-            if (char.style === 'long') {
-                svg += `<path d="M 23 45 L 23 94 Q 50 99 77 94 L 77 45 Z" fill="${char.hair}" ${stroke} stroke-linejoin="round"/>`;
+        const cardNumbers = [];
+        for (let i = 1; i <= 28; i++) {
+            if (i !== 10) {
+                cardNumbers.push(i);
             }
-
-            // 2. Ears
-            svg += `<circle cx="24" cy="55" r="5" fill="${char.skin}" ${stroke}/>`;
-            svg += `<circle cx="76" cy="55" r="5" fill="${char.skin}" ${stroke}/>`;
-
-            // 3. Neck
-            svg += `<rect x="41" y="70" width="18" height="28" fill="${char.skin}" ${stroke} />`;
-
-            // 4. Head Ellipse
-            svg += `<ellipse cx="50" cy="54" rx="26" ry="31" fill="${char.skin}" ${stroke} />`;
-
-            // 5. Front Hair
-            if (char.style === 'short' || char.style === 'long') {
-                svg += `<path d="M 24 45 Q 24 21 50 21 Q 76 21 76 45 Q 60 27 50 27 Q 40 27 24 45 Z" fill="${char.hair}" ${stroke} stroke-linejoin="round"/>`;
-            } else if (char.style === 'curly') {
-                const curls = [ [31, 26, 13], [50, 21, 15], [69, 26, 13], [23, 39, 11], [77, 39, 11] ];
-                curls.forEach(c => {
-                    svg += `<circle cx="${c[0]}" cy="${c[1]}" r="${c[2]}" fill="${char.hair}" ${stroke} />`;
-                });
-            } else if (char.style === 'bald') {
-                svg += `<path d="M 24 45 Q 22 39 24 35 Q 26 39 24 45 Z" fill="${char.hair}" ${stroke}/>`;
-                svg += `<path d="M 76 45 Q 78 39 76 35 Q 74 39 76 45 Z" fill="${char.hair}" ${stroke}/>`;
-            }
-
-            // 6. Eyes (Prominent white sclera with high contrast irises)
-            svg += `<circle cx="37" cy="48" r="6.8" fill="#ffffff" ${stroke}/>`;
-            svg += `<circle cx="63" cy="48" r="6.8" fill="#ffffff" ${stroke}/>`;
-            // Irises
-            svg += `<circle cx="37" cy="48" r="3.4" fill="${char.eye}"/>`;
-            svg += `<circle cx="63" cy="48" r="3.4" fill="${char.eye}"/>`;
-            // Pupils
-            svg += `<circle cx="37" cy="48" r="1.4" fill="#000000"/>`;
-            svg += `<circle cx="63" cy="48" r="1.4" fill="#000000"/>`;
-
-            // 7. Freckles
-            if (char.freckles) {
-                const frecks = [ [32, 57], [36, 59], [40, 56], [60, 56], [64, 59], [68, 57] ];
-                frecks.forEach(f => {
-                    svg += `<circle cx="${f[0]}" cy="${f[1]}" r="1" fill="#b45309" opacity="0.6"/>`;
-                });
-            }
-
-            // 8. Nose
-            svg += `<path d="M 50 50 L 47 61 L 53 61 Z" fill="rgba(0,0,0,0.14)"/>`;
-
-            // 9. Mouth
-            if (char.gender === 'f') {
-                svg += `<path d="M 43 71 Q 50 77 57 71 Q 50 74 43 71 Z" fill="#e11d48" stroke="#9f1239" stroke-width="1"/>`;
-            } else {
-                svg += `<path d="M 43 72 Q 50 77 57 72" fill="none" stroke="#451a03" stroke-width="2" stroke-linecap="round"/>`;
-            }
-
-            // 10. Facial Hair
-            if (char.faceHair === 'mustache' || char.faceHair === 'beard') {
-                svg += `<path d="M 37 66 Q 50 61 63 66 Q 50 72 37 66 Z" fill="${char.hair}" ${stroke} />`;
-            }
-            if (char.faceHair === 'beard') {
-                svg += `<path d="M 26 59 Q 50 96 74 59 Q 50 78 26 59 Z" fill="${char.hair}" ${stroke} stroke-linejoin="round"/>`;
-            }
-
-            // 11. Glasses
-            if (char.glasses) {
-                svg += `<rect x="27" y="42" width="19" height="12" rx="3.5" fill="rgba(255,255,255,0.4)" stroke="#0f172a" stroke-width="2.4"/>`;
-                svg += `<rect x="54" y="42" width="19" height="12" rx="3.5" fill="rgba(255,255,255,0.4)" stroke="#0f172a" stroke-width="2.4"/>`;
-                svg += `<line x1="46" y1="48" x2="54" y2="48" stroke="#0f172a" stroke-width="2.4"/>`;
-                svg += `<line x1="24" y1="48" x2="27" y2="48" stroke="#0f172a" stroke-width="2.4"/>`;
-                svg += `<line x1="73" y1="48" x2="76" y2="48" stroke="#0f172a" stroke-width="2.4"/>`;
-            }
-
-            // 12. Hat
-            if (char.hat) {
-                svg += `<ellipse cx="50" cy="23" rx="37" ry="8" fill="#334155" ${stroke}/>`;
-                svg += `<path d="M 29 23 L 34 5 L 66 5 L 71 23 Z" fill="#334155" ${stroke} stroke-linejoin="round"/>`;
-                svg += `<rect x="30" y="19" width="40" height="4" fill="#ef4444" stroke="#0f172a" stroke-width="1" />`;
-            }
-
-            return `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">${svg}</svg>`;
         }
 
         const gridContainer = document.getElementById('grid-container');
@@ -342,43 +182,35 @@
         function renderBoard() {
             gridContainer.innerHTML = '';
             
-            characters.forEach(char => {
+            cardNumbers.forEach(num => {
                 const card = document.createElement('div');
                 card.className = "character-card shadow-md";
                 card.onclick = () => toggleCard(card);
 
                 card.innerHTML = `
-                    <div class="image-box">
-                        ${generateFaceSVG(char)}
-                        <div class="red-x-overlay">
-                            <svg class="w-full h-full text-red-600 drop-shadow p-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="name-box">
-                        <span class="name-text font-baloo">
-                            ${char.name}
-                        </span>
+                    <img src="${num}.jpg" alt="Character ${num}" class="card-image" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 150%22><rect width=%22100%22 height=%22150%22 fill=%22%231e293b%22/><text x=%2250%22 y=%2275%22 fill=%22%2394a3b8%22 text-anchor=%22middle%22 font-size=%2214%22 font-family=%22sans-serif%22 font-weight=%22bold%22>${num}.jpg</text></svg>';">
+                    <div class="red-x-overlay">
+                        <svg class="w-4/5 h-4/5 text-red-600 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] p-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
                     </div>
                 `;
                 gridContainer.appendChild(card);
             });
         }
 
-        // Reset all crossed-out cards
         function resetBoard() {
             const cards = document.querySelectorAll('.character-card');
             cards.forEach(card => card.classList.remove('eliminated'));
         }
 
-        // Modal controls for Mystery Character
         function pickMysteryCharacter() {
-            const randomIndex = Math.floor(Math.random() * characters.length);
-            const char = characters[randomIndex];
+            const randomIndex = Math.floor(Math.random() * cardNumbers.length);
+            const chosenNumber = cardNumbers[randomIndex];
             
-            document.getElementById('modal-avatar').innerHTML = generateFaceSVG(char);
-            document.getElementById('modal-name').textContent = char.name;
+            const modalImg = document.getElementById('modal-image');
+            modalImg.src = `${chosenNumber}.jpg`;
+            document.getElementById('modal-info').textContent = `Card #${chosenNumber}`;
 
             const modal = document.getElementById('mystery-modal');
             modal.classList.remove('hidden');
@@ -391,12 +223,10 @@
             modal.classList.remove('flex');
         }
 
-        // Close modal on Escape key press
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeMysteryModal();
         });
 
-        // Initialize board
         document.addEventListener('DOMContentLoaded', renderBoard);
     </script>
 </body>
