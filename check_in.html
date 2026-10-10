@@ -29,6 +29,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            z-index: 10;
         }
         header h1 {
             font-size: 1.3rem;
@@ -54,6 +55,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
         }
         .screen {
             display: none;
@@ -74,45 +76,46 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            padding: 1rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             margin-bottom: 0.8rem;
         }
         .glass-card h2 {
-            font-size: 1.15rem;
+            font-size: 1.25rem;
             color: #38bdf8;
-            margin-bottom: 0.8rem;
+            margin-bottom: 1rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 0.4rem;
+            padding-bottom: 0.5rem;
         }
         .form-group {
-            margin-bottom: 0.8rem;
+            margin-bottom: 1rem;
         }
         label {
             display: block;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.4rem;
             font-weight: 600;
             color: #cbd5e1;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
         }
         input[type="text"], input[type="number"], input[type="date"], select, textarea {
             width: 100%;
-            padding: 0.5rem 0.8rem;
-            background: rgba(15, 23, 42, 0.7);
+            padding: 0.6rem 0.8rem;
+            background: rgba(15, 23, 42, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
+            border-radius: 8px;
             color: #fff;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            transition: all 0.3s ease;
         }
         input[type="text"]:focus, input[type="number"]:focus, input[type="date"]:focus, select:focus, textarea:focus {
             border-color: #38bdf8;
-            box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+            background: rgba(15, 23, 42, 0.8);
         }
         select option {
             background: #1e1b4b;
@@ -122,176 +125,513 @@
             background: linear-gradient(135deg, #7928ca, #ff007f);
             color: white;
             border: none;
-            padding: 0.55rem 1rem;
-            border-radius: 6px;
-            font-weight: bold;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
             cursor: pointer;
-            transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 0.8rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.4rem;
+            font-weight: 600;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
-        .btn:hover:not(:disabled) {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(255, 0, 127, 0.4);
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+            filter: brightness(1.1);
         }
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none !important;
-            box-shadow: none !important;
+        .btn:active {
+            transform: translateY(0);
         }
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        .btn-secondary:hover:not(:disabled) {
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
-        }
-        .btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); }
-        .btn-success { background: linear-gradient(135deg, #10b981, #059669); }
-        .btn-warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
-        .btn-info { background: linear-gradient(135deg, #0ea5e9, #2563eb); }
-        .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.72rem; }
-        .flex-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
-        
+        .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+        .btn-secondary { background: rgba(255, 255, 255, 0.15); box-shadow: none; }
+        .btn-success { background: linear-gradient(135deg, #059669, #10b981); }
+        .btn-danger { background: linear-gradient(135deg, #dc2626, #ef4444); }
+        .btn-info { background: linear-gradient(135deg, #0284c7, #38bdf8); }
+        .btn-warning { background: linear-gradient(135deg, #d97706, #f59e0b); }
+
+        .flex-actions { display: flex; gap: 0.6rem; align-items: center; }
+
         .checkin-container-wrapper {
             display: flex;
             flex-direction: column;
-            flex: 1;
             height: 100%;
-            overflow: hidden;
-            gap: 0.8rem;
         }
         .checkin-header-bar {
-            background: linear-gradient(135deg, rgba(121, 40, 202, 0.35), rgba(255, 0, 127, 0.35));
-            border: 1px solid rgba(255, 0, 127, 0.4);
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
             border-radius: 12px;
-            padding: 1rem 1.2rem;
+            margin-bottom: 1rem;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
-            flex-shrink: 0;
-            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
         }
         .checkin-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 0.8rem;
-            overflow-y: auto;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1.2rem;
             flex: 1;
-            padding: 0.4rem;
+            overflow-y: auto;
+            padding: 0.5rem 4px 0.5rem 0.2rem;
         }
         .student-board-card {
-            background: rgba(255, 255, 255, 0.08);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
             padding: 1.2rem;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             cursor: pointer;
-            transition: all 0.2s ease;
-            min-height: 110px;
-            user-select: none;
             text-align: center;
+            user-select: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            min-height: 120px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
         }
         .student-board-card:hover {
-            transform: translateY(-2px);
-            border-color: #38bdf8;
-            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
+            transform: translateY(-5px) scale(1.02);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.3);
         }
         .student-board-card.checked-in {
-            background: rgba(16, 185, 129, 0.25);
+            background: rgba(16, 185, 129, 0.15);
             border-color: #10b981;
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4), inset 0 0 10px rgba(16, 185, 129, 0.1);
         }
-        .student-board-card .s-name { font-size: 1.1rem; font-weight: 700; color: #f8fafc; margin-bottom: 0.4rem; }
+        .student-board-card .s-name {
+            font-weight: 700;
+            font-size: 1.15rem;
+            margin-bottom: 0.5rem;
+            color: #f8fafc;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            z-index: 1;
+        }
         .student-board-card .s-status {
-            font-size: 0.75rem; font-weight: bold; padding: 3px 8px; border-radius: 6px;
-            text-transform: uppercase; background: rgba(255, 255, 255, 0.1); color: #cbd5e1;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            min-height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
         }
-        .student-board-card.checked-in .s-status { background: #10b981; color: white; }
-        
-        .teacher-bottom-bar {
-            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px;
-            padding: 0.8rem 1.2rem; display: flex; justify-content: space-between;
-            align-items: center; flex-shrink: 0; box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
-            margin-top: auto; 
+        .check-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 50%;
+            color: white;
+            font-size: 1rem;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.5);
         }
-        
+
         .mgmt-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 0.8rem; overflow-y: auto; flex: 1; padding: 0.4rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.2rem;
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem 4px 0.5rem 0.2rem;
         }
         .student-mgmt-card {
-            background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 10px; padding: 0.9rem; display: flex; flex-direction: column;
-            justify-content: space-between; gap: 0.6rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        .student-mgmt-card.absent-card { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
-        .mgmt-header { display: flex; justify-content: space-between; align-items: center; }
-        .mgmt-name { font-size: 1rem; font-weight: 700; color: #38bdf8; }
-        .badges-container { display: flex; flex-wrap: wrap; gap: 0.3rem; min-height: 28px; }
+        .student-mgmt-card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+            transform: translateY(-2px);
+        }
+        .student-mgmt-card.absent-card {
+            background: rgba(220, 38, 38, 0.12);
+            border-color: rgba(239, 68, 68, 0.25);
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.1);
+        }
+        .mgmt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 0.6rem;
+        }
+        .mgmt-name { font-weight: 700; font-size: 1.05rem; }
+        .badges-container { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.6rem; }
         .tag-badge {
-            font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: bold;
-            background: #64748b; color: white; text-transform: uppercase;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            color: white;
+            display: inline-block;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        .tag-badge.absent { background: #ef4444 !important; }
-        .tag-badge.present { background: #10b981 !important; }
+        .tag-badge.absent { background-color: #ef4444; }
+        .tag-badge.present { background-color: #10b981; }
 
-        .tags-selector { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; }
+        .tags-selector { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.2rem; }
         .tag-toggle-btn {
-            background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #cbd5e1; font-size: 0.7rem; padding: 4px; border-radius: 4px;
-            cursor: pointer; text-align: center; transition: all 0.15s;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #cbd5e1;
+            font-size: 0.75rem;
+            padding: 0.35rem 0.8rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
-        .tag-toggle-btn.active { color: white; font-weight: bold; }
-        
-        .history-list { display: flex; flex-direction: column; gap: 0.6rem; }
-        .history-item {
-            background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(56, 189, 248, 0.3);
-            border-radius: 8px; padding: 0.8rem; display: flex; justify-content: space-between; align-items: flex-start;
+        .tag-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            transform: translateY(-1px);
         }
-        
+        .tag-toggle-btn.active {
+            color: #fff;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .teacher-bottom-bar {
+            margin-top: 1rem;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            flex-wrap: wrap; 
+            gap: 10px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+        }
+
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
         }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-overlay.active { display: flex; }
         .modal-card {
-            background: rgba(30, 27, 75, 0.95); border: 1px solid rgba(255, 255, 255, 0.25);
-            border-radius: 12px; padding: 1.5rem; width: 95%; max-width: 550px;
-            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.7); text-align: center;
+            background: linear-gradient(145deg, #1e1b4b, #311042);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            max-height: 90vh; 
+            display: flex; 
+            flex-direction: column;
         }
-        .modal-card h3 { font-size: 1.3rem; margin-bottom: 0.8rem; color: #38bdf8; }
-        .modal-card p { color: #cbd5e1; margin-bottom: 1rem; font-size: 0.92rem; line-height: 1.4; white-space: pre-wrap; }
-        .welcome-popup-text {
-            font-size: 1.5rem; font-weight: 800; color: #fbbf24; margin: 1rem 0;
-            text-shadow: 0 0 10px rgba(251, 191, 36, 0.4);
+        .modal-card h3 { color: #38bdf8; margin-bottom: 1rem; font-size: 1.4rem; }
+        .welcome-popup-text { font-size: 1.6rem; font-weight: 700; color: #fbbf24; margin: 1.2rem 0; }
+        .picker-name { font-size: 2rem; font-weight: 800; color: #38bdf8; min-height: 80px; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+
+        .history-list { display: flex; flex-direction: column; gap: 1rem; padding-bottom: 1rem; }
+        .history-item {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        .picker-name { 
-            font-size: 1.5rem; font-weight: bold; color: #fbbf24; margin: 2rem 0; 
-            min-height: 3.5rem; text-shadow: 0 0 15px rgba(251, 191, 36, 0.5);
-            display: flex; flex-direction: column; gap: 0.3rem;
+        .history-item:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+            transform: translateY(-2px);
         }
+
+        .overview-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            padding: 1.5rem;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .overview-card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .overview-row {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 1rem;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            transition: background 0.2s;
+        }
+        .overview-row:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        .groups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.2rem;
+            margin-top: 1.2rem;
+            overflow-y: auto;
+            text-align: left;
+            flex: 1; 
+            padding-right: 5px;
+        }
+        .group-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .group-card h4 {
+            color: #fbbf24;
+            margin-bottom: 0.6rem;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            padding-bottom: 0.4rem;
+            font-size: 1.15rem;
+        }
+        .group-student {
+            font-size: 1rem;
+            color: #cbd5e1;
+            padding: 0.3rem 0;
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
+        }
+        .group-student:last-child {
+            border-bottom: none;
+        }
+        
+        .timer-widget-container {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 1.2rem;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 280px;
+            transition: box-shadow 0.3s ease;
+        }
+        .timer-display {
+            font-size: 4rem;
+            font-weight: 800;
+            color: #38bdf8;
+            font-variant-numeric: tabular-nums;
+            text-shadow: 0 2px 10px rgba(56, 189, 248, 0.4);
+            margin: 0.5rem 0;
+            line-height: 1;
+        }
+
+        .toggle-wrapper { display: flex; align-items: center; gap: 0.6rem; }
+        .switch { position: relative; display: inline-block; width: 48px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.2); transition: .4s; border-radius: 34px; border: 1px solid rgba(255,255,255,0.3); }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        input:checked + .slider { background-color: #10b981; border-color: #10b981; }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        .class-stars-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            pointer-events: none;
+        }
+        .class-stars-text { font-weight: 700; color: #fbbf24; font-size: 0.9rem; margin: 0; }
+
+        /* Seating plan: drie tafelblokken naast elkaar, passend in de beschikbare schermhoogte. */
+        .seating-plan-container {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: clamp(6px, 1vw, 16px);
+            flex: 1 1 0;
+            min-height: 0;
+            min-width: 0;
+            width: 100%;
+            overflow: hidden;
+            padding: 6px;
+        }
+        .seating-block {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-rows: repeat(5, minmax(0, 1fr));
+            gap: clamp(3px, .55vw, 9px);
+            min-height: 0;
+            min-width: 0;
+            height: 100%;
+            background: rgba(255,255,255,0.025);
+            padding: clamp(4px, .7vw, 10px);
+            border-radius: 14px;
+            border: 1px dashed rgba(255,255,255,0.17);
+        }
+        .seating-plan-container .student-board-card,
+        .seating-plan-container .empty-desk {
+            min-width: 0;
+            min-height: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 10px;
+            padding: 4px;
+        }
+        .seating-plan-container .student-board-card {
+            gap: 2px;
+            transform: none;
+        }
+        .seating-plan-container .student-board-card:hover {
+            transform: none;
+        }
+        .seating-plan-container .student-board-card .s-name {
+            font-size: clamp(10px, 1.05vw, 15px);
+            line-height: 1.15;
+            overflow-wrap: anywhere;
+            margin: 0;
+        }
+        .seating-plan-container .student-board-card .s-status {
+            min-height: 0;
+            font-size: clamp(9px, .8vw, 12px);
+            line-height: 1.1;
+        }
+        .seating-plan-container .check-icon {
+            width: 23px;
+            height: 23px;
+            font-size: .85rem;
+        }
+        .seating-plan-container .empty-desk {
+            background: rgba(255,255,255,0.025);
+            border: 1px dashed rgba(255,255,255,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.08);
+        }
+        .seating-plan-container .empty-desk span { font-size: clamp(13px, 2vw, 25px) !important; }
+        @media (max-height: 700px) {
+            #checkin-screen .checkin-header-bar { padding: .45rem .7rem; margin-bottom: .35rem; }
+            #checkin-screen #dynamic-greeting-text { font-size: 1.5rem !important; }
+            #checkin-screen .teacher-bottom-bar { padding: .4rem .7rem; margin-top: .35rem; }
+            .seating-plan-container { padding: 3px; gap: 5px; }
+            .seating-block { padding: 4px; gap: 3px; }
+        }
+
+        /* Star Timer popup: no second toolbar on the lesson screen. */
+        .star-timer-bar { flex-shrink: 0; background: rgba(15,23,42,.92); border: 1px solid rgba(251,191,36,.4); border-radius: 12px; padding: .55rem .85rem; display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:.6rem; }
+        .star-timer-modal-card { max-width: 560px; gap: .9rem; padding: 1.5rem; overflow-y: auto; }
+        .star-timer-modal-card .star-timer-bar { border: none; background: transparent; box-shadow: none; flex-direction: column; margin: 0; padding: 0; gap: 1rem; }
+        .star-timer-modal-card .star-timer-presets { gap: .4rem; }
+        .star-timer-modal-card .star-timer-clock { font-size: 2.6rem; min-width: 125px; }
+        .star-timer-modal-card .star-timer-info { line-height: 1.5; }
+        .star-timer-hint { color: #cbd5e1; font-size: .83rem; }
+        #open-star-timer.timer-running { box-shadow: 0 0 0 2px rgba(251,191,36,.65); }
+        @media (max-height: 650px) { .star-timer-modal-card { padding: 1rem; gap: .45rem; } .star-timer-modal-card .star-timer-bar { gap:.5rem; } }
+        .star-timer-title { white-space:nowrap; }
+        .star-timer-presets, .star-timer-controls { display:flex; align-items:center; flex-wrap:wrap; justify-content:center; gap:.28rem; }
+        .preset-caption { font-size:.76rem; color:#cbd5e1; margin-right:.15rem; }
+        .star-preset { border:1px solid #657187; background:#29354e; color:#e2e8f0; border-radius:7px; padding:.36rem .55rem; font-size:.79rem; font-weight:700; cursor:pointer; }
+        .star-preset.selected { background:#fbbf24; color:#162033; border-color:#fbbf24; box-shadow:0 0 0 1px #fbbf24; }
+        .star-preset:disabled { opacity:.6; cursor:default; }
+        .star-preset:focus-visible { outline:2px solid white; outline-offset:2px; }
+        .star-timer-clock { color:#fbbf24; font-size:1.5rem; font-weight:800; font-variant-numeric:tabular-nums; min-width:75px; text-align:center; }
+        .star-timer-info { color:#cbd5e1; font-size:.8rem; }
+        .student-mgmt-card.star-timeout { border-color:#f97316; background:rgba(249,115,22,.13); }
+        .timeout-countdown { display:inline-block; margin-left:.3rem; font-size:.78rem; font-variant-numeric:tabular-nums; color:#fdba74; }
+        .star-award-toast { position:fixed; z-index:1800; top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; padding:.8rem 1.4rem; background:rgba(20,30,53,.96); border:2px solid #fbbf24; color:#ffdf80; font-size:1.5rem; font-weight:800; border-radius:16px; box-shadow:0 10px 35px #0008; animation:star-award-appear 2.3s ease-out forwards; max-width:90vw; text-align:center; }
+        @keyframes star-award-appear { 0%{opacity:0;transform:translate(-50%,-43%) scale(.8)} 15%{opacity:1;transform:translate(-50%,-50%) scale(1.05)} 30%{transform:translate(-50%,-50%) scale(1)} 80%{opacity:1} 100%{opacity:0} }
+        @media (prefers-reduced-motion: reduce) { .star-award-toast { animation:none; } }
+
+        .trophy-celebration-modal { z-index: 2200; }
+        .trophy-celebration-modal .modal-card { max-width: 760px; width: 94%; overflow: hidden; border: 2px solid #fbbf24; background: radial-gradient(circle at top, #25355c 0%, #111827 72%); }
+        .trophy-celebration-wrap { position: relative; text-align: center; padding: 0.5rem 0 0.2rem; }
+        .trophy-celebration-burst { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+        .trophy-confetti { position: absolute; top: -14%; font-size: 1.6rem; opacity: 0; animation: trophy-confetti-fall 3.8s linear forwards; filter: drop-shadow(0 4px 10px rgba(0,0,0,.35)); }
+        @keyframes trophy-confetti-fall {
+            0% { transform: translateY(-20px) rotate(0deg) scale(.8); opacity: 0; }
+            10% { opacity: 1; }
+            85% { opacity: 1; }
+            100% { transform: translateY(470px) rotate(360deg) scale(1.1); opacity: 0; }
+        }
+        .trophy-main-icon { font-size: 4.6rem; line-height: 1; margin: .35rem 0 .65rem; display: inline-block; animation: trophy-bounce 1.8s ease-in-out infinite; filter: drop-shadow(0 10px 20px rgba(251,191,36,.25)); }
+        @keyframes trophy-bounce {
+            0%,100% { transform: translateY(0) scale(1); }
+            20% { transform: translateY(-7px) scale(1.05); }
+            35% { transform: translateY(0) scale(.98); }
+            55% { transform: translateY(-12px) scale(1.07); }
+            70% { transform: translateY(0) scale(1); }
+        }
+        .trophy-celebration-sub { color: #fde68a; font-size: 1rem; margin-top: -0.3rem; margin-bottom: 1rem; }
+        .trophy-winners-grid { display: grid; gap: 0.85rem; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin: 1.1rem 0 0.6rem; }
+        .trophy-winner-card { background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.06)); border: 1px solid rgba(251,191,36,.4); border-radius: 18px; padding: 1rem .8rem; box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 10px 24px rgba(0,0,0,.18); animation: trophy-card-pop .6s ease both; }
+        .trophy-winner-card:nth-child(2n) { animation-delay: .08s; }
+        .trophy-winner-card:nth-child(3n) { animation-delay: .16s; }
+        .trophy-winner-card:nth-child(4n) { animation-delay: .24s; }
+        @keyframes trophy-card-pop { 0% { opacity: 0; transform: translateY(18px) scale(.92); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+        .trophy-winner-name { font-size: 1.18rem; font-weight: 800; color: #fff; }
+        .trophy-winner-meta { margin-top: .28rem; color: #fde68a; font-weight: 700; }
+        .trophy-winner-streak { margin-top: .18rem; color: #dbeafe; font-size: .92rem; }
+        .trophy-celebration-note { color: #cbd5e1; font-size: 0.96rem; margin: .8rem auto 0; max-width: 520px; }
+        @media (prefers-reduced-motion: reduce) {
+            .trophy-confetti, .trophy-main-icon, .trophy-winner-card { animation: none; }
+        }
+
+        .timeout-name { border:0; background:transparent; color:inherit; font:inherit; text-align:left; cursor:pointer; padding:2px 3px; border-radius:5px; }
+        .timeout-name:hover, .timeout-name:focus-visible { outline:2px solid #fbbf24; }
+        .timeout-name[aria-pressed="true"] { color:#fdba74; text-decoration:line-through; }
     </style>
 </head>
 <body>
     <header>
         <h1>☑️ Check in</h1>
         <div class="header-actions">
+            <button class="btn btn-secondary btn-sm" onclick="toggleTimerWidget()">⏱️ Timer</button>
             <button class="btn btn-secondary btn-sm" id="btn-to-settings" style="display: none;" onclick="showSettingsScreen()">⚙️ Class Setup</button>
             <button class="btn btn-secondary btn-sm" id="btn-to-student" onclick="showStudentOverviewScreen()">🧑‍🎓 Student Info</button>
             <button class="btn btn-secondary btn-sm" id="btn-to-overview" onclick="showOverviewScreen()">📊 History</button>
@@ -299,16 +639,32 @@
         </div>
     </header>
 
+    <div id="timer-widget-container" class="timer-widget-container">
+        <div class="flex-actions" style="margin-bottom: 0.8rem; width: 100%; justify-content: center;">
+            <button class="tag-toggle-btn active" id="btn-mode-stopwatch" onclick="setTimerMode('stopwatch')" style="background: rgba(255,255,255,0.15);">Stopwatch</button>
+            <button class="tag-toggle-btn" id="btn-mode-timer" onclick="setTimerMode('timer')">Timer</button>
+        </div>
+        <div id="timer-input-div" style="display: none; width: 100%; justify-content: center; align-items: center; gap: 0.5rem; margin-bottom: 0.8rem;">
+            <input type="number" id="timer-min-input" value="5" min="1" max="90" style="width: 80px; text-align: center; padding: 0.4rem; font-weight: bold; font-size: 1rem;">
+            <span style="font-size: 0.95rem; color: #cbd5e1; font-weight: 600;">min</span>
+            <button class="btn btn-info btn-sm" onclick="applyTimerInput()">Zet</button>
+        </div>
+        <div id="timer-display" class="timer-display">00:00</div>
+        <div class="flex-actions" style="width: 100%; justify-content: space-between; margin-top: 0.8rem;">
+            <button class="btn btn-success btn-sm" id="btn-timer-start" style="flex:1; font-size: 1rem;" onclick="toggleTimerStart()">▶️ Start</button>
+            <button class="btn btn-danger btn-sm" onclick="resetTimer()" style="font-size: 1rem;">Reset</button>
+        </div>
+    </div>
+
     <main>
-        <!-- 1. SETTINGS / START SCREEN -->
         <div id="settings-screen" class="screen active">
             <div class="glass-card">
                 <h2>👥 Manage Classes & Students</h2>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
                     <div>
                         <div class="form-group">
                             <label for="class-select">Select Class:</label>
-                            <div style="display: flex; gap: 0.4rem;">
+                            <div style="display: flex; gap: 0.5rem;">
                                 <select id="class-select" onchange="loadSelectedClass()"></select>
                                 <button class="btn btn-danger btn-sm" onclick="confirmDeleteCurrentClass()">🗑️</button>
                             </div>
@@ -321,16 +677,16 @@
                     <div>
                         <div class="form-group">
                             <label for="students-input">Enter Students (1 per line):</label>
-                            <textarea id="students-input" rows="4" placeholder="Type or paste student names here..." oninput="previewStudentCount()"></textarea>
+                            <textarea id="students-input" rows="5" placeholder="Type or paste student names here..." oninput="previewStudentCount()"></textarea>
                         </div>
                         <div class="flex-actions" style="justify-content: space-between; align-items: center;">
-                            <span id="student-count-preview" style="font-size: 0.8rem; color: #94a3b8;">0 students</span>
+                            <span id="student-count-preview" style="font-size: 0.85rem; color: #94a3b8;">0 students</span>
                             <button class="btn btn-secondary btn-sm" onclick="saveClassToStorage()">💾 Save Class</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="flex-actions" style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+                <div class="flex-actions" style="margin-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
                     <button class="btn btn-secondary btn-sm" onclick="exportData()">📥 Export JSON Backup</button>
                     <label class="btn btn-secondary btn-sm" style="cursor: pointer; margin: 0;">
                         📤 Import JSON Backup
@@ -338,26 +694,45 @@
                     </label>
                 </div>
 
-                <div style="margin-top: 1.5rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 1rem;">
-                    <button class="btn btn-success" style="font-size: 1.1rem; padding: 0.8rem 2.5rem;" onclick="startCheckInSession()">
+                <div style="margin-top: 2rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 1.5rem;">
+                    <button class="btn btn-success" style="font-size: 1.2rem; padding: 1rem 3rem;" onclick="startCheckInSession()">
                         🚀 Start Check-in Lesson ➔
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- 2. CHECK-IN BOARD SCREEN -->
         <div id="checkin-screen" class="screen">
             <div class="checkin-container-wrapper">
-                <div class="checkin-header-bar" style="flex-direction: column; justify-content: center; text-align: center;">
-                    <div style="font-size: 2.2rem; font-weight: 800; color: #38bdf8; margin-bottom: 0.2rem; text-align: center; width: 100%;" id="dynamic-greeting-text">Good morning / Good afternoon, please check in.</div>
-                    <div style="font-size: 1rem; font-weight: 600; color: #f8fafc;" id="checkin-class-title">Class</div>
+                <div class="checkin-header-bar" style="flex-direction: column; justify-content: center; text-align: center; align-items: center;">
+                    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
+                        <div style="flex: 1; min-width: 150px;"></div>
+                        <div style="flex: 2; min-width: 300px;">
+                            <div style="font-size: 2.5rem; font-weight: 800; color: #38bdf8; margin-bottom: 0.3rem; text-align: center; width: 100%;" id="dynamic-greeting-text">Good morning / Good afternoon</div>
+                            <div style="font-size: 1.1rem; font-weight: 600; color: #f8fafc;" id="checkin-class-title">Class</div>
+                            <div id="seating-plan-instruction" style="display:none;color:#fbbf24;font-size:1rem;font-weight:700;margin-top:0.35rem;">Find your name on the seating plan and sit in your assigned seat.</div>
+                        </div>
+                        <div style="flex: 1; display: flex; justify-content: flex-end; min-width: 150px;">
+                            <div class="toggle-wrapper" style="background: rgba(0,0,0,0.3); padding: 0.6rem 1rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                                <span style="font-size: 0.9rem; font-weight: 600; color: #cbd5e1;">Seating plan:</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="seating-toggle" onchange="toggleSeatingPlan()">
+                                    <span class="slider"></span>
+                                </label>
+                                <button class="btn btn-info btn-sm" onclick="createNewSeatingPlan()" title="Generate a new random seating plan">🎲 New Plan</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="class-stars-container">
+                        <div class="class-stars-text" id="class-stars-text">⭐ Class total: Calculating...</div>
+                    </div>
                 </div>
                 
                 <div id="checkin-grid-container" class="checkin-grid"></div>
                 
                 <div class="teacher-bottom-bar">
-                    <div style="font-size: 0.85rem; font-weight: 600; color: #cbd5e1;">Teacher Controls:</div>
+                    <div style="font-size: 0.9rem; font-weight: 600; color: #cbd5e1;">Teacher Controls:</div>
                     <div class="flex-actions">
                         <button class="btn btn-secondary btn-sm" onclick="showSettingsScreen()">⚙️ Back to Setup</button>
                         <button class="btn btn-success" onclick="finishCheckIn()">Finish Check-in & Add Details ➔</button>
@@ -366,41 +741,45 @@
             </div>
         </div>
 
-        <!-- 3. REGISTRATION & DETAILS SCREEN -->
         <div id="mgmt-screen" class="screen">
             <div class="checkin-container-wrapper">
                 <div class="checkin-header-bar" style="flex-direction: column; justify-content: center; text-align: center;">
-                    <div style="font-size: 0.85rem; color: #cbd5e1; text-transform: uppercase;">Lesson Registration & Remarks</div>
-                    <div style="font-size: 1.2rem; font-weight: 800; color: #38bdf8;" id="mgmt-class-title">Class</div>
-                    <div style="font-size: 0.85rem; color: #94a3b8;">Unchecked students are automatically marked absent</div>
+                    <div style="font-size: 0.9rem; color: #cbd5e1; text-transform: uppercase; letter-spacing: 1px;">Lesson Registration & Remarks</div>
+                    <div style="font-size: 1.4rem; font-weight: 800; color: #38bdf8;" id="mgmt-class-title">Class</div>
+                    <div style="font-size: 0.9rem; color: #94a3b8; margin-top: 0.3rem;">Unchecked students are automatically marked absent</div>
                 </div>
                 
+
                 <div id="mgmt-grid-container" class="mgmt-grid"></div>
                 
                 <div class="teacher-bottom-bar">
-                    <div style="font-size: 0.85rem; font-weight: 600; color: #cbd5e1;">Teacher Controls:</div>
-                    <div class="flex-actions">
+                    <div style="font-size: 0.9rem; font-weight: 600; color: #cbd5e1;">Teacher Controls:</div>
+                    <div class="flex-actions" style="flex-wrap: wrap;">
+                        <button class="btn btn-warning" id="open-star-timer" onclick="openStarTimerModal()">⭐ Star Timer</button>
+                        <button class="btn btn-warning" onclick="openStarPicker()">⭐ Random Ster</button>
+                        <button class="btn btn-secondary" onclick="createNewSeatingPlan()">🪑 Create Seating Plan</button>
+                        <button class="btn btn-info" onclick="openGroupMaker()">🧑‍🤝‍🧑 Group Maker</button>
                         <button class="btn btn-info" onclick="openAmountSelector('random')">🎲 Pick Student</button>
-                        <button class="btn btn-warning" onclick="openAmountSelector('hw')">🎲 Random HW Picker</button>
-                        <button class="btn btn-secondary btn-sm" onclick="startCheckInSession()">⬅ Back to Board</button>
+                        <button class="btn btn-warning" onclick="openAmountSelector('hw')">🎲 HW Picker</button>
+                        <button class="btn btn-secondary" onclick="startCheckInSession()">⬅ Back to Board</button>
                         <button class="btn btn-success" onclick="saveCurrentLessonSession()">💾 Save & Finish</button>
                     </div>
                 </div>
+
             </div>
         </div>
 
-        <!-- 3B. EDIT HISTORY LESSON SCREEN -->
         <div id="edit-history-screen" class="screen">
             <div class="checkin-container-wrapper">
                 <div class="checkin-header-bar" style="flex-direction: column; justify-content: center; text-align: center;">
-                    <div style="font-size: 0.85rem; color: #cbd5e1; text-transform: uppercase;">Edit Saved Lesson Record</div>
-                    <div style="font-size: 1.2rem; font-weight: 800; color: #38bdf8;" id="edit-mgmt-class-title">Class</div>
+                    <div style="font-size: 0.9rem; color: #cbd5e1; text-transform: uppercase;">Edit Saved Lesson Record</div>
+                    <div style="font-size: 1.4rem; font-weight: 800; color: #38bdf8;" id="edit-mgmt-class-title">Class</div>
                 </div>
                 
                 <div id="edit-mgmt-grid-container" class="mgmt-grid"></div>
                 
                 <div class="teacher-bottom-bar">
-                    <div style="font-size: 0.85rem; font-weight: 600; color: #cbd5e1;">Teacher Controls:</div>
+                    <div style="font-size: 0.9rem; font-weight: 600; color: #cbd5e1;">Teacher Controls:</div>
                     <div class="flex-actions">
                         <button class="btn btn-secondary btn-sm" onclick="showOverviewScreen()">Cancel</button>
                         <button class="btn btn-success" onclick="saveEditedLessonSession()">💾 Save Changes</button>
@@ -409,15 +788,14 @@
             </div>
         </div>
 
-        <!-- 4. HISTORY & OVERVIEW SCREEN -->
         <div id="overview-screen" class="screen">
             <div class="glass-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.4rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.8rem;">
                     <h2>📊 Saved Lessons History</h2>
                     <button class="btn btn-secondary btn-sm" onclick="showSettingsScreen()">⬅ Back to Setup</button>
                 </div>
                 
-                <div class="form-group" style="margin-bottom: 1rem; flex-shrink: 0;">
+                <div class="form-group" style="margin-bottom: 1.5rem; flex-shrink: 0;">
                     <label for="history-class-filter">Filter Class:</label>
                     <select id="history-class-filter" onchange="renderHistoryList()">
                         <option value="">All Classes</option>
@@ -428,18 +806,18 @@
             </div>
         </div>
 
-        <!-- 5. PERIOD OVERVIEW SCREEN -->
         <div id="period-overview-screen" class="screen">
             <div class="glass-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.4rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.8rem;">
                     <h2>📅 Period Registration Overview</h2>
                     <div class="flex-actions">
-                        <button class="btn btn-success btn-sm" onclick="downloadPeriodPdf()">📥 Download Print-Friendly PDF</button>
+                        <button class="btn btn-info btn-sm" onclick="downloadPeriodCsv()">📥 Export Excel (CSV)</button>
+                        <button class="btn btn-success btn-sm" onclick="downloadPeriodPdf()">📥 Download Print PDF</button>
                         <button class="btn btn-secondary btn-sm" onclick="showSettingsScreen()">⬅ Back to Setup</button>
                     </div>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.8rem; margin-bottom: 1rem;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
                     <div class="form-group">
                         <label for="period-start">Start Date:</label>
                         <input type="date" id="period-start" onchange="generatePeriodOverview()">
@@ -460,15 +838,14 @@
             </div>
         </div>
 
-        <!-- 6. INDIVIDUAL STUDENT OVERVIEW SCREEN -->
         <div id="student-overview-screen" class="screen">
             <div class="glass-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.4rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.8rem;">
                     <h2>🧑‍🎓 Individual Student Record</h2>
                     <button class="btn btn-secondary btn-sm" onclick="showSettingsScreen()">⬅ Back to Setup</button>
                 </div>
 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.8rem; margin-bottom: 1rem;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
                     <div class="form-group">
                         <label for="student-overview-class">Select Class:</label>
                         <select id="student-overview-class" onchange="populateStudentOverviewDropdown()"></select>
@@ -479,32 +856,28 @@
                     </div>
                 </div>
 
-                <div id="student-overview-results" style="overflow-y: auto; flex: 1; padding-right: 5px; display: flex; flex-direction: column; gap: 0.6rem;">
-                    <!-- individual remarks will go here -->
-                </div>
+                <div id="student-overview-results" style="overflow-y: auto; flex: 1; padding-right: 5px; display: flex; flex-direction: column; gap: 0.8rem;"></div>
             </div>
         </div>
     </main>
 
-    <!-- WELCOME TEXT MODAL -->
     <div id="welcome-modal" class="modal-overlay">
         <div class="modal-card">
             <h3 id="welcome-student-name">Name</h3>
             <div class="welcome-popup-text" id="welcome-msg-text">Welcome!</div>
-            <p style="color: #94a3b8; font-size: 0.85rem;">You have successfully checked in for this lesson.</p>
-            <p style="color: #94a3b8; font-size: 0.85rem;">Please find a seat and sit down.</p>
-            <div style="margin-top: 1rem;">
+            <p style="color: #94a3b8; font-size: 0.95rem;">You have successfully checked in for this lesson.</p>
+            <p style="color: #94a3b8; font-size: 0.95rem;">Please find a seat and sit down.</p>
+            <div style="margin-top: 1.5rem;">
                 <button class="btn btn-success btn-sm" onclick="closeWelcomeModal()">Close</button>
             </div>
         </div>
     </div>
 
-    <!-- AMOUNT SELECTOR MODAL -->
     <div id="amount-selector-modal" class="modal-overlay">
         <div class="modal-card">
             <h3>Select Amount</h3>
-            <p style="color: #cbd5e1; font-size: 0.9rem;">How many students do you want to pick?</p>
-            <div class="flex-actions" style="justify-content: center; margin-top: 1rem; margin-bottom: 1.5rem;">
+            <p style="color: #cbd5e1; font-size: 1rem;">How many students do you want to pick?</p>
+            <div class="flex-actions" style="justify-content: center; margin-top: 1.5rem; margin-bottom: 2rem;">
                 <button class="btn btn-info" onclick="startPicker(1)">1</button>
                 <button class="btn btn-info" onclick="startPicker(2)">2</button>
                 <button class="btn btn-info" onclick="startPicker(3)">3</button>
@@ -517,55 +890,139 @@
         </div>
     </div>
 
-    <!-- HW PICKER MODAL -->
     <div id="hw-picker-modal" class="modal-overlay">
         <div class="modal-card" style="max-width: 600px;">
             <h3>🎲 Random HW Picker</h3>
             <div id="hw-picker-animation" class="picker-name">Ready...</div>
-            <div id="hw-picker-results" style="display: none; flex-direction: column; gap: 0.8rem; margin-top: 1rem; text-align: left;">
-                <!-- Populated via JS -->
-            </div>
-            <div style="margin-top: 1.5rem;">
+            <div id="hw-picker-results" style="display: none; flex-direction: column; gap: 1rem; margin-top: 1.5rem; text-align: left;"></div>
+            <div style="margin-top: 2rem;">
                 <button class="btn btn-secondary" onclick="closeHwPicker()">Done / Close</button>
             </div>
         </div>
     </div>
 
-    <!-- RANDOM PICKER MODAL -->
     <div id="random-picker-modal" class="modal-overlay">
         <div class="modal-card">
             <h3>🎲 Random Student Picker</h3>
             <div id="random-picker-animation" class="picker-name">Ready...</div>
-            <div id="random-picker-results" style="display: none; flex-direction: column; gap: 0.5rem; margin-top: 1rem;">
-                <!-- Populated via JS -->
-            </div>
-            <div style="margin-top: 1.5rem;">
+            <div id="random-picker-results" style="display: none; flex-direction: column; gap: 0.8rem; margin-top: 1.5rem;"></div>
+            <div style="margin-top: 2rem;">
                 <button class="btn btn-secondary" onclick="closeRandomPicker()">Close</button>
             </div>
         </div>
     </div>
 
-    <!-- DETAIL / HISTORY OVERVIEW MODAL -->
     <div id="detail-modal" class="modal-overlay">
-        <div class="modal-card" style="max-width: 650px;">
+        <div class="modal-card" style="max-width: 700px;">
             <h3 id="detail-modal-title">Lesson Details</h3>
-            <div id="detail-modal-content" style="max-height: 400px; overflow-y: auto; text-align: left; margin: 1rem 0; font-size: 0.9rem;"></div>
+            <div id="detail-modal-content" style="max-height: 400px; overflow-y: auto; text-align: left; margin: 1.5rem 0; font-size: 0.95rem;"></div>
             <div class="flex-actions" style="justify-content: center;">
                 <button class="btn btn-secondary" onclick="closeDetailModal()">Close</button>
             </div>
         </div>
     </div>
 
-    <!-- SYSTEM MESSAGE MODAL -->
     <div id="system-modal" class="modal-overlay">
         <div class="modal-card" style="max-width: 450px;">
             <h3 id="sys-modal-title">Notification</h3>
-            <p id="sys-modal-desc"></p>
-            <div class="flex-actions" style="justify-content: center; margin-top: 1.2rem;" id="sys-modal-actions">
-                <button class="btn btn-primary" onclick="closeSystemModal()">OK</button>
+            <p id="sys-modal-desc" style="font-size: 1.05rem; line-height: 1.5; color: #f8fafc;"></p>
+            <div class="flex-actions" style="justify-content: center; margin-top: 1.5rem;" id="sys-modal-actions">
+                <button class="btn btn-info" onclick="closeSystemModal()">OK</button>
             </div>
         </div>
     </div>
+
+    <div id="group-maker-modal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 800px; width: 95%;">
+            <h3>🧑‍🤝‍🧑 Group Maker</h3>
+            <div style="display: flex; gap: 1rem; justify-content: center; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                <label for="num-groups-input" style="margin:0; font-size:1.05rem;">Number of groups (2–6):</label>
+                <input type="number" id="num-groups-input" min="2" max="6" value="4" style="width: 80px; text-align: center; font-size: 1.1rem; font-weight: bold;">
+                <button class="btn btn-success" onclick="generateGroups()">Generate / Shuffle</button>
+            </div>
+            <div id="group-maker-results" class="groups-grid"></div>
+            <div style="margin-top: 2rem;">
+                <button class="btn btn-secondary" onclick="closeGroupMaker()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="star-timer-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="star-timer-modal-title" onclick="if(event.target === this) closeStarTimerModal()">
+        <div class="modal-card star-timer-modal-card">
+            <h3 id="star-timer-modal-title">⭐ Star Timer</h3>
+                <div class="star-timer-bar" aria-label="Star Timer" id="star-timer-bar">
+                    <div class="star-timer-presets" role="group" aria-label="Timer duration">
+                        <span class="preset-caption">Duration</span>
+                        <button class="star-preset" data-duration="5" onclick="setStarDuration(5)" type="button">5 min</button>
+                        <button class="star-preset selected" data-duration="10" onclick="setStarDuration(10)" type="button">10 min</button>
+                        <button class="star-preset" data-duration="15" onclick="setStarDuration(15)" type="button">15 min</button>
+                    </div>
+                    <div class="star-timer-presets" role="group" aria-label="Star award interval">
+                        <span class="preset-caption">Award every</span>
+                        <button class="star-preset" data-frequency="15" onclick="setStarFrequency(15)" type="button">15 sec</button>
+                        <button class="star-preset" data-frequency="20" onclick="setStarFrequency(20)" type="button">20 sec</button>
+                        <button class="star-preset selected" data-frequency="30" onclick="setStarFrequency(30)" type="button">30 sec</button>
+                        <button class="star-preset" data-frequency="45" onclick="setStarFrequency(45)" type="button">45 sec</button>
+                    </div>
+                    <div class="star-timer-controls">
+                        <span id="star-timer-clock" class="star-timer-clock" role="timer">10:00</span>
+                        <button class="btn btn-success btn-sm" id="star-timer-start" onclick="toggleStarTimer()">▶ Start</button>
+                        <button class="btn btn-secondary btn-sm" onclick="resetStarTimer()">↺ Reset</button>
+                    </div>
+                    <span class="star-timer-info" id="star-timer-info" aria-live="polite">Click a name for a time-out · 0 stars</span>
+                    <input id="star-duration" type="hidden" value="10">
+                    <input id="star-frequency" type="hidden" value="30">
+                </div>
+            <p class="star-timer-hint">Close this window to see all students. The timer keeps running.</p>
+            <button type="button" class="btn btn-secondary" onclick="closeStarTimerModal()">Close &amp; return to students</button>
+        </div>
+    </div>
+
+    <div id="star-selector-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3>⭐ Award Random Stars</h3>
+            <p style="color: #cbd5e1; font-size: 1rem;">What is the maximum number of stars to award?</p>
+            <div class="flex-actions" style="justify-content: center; margin-top: 1.5rem; margin-bottom: 2rem;">
+                <button class="btn btn-warning" onclick="startStarPicker(1)">1</button>
+                <button class="btn btn-warning" onclick="startStarPicker(2)">2</button>
+                <button class="btn btn-warning" onclick="startStarPicker(3)">3</button>
+                <button class="btn btn-warning" onclick="startStarPicker(4)">4</button>
+                <button class="btn btn-warning" onclick="startStarPicker(5)">5</button>
+            </div>
+            <div>
+                <button class="btn btn-secondary btn-sm" onclick="closeStarPicker()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="star-results-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3>🌟 Bonus Star Winners! 🌟</h3>
+            <p style="color: #cbd5e1; font-size: 0.95rem;">The following students received a bonus star:</p>
+            <div id="star-results-list" style="display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1.5rem;"></div>
+            <div style="margin-top: 2rem;">
+                <button class="btn btn-secondary" onclick="closeStarResults()">Close</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="trophy-celebration-modal" class="modal-overlay trophy-celebration-modal">
+        <div class="modal-card">
+            <div class="trophy-celebration-wrap">
+                <div id="trophy-celebration-burst" class="trophy-celebration-burst" aria-hidden="true"></div>
+                <div class="trophy-main-icon" aria-hidden="true">🏆</div>
+                <h3 style="font-size: 2rem; margin-bottom: 0.3rem;">Trophy Time!</h3>
+                <p class="trophy-celebration-sub">A new trophy has been earned in this lesson!</p>
+                <div id="trophy-winners-grid" class="trophy-winners-grid"></div>
+                <p class="trophy-celebration-note">Great job! Keep the positive streak going.</p>
+                <div class="flex-actions" style="justify-content: center; margin-top: 1.6rem;">
+                    <button class="btn btn-warning" onclick="closeTrophyCelebration()">Continue</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script>
         const esc = (str) => {
@@ -587,14 +1044,89 @@
         let activeClassName = "";
         let currentStudentsData = []; 
         let editingLessonId = null;   
-        let editingStudentsData = []; 
+        let editingStudentsData = [];
+        const expandedCards = new Set();
+        const expandedEditCards = new Set();
+        const starTimeouts = new Map(); // index -> resterende seconden
+        const starTimeoutCounts = new Map(); // aantal time-outs per leerling tijdens deze les
+        const starTimerWins = new Map(); // aantal automatische stars tijdens deze timer
+        let starTimerInterval = null;
+        let starTimerRunning = false;
+        let starTimerRemaining = 600;
+        let starTimerNextAward = 30;
+        let starTimerLastTick = 0;
+        let starTimerFrequency = 30;
+        let starTimerAwardCount = 0;
+        let starAnimationTimeout = null; 
         let welcomeTimeout;
         
         let pickerInterval;
-        let pickerMode = ''; // 'hw' or 'random'
+        let pickerMode = ''; 
         let lessonToDelete = null;
 
+        let trophyCelebrationCallback = null;
+
+        function buildTrophyConfetti() {
+            const burst = document.getElementById('trophy-celebration-burst');
+            if (!burst) return;
+            burst.innerHTML = '';
+            const icons = ['🏆','⭐','✨','🎉'];
+            for (let i = 0; i < 22; i++) {
+                const piece = document.createElement('span');
+                piece.className = 'trophy-confetti';
+                piece.textContent = icons[i % icons.length];
+                piece.style.left = (Math.random() * 92 + 2) + '%';
+                piece.style.animationDelay = (Math.random() * 0.9) + 's';
+                piece.style.animationDuration = (3 + Math.random() * 1.4) + 's';
+                piece.style.fontSize = (1 + Math.random() * 1.1) + 'rem';
+                burst.appendChild(piece);
+            }
+        }
+
+        function showTrophyCelebration(winners, onClose) {
+            const modal = document.getElementById('trophy-celebration-modal');
+            const grid = document.getElementById('trophy-winners-grid');
+            const sub = modal.querySelector('.trophy-celebration-sub');
+            const note = modal.querySelector('.trophy-celebration-note');
+            trophyCelebrationCallback = typeof onClose === 'function' ? onClose : null;
+            buildTrophyConfetti();
+            grid.innerHTML = winners.map((winner, index) => `
+                <div class="trophy-winner-card" style="animation-delay:${(index * 0.08).toFixed(2)}s">
+                    <div class="trophy-winner-name">${esc(winner.name)}</div>
+                    <div class="trophy-winner-meta">🏆 Trophy #${winner.trophyCount}</div>
+                    <div class="trophy-winner-streak">Reached ${winner.streak} positive lessons in a row</div>
+                </div>
+            `).join('');
+            sub.innerText = winners.length === 1
+                ? 'A new trophy has been earned in this lesson!'
+                : `${winners.length} new trophies have been earned in this lesson!`;
+            note.innerText = winners.length === 1
+                ? 'Great job! Keep the positive streak going.'
+                : 'Fantastic work! Your class has earned multiple new trophies today.';
+            modal.classList.add('active');
+        }
+
+        function closeTrophyCelebration() {
+            const modal = document.getElementById('trophy-celebration-modal');
+            modal.classList.remove('active');
+            document.getElementById('trophy-celebration-burst').innerHTML = '';
+            const callback = trophyCelebrationCallback;
+            trophyCelebrationCallback = null;
+            if (callback) callback();
+        }
+
+        
+        let isSeatingPlan = false;
+        let seatingOrder = [];
+        let timerMode = 'stopwatch';
+        let timerTime = 0; 
+        let timerIntervalId = null;
+        let timerRunning = false;
+        let timerTarget = 0;
+
         const availableTags = [
+            { id: 'bonus_star', label: 'Bonus Star ⭐', color: '#fbbf24' },
+            { id: 'hw_done', label: 'HW Well Done', color: '#eab308' },
             { id: 'late', label: 'Late', color: '#f97316' },
             { id: 'device_forgotten', label: 'Device forgotten', color: '#64748b' },
             { id: 'book_forgotten', label: 'Book forgotten', color: '#3b82f6' },
@@ -602,16 +1134,14 @@
             { id: 'pen_forgotten', label: 'Pen forgotten', color: '#14b8a6' },
             { id: 'earphones_forgotten', label: 'Earphones forgotten', color: '#6366f1' },
             { id: 'hw_forgotten', label: 'HW forgotten', color: '#f43f5e' },
-            { id: 'hw_done', label: 'HW Well Done', color: '#eab308' },
             { id: 'sent_out', label: 'Sent out', color: '#991b1b' },
             { id: 'behaviour', label: 'Behaviour', color: '#ea580c' }
         ];
 
-        // --- STATS CALCULATION UTILS --- //
-
         function calculateAllTimeStats(history, className, studentName) {
             let stars = 0;
             let streak = 0;
+            let trophies = 0;
             
             const chronologicalHistory = [...history].sort((a, b) => a.timestamp - b.timestamp);
             
@@ -620,22 +1150,24 @@
                     const s = lesson.students.find(stu => stu.name === studentName);
                     if (s && s.tags) {
                         const isAbsent = s.tags.includes('absent');
-                        const hasNegative = s.tags.some(t => t !== 'absent' && t !== 'hw_done');
+                        const hasNegative = s.tags.some(t => t !== 'absent' && t !== 'hw_done' && t !== 'bonus_star');
                         
-                        // Sterren
                         if (!isAbsent && !hasNegative) stars++;
-                        if (s.tags.includes('hw_done')) stars++;
+                        stars += s.tags.filter(t => t === 'hw_done').length;
+                        stars += s.tags.filter(t => t === 'bonus_star').length;
                         
-                        // Streak
+                        // A negative remark resets only the current streak.
+                        // Trophies already earned are permanent.
                         if (hasNegative) {
                             streak = 0;
                         } else if (!isAbsent) {
                             streak++;
+                            if (streak % 10 === 0) trophies++;
                         }
                     }
                 }
             });
-            return { stars, streak };
+            return { stars, streak, trophies };
         }
 
         function countNegativeLessons(history, className, studentName) {
@@ -644,7 +1176,7 @@
                 if (lesson.className === className) {
                     const s = lesson.students.find(stu => stu.name === studentName);
                     if (s && s.tags) {
-                        const hasNegative = s.tags.some(t => t !== 'absent' && t !== 'hw_done');
+                        const hasNegative = s.tags.some(t => t !== 'absent' && t !== 'hw_done' && t !== 'bonus_star');
                         if (hasNegative) count++;
                     }
                 }
@@ -652,7 +1184,6 @@
             return count;
         }
 
-        // Genereert de records van mijlpalen IN een specifieke les (voor geschiedenis)
         function getLessonMilestones(fullHistory, targetLesson) {
             const chronologicalHistory = [...fullHistory].sort((a, b) => a.timestamp - b.timestamp);
             const classHistory = chronologicalHistory.filter(l => l.className === targetLesson.className);
@@ -666,7 +1197,7 @@
                     if (!streaks[s.name]) streaks[s.name] = 0;
                     
                     const isAbsent = s.tags.includes('absent');
-                    const hasNegative = s.tags.some(t => t !== 'absent' && t !== 'hw_done');
+                    const hasNegative = s.tags.some(t => t !== 'absent' && t !== 'hw_done' && t !== 'bonus_star');
                     
                     let prevStreak = streaks[s.name];
                     if (hasNegative) {
@@ -687,30 +1218,40 @@
             return milestones;
         }
 
-        function formatStatsText(stars, streak) {
+        function formatStatsText(stars, streak, trophies = 0) {
             let text = '';
             if (stars > 0) text += (stars === 1 ? ' ⭐' : ` ⭐ ${stars}`);
-            if (streak > 0) text += ` 🔥 ${streak}`;
+            
+            const currentStreak = streak % 10;
+            
+            if (currentStreak > 0) {
+                text += ` 🔥${currentStreak}`;
+            }
+            if (trophies > 0) {
+                text += (trophies === 1 ? ' 🏆' : ` 🏆${trophies}`);
+            }
             return text;
         }
 
         function getSessionStarAndStreakDisplay(student) {
             let stars = (student.baseStars || 0);
             let streak = (student.baseStreak || 0);
+            let trophies = (student.baseTrophies || 0);
             
-            const hasNegative = student.tags.some(t => t !== 'absent' && t !== 'hw_done');
+            const hasNegative = student.tags.some(t => t !== 'absent' && t !== 'hw_done' && t !== 'bonus_star');
             const isAbsent = !student.checkedIn; 
             
             if (!isAbsent && !hasNegative) stars++;
-            if (student.tags.includes('hw_done')) stars++;
+            stars += student.tags.filter(t => t === 'hw_done').length;
+            stars += student.tags.filter(t => t === 'bonus_star').length;
             
             if (hasNegative) {
                 streak = 0;
             } else if (!isAbsent) {
                 streak++;
+                if (streak % 10 === 0) trophies++;
             }
-            
-            return formatStatsText(stars, streak);
+            return formatStatsText(stars, streak, trophies);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -731,7 +1272,7 @@
             document.getElementById('sys-modal-title').innerText = title;
             document.getElementById('sys-modal-desc').innerText = text;
             document.getElementById('sys-modal-actions').innerHTML = `
-                <button class="btn btn-secondary" onclick="closeSystemModal()">OK</button>
+                <button class="btn btn-info" onclick="closeSystemModal()">OK</button>
             `;
             document.getElementById('system-modal').classList.add('active');
         }
@@ -900,8 +1441,13 @@
         }
 
         function hideAllScreens() {
+            closeStarTimerModal();
             document.getElementById('settings-screen').classList.remove('active');
             document.getElementById('checkin-screen').classList.remove('active');
+            if (starTimerRunning) {
+                starTimerTick();
+                stopStarTimerClock();
+            }
             document.getElementById('mgmt-screen').classList.remove('active');
             document.getElementById('edit-history-screen').classList.remove('active');
             document.getElementById('overview-screen').classList.remove('active');
@@ -978,13 +1524,13 @@
             const studentLessons = history.filter(lesson => lesson.className === className && lesson.students.some(s => s.name === studentName));
 
             if (studentLessons.length === 0) {
-                container.innerHTML = '<div style="color: #94a3b8; font-size: 0.9rem;">No records found for this student.</div>';
+                container.innerHTML = '<div style="color: #94a3b8; font-size: 0.95rem;">No records found for this student.</div>';
                 return;
             }
 
-            let html = `<div style="font-size: 1.1rem; color: #38bdf8; margin-bottom: 0.5rem; font-weight: bold;">Record for ${esc(studentName)}</div>`;
+            let html = `<div style="font-size: 1.25rem; color: #38bdf8; margin-bottom: 0.8rem; font-weight: bold;">Record for ${esc(studentName)}</div>`;
 
-            studentLessons.sort((a, b) => b.timestamp - a.timestamp); // Ensure chronological sort
+            studentLessons.sort((a, b) => b.timestamp - a.timestamp);
 
             let negativeLessonsCount = 0;
             let listHtml = '';
@@ -1004,7 +1550,7 @@
                         const bgColor = tagDef ? tagDef.color : '#64748b';
                         tagBadges += ` <span class="tag-badge" style="background-color: ${bgColor};">${esc(label)}</span>`;
 
-                        if (tId !== 'hw_done') {
+                        if (tId !== 'hw_done' && tId !== 'bonus_star') {
                             hasNeg = true;
                         }
                     }
@@ -1013,17 +1559,19 @@
                 if (hasNeg) negativeLessonsCount++;
 
                 listHtml += `
-                    <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; border-left: 4px solid ${hasNeg ? '#ef4444' : (isAbsent ? '#f59e0b' : '#10b981')};">
-                        <div style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 0.4rem; font-weight: bold;">📅 ${esc(lesson.date)}</div>
-                        <div>${tagBadges}</div>
+                    <div class="overview-row" style="border-left: 4px solid ${hasNeg ? '#ef4444' : (isAbsent ? '#f59e0b' : '#10b981')};">
+                        <div>
+                            <div style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 0.5rem; font-weight: bold;">📅 ${esc(lesson.date)}</div>
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">${tagBadges}</div>
+                        </div>
                     </div>
                 `;
             });
 
             let summary = `
-                <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.2); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                <div class="overview-card" style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
                     <div><strong>Total Lessons Registered:</strong> ${studentLessons.length}</div>
-                    <div><strong>Lessons with Negative Remarks:</strong> <span style="color: ${negativeLessonsCount >= 3 ? '#ef4444' : '#10b981'}; font-weight: bold;">${negativeLessonsCount}</span></div>
+                    <div><strong>Lessons with Negative Remarks:</strong> <span style="color: ${negativeLessonsCount >= 3 ? '#ef4444' : '#10b981'}; font-weight: bold; font-size: 1.1rem;">${negativeLessonsCount}</span></div>
                 </div>
             `;
 
@@ -1040,7 +1588,13 @@
                 return;
             }
 
+            stopStarTimerClock();
+            clearStarAwardToast();
+            starTimeouts.clear();
+            starTimeoutCounts.clear();
+            starTimerWins.clear();
             activeClassName = name;
+            seatingOrder = [];
             const history = getSavedHistory();
             
             currentStudentsData = rawList.map(sName => {
@@ -1050,36 +1604,92 @@
                     checkedIn: false,
                     tags: [],
                     baseStars: stats.stars,
-                    baseStreak: stats.streak
+                    baseStreak: stats.streak,
+                    baseTrophies: stats.trophies
                 };
             });
 
             const currentHour = new Date().getHours();
             const timeGreeting = currentHour < 12 ? "Good morning" : "Good afternoon";
-            document.getElementById('dynamic-greeting-text').innerText = `${timeGreeting}, please check in.`;
+            document.getElementById('dynamic-greeting-text').innerText = timeGreeting;
             document.getElementById('checkin-class-title').innerText = `Class: ${esc(activeClassName)}`;
             
             hideAllScreens();
             document.getElementById('checkin-screen').classList.add('active');
             document.getElementById('btn-to-settings').style.display = 'inline-flex';
 
+            document.getElementById('seating-toggle').checked = isSeatingPlan;
             renderCheckInGrid();
+            updateClassStarsDisplay();
+        }
+
+        function toggleSeatingPlan() {
+            isSeatingPlan = document.getElementById('seating-toggle').checked;
+            renderCheckInGrid();
+        }
+
+        function createNewSeatingPlan() {
+            if (!currentStudentsData.length) return;
+            // Shuffle positions, never student records: check-ins, tags and star totals remain intact.
+            seatingOrder = currentStudentsData.map((_, i) => i);
+            for (let i = seatingOrder.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [seatingOrder[i], seatingOrder[j]] = [seatingOrder[j], seatingOrder[i]];
+            }
+            isSeatingPlan = true;
+            document.getElementById('seating-toggle').checked = true;
+            hideAllScreens();
+            document.getElementById('checkin-screen').classList.add('active');
+            renderCheckInGrid();
+        }
+
+        function createStudentCard(student, index) {
+            const card = document.createElement('div');
+            card.className = `student-board-card ${student.checkedIn ? 'checked-in' : ''}`;
+            card.onclick = () => toggleCheckIn(index);
+            card.innerHTML = `
+                <div class="s-name">${esc(student.name)}${getSessionStarAndStreakDisplay(student)}</div>
+                <div class="s-status">${student.checkedIn ? '<div class="check-icon">✓</div>' : 'Click to check in'}</div>
+            `;
+            return card;
         }
 
         function renderCheckInGrid() {
             const container = document.getElementById('checkin-grid-container');
             container.innerHTML = '';
+            document.getElementById('seating-plan-instruction').style.display = isSeatingPlan ? 'block' : 'none';
 
-            currentStudentsData.forEach((student, index) => {
-                const card = document.createElement('div');
-                card.className = `student-board-card ${student.checkedIn ? 'checked-in' : ''}`;
-                card.onclick = () => toggleCheckIn(index);
-                card.innerHTML = `
-                    <div class="s-name">${esc(student.name)}${getSessionStarAndStreakDisplay(student)}</div>
-                    <div class="s-status">${student.checkedIn ? 'Checked in ✓' : 'Click to check in'}</div>
-                `;
-                container.appendChild(card);
-            });
+            if (!isSeatingPlan) {
+                container.className = 'checkin-grid';
+                currentStudentsData.forEach((student, index) => {
+                    container.appendChild(createStudentCard(student, index));
+                });
+            } else {
+                container.className = 'seating-plan-container';
+                const rows = 5; 
+                const cols = 2;
+                
+                for (let b = 0; b < 3; b++) {
+                    const block = document.createElement('div');
+                    block.className = 'seating-block';
+                    
+                    for (let r = 0; r < rows; r++) {
+                        for (let c = 0; c < cols; c++) {
+                            const slotIndex = b * (rows * cols) + r * cols + c;
+                            if (slotIndex < currentStudentsData.length) {
+                                const studentIndex = seatingOrder.length === currentStudentsData.length ? seatingOrder[slotIndex] : slotIndex;
+                                block.appendChild(createStudentCard(currentStudentsData[studentIndex], studentIndex));
+                            } else {
+                                const empty = document.createElement('div');
+                                empty.className = 'empty-desk';
+                                empty.innerHTML = '<span style="font-size: 2rem; opacity: 0.1; filter: grayscale(1);">🪑</span>';
+                                block.appendChild(empty);
+                            }
+                        }
+                    }
+                    container.appendChild(block);
+                }
+            }
         }
 
         function toggleCheckIn(index) {
@@ -1096,6 +1706,54 @@
                 welcomeTimeout = setTimeout(closeWelcomeModal, 3000);
             }
             renderCheckInGrid();
+            updateClassStarsDisplay();
+        }
+
+        function updateClassStarsDisplay() {
+            let totalStars = 0;
+            let totalTrophies = 0;
+            const history = getSavedHistory();
+            
+            history.forEach(lesson => {
+                if (lesson.className === activeClassName) {
+                    lesson.students.forEach(s => {
+                        const isAbsent = s.tags.includes('absent');
+                        const hasNegative = s.tags.some(t => t !== 'absent' && t !== 'hw_done' && t !== 'bonus_star');
+                        if (!isAbsent && !hasNegative) totalStars++;
+                        totalStars += s.tags.filter(t => t === 'hw_done').length;
+                        totalStars += s.tags.filter(t => t === 'bonus_star').length;
+                    });
+                }
+            });
+            
+            currentStudentsData.forEach(s => {
+                const isAbsent = !s.checkedIn;
+                const hasNegative = s.tags.some(t => t !== 'absent' && t !== 'hw_done' && t !== 'bonus_star');
+                
+                if (s.checkedIn) {
+                    if (!hasNegative) totalStars++;
+                    totalStars += s.tags.filter(t => t === 'hw_done').length;
+                    totalStars += s.tags.filter(t => t === 'bonus_star').length;
+                }
+
+                let effectiveStreak = s.baseStreak || 0;
+                let studentTrophies = s.baseTrophies || 0;
+                if (hasNegative) {
+                    effectiveStreak = 0;
+                } else if (!isAbsent) {
+                    effectiveStreak++;
+                    if (effectiveStreak % 10 === 0) studentTrophies++;
+                }
+                
+                totalTrophies += studentTrophies;
+            });
+
+            const starsText = document.getElementById('class-stars-text');
+            if (starsText) {
+                let displayText = `⭐ Class total: ${totalStars}`;
+                if (totalTrophies > 0) displayText += ` | 🏆 Trophies: ${totalTrophies}`;
+                starsText.innerText = displayText;
+            }
         }
 
         function closeWelcomeModal() {
@@ -1116,6 +1774,220 @@
             document.getElementById('mgmt-class-title').innerText = `Registration: ${esc(activeClassName)}`;
             hideAllScreens();
             document.getElementById('mgmt-screen').classList.add('active');
+            resetStarTimer();
+            renderMgmtGrid();
+        }
+
+
+        function openStarTimerModal() {
+            document.getElementById('star-timer-modal').classList.add('active');
+            updateStarTimerUI();
+        }
+
+        function closeStarTimerModal() {
+            document.getElementById('star-timer-modal').classList.remove('active');
+        }
+
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && document.getElementById('star-timer-modal').classList.contains('active')) {
+                closeStarTimerModal();
+            }
+        });
+
+        function eligibleForTimedStar(student, index) {
+            return student.checkedIn && !student.tags.includes('absent') &&
+                !starTimeouts.has(index) &&
+                !student.tags.some(tag => tag !== 'absent' && tag !== 'bonus_star' && tag !== 'hw_done');
+        }
+
+        function updateStarTimerUI() {
+            const clock = document.getElementById('star-timer-clock');
+            if (!clock) return;
+            const seconds = Math.max(0, Math.ceil(starTimerRemaining));
+            clock.textContent = `${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;
+            const eligible = currentStudentsData.filter(eligibleForTimedStar).length;
+            document.getElementById('star-timer-info').textContent =
+                `${eligible} eligible students · ${starTimerAwardCount} stars · ${starTimerRunning ? 'click a name for a time-out' : 'time-outs available while timer runs'}`;
+            const button = document.getElementById('star-timer-start');
+            button.textContent = starTimerRunning ? '⏸ Pause' : (starTimerRemaining <= 0 ? '✓ Finished' : '▶ Start');
+            button.disabled = starTimerRemaining <= 0;
+            const launcher = document.getElementById('open-star-timer');
+            if (launcher) {
+                launcher.classList.toggle('timer-running', starTimerRunning);
+                launcher.textContent = starTimerRunning ? `⭐ Star Timer ${clock.textContent}` : '⭐ Star Timer';
+            }
+            document.querySelectorAll('.star-preset').forEach(button => {
+                button.disabled = starTimerRunning;
+                const duration = button.dataset.duration;
+                const frequency = button.dataset.frequency;
+                const active = duration ? Number(duration) === Number(document.getElementById('star-duration').value)
+                    : Number(frequency) === Number(document.getElementById('star-frequency').value);
+                button.classList.toggle('selected', active);
+                button.setAttribute('aria-pressed', String(active));
+            });
+        }
+
+        function stopStarTimerClock() {
+            if (starTimerInterval !== null) clearInterval(starTimerInterval);
+            starTimerInterval = null;
+            starTimerRunning = false;
+        }
+
+        function setStarDuration(minutes) {
+            if (starTimerRunning) return;
+            document.getElementById('star-duration').value = minutes;
+            resetStarTimer();
+        }
+
+        function setStarFrequency(seconds) {
+            if (starTimerRunning) return;
+            document.getElementById('star-frequency').value = seconds;
+            resetStarTimer();
+        }
+
+        function resetStarTimer() {
+            stopStarTimerClock();
+            const duration = Math.max(1, Math.min(180, Number(document.getElementById('star-duration').value) || 10));
+            starTimerFrequency = Math.max(1, Math.min(3600, Number(document.getElementById('star-frequency').value) || 30));
+            document.getElementById('star-duration').value = duration;
+            document.getElementById('star-frequency').value = starTimerFrequency;
+            starTimerRemaining = duration * 60;
+            starTimerNextAward = starTimerFrequency;
+            starTimerAwardCount = 0;
+            starTimeouts.clear();
+            starTimerWins.clear();
+            clearStarAwardToast();
+            if (document.getElementById('mgmt-screen').classList.contains('active')) renderMgmtGrid();
+            updateStarTimerUI();
+        }
+
+        function toggleStarTimer() {
+            if (starTimerRunning) {
+                starTimerTick();
+                stopStarTimerClock();
+                updateStarTimerUI();
+                return;
+            }
+            if (starTimerRemaining <= 0) return;
+            starTimerFrequency = Math.max(1, Math.min(3600, Number(document.getElementById('star-frequency').value) || 30));
+            starTimerLastTick = performance.now();
+            starTimerRunning = true;
+            starTimerInterval = setInterval(starTimerTick, 200);
+            updateStarTimerUI();
+        }
+
+        function clearStarAwardToast() {
+            if (starAnimationTimeout !== null) clearTimeout(starAnimationTimeout);
+            starAnimationTimeout = null;
+            document.getElementById('star-award-toast')?.remove();
+        }
+
+        function showStarAwardAnimation(name) {
+            clearStarAwardToast();
+            const toast = document.createElement('div');
+            toast.id = 'star-award-toast';
+            toast.className = 'star-award-toast';
+            // textContent voorkomt dat namen als HTML worden verwerkt.
+            toast.textContent = `🌟 Well done, ${name}! +1 ⭐`;
+            document.body.appendChild(toast);
+            starAnimationTimeout = setTimeout(() => {
+                toast.remove();
+                starAnimationTimeout = null;
+            }, 2300);
+        }
+
+        function updateTimeoutLabels() {
+            document.querySelectorAll('[data-timeout-index]').forEach(label => {
+                const index = Number(label.dataset.timeoutIndex);
+                const remaining = starTimeouts.get(index);
+                label.textContent = remaining === undefined ? '' : `⏳ ${Math.ceil(remaining)}s`;
+            });
+        }
+
+        function pickFairStarRecipient(candidates) {
+            // Leerlingen met minder automatische stars krijgen meer kans,
+            // zonder dat iemand definitief uitgesloten wordt.
+            const weights = candidates.map(({index}) => 1 / Math.pow(1 + (starTimerWins.get(index) || 0), 2));
+            let draw = Math.random() * weights.reduce((a, b) => a + b, 0);
+            for (let i = 0; i < candidates.length; i++) {
+                draw -= weights[i];
+                if (draw < 0) return candidates[i];
+            }
+            return candidates[candidates.length - 1];
+        }
+
+        function starTimerTick() {
+            if (!starTimerRunning) return;
+            const now = performance.now();
+            const elapsed = Math.max(0, (now - starTimerLastTick) / 1000);
+            starTimerLastTick = now;
+            const effectiveElapsed = Math.min(elapsed, starTimerRemaining);
+            starTimerRemaining = Math.max(0, starTimerRemaining - effectiveElapsed);
+            starTimerNextAward -= effectiveElapsed;
+
+            let timeoutExpired = false;
+            for (const [index, seconds] of starTimeouts) {
+                const remaining = seconds - effectiveElapsed;
+                if (remaining <= 0) {
+                    starTimeouts.delete(index);
+                    timeoutExpired = true;
+                } else starTimeouts.set(index, remaining);
+            }
+            // Tijdelijke uitsluiting geldt ook voor de ster op het vervalmoment van de time-out.
+            if (starTimerNextAward <= 0 && starTimerRemaining >= 0) {
+                const candidates = currentStudentsData.map((student, index) => ({student, index}))
+                    .filter(({student, index}) => eligibleForTimedStar(student, index));
+                if (candidates.length) {
+                    const winner = pickFairStarRecipient(candidates);
+                    winner.student.tags.push('bonus_star');
+                    starTimerWins.set(winner.index, (starTimerWins.get(winner.index) || 0) + 1);
+                    starTimerAwardCount++;
+                    showStarAwardAnimation(winner.student.name);
+                    renderMgmtGrid();
+                    updateClassStarsDisplay();
+                }
+                starTimerNextAward = starTimerFrequency;
+            }
+            if (timeoutExpired) renderMgmtGrid();
+            else updateTimeoutLabels();
+            if (starTimerRemaining <= 0) {
+                stopStarTimerClock();
+                starTimeouts.clear();
+                renderMgmtGrid();
+            }
+            updateStarTimerUI();
+        }
+
+        function toggleStarTimeout(index, event) {
+            if (event) event.stopPropagation();
+            if (!starTimerRunning || starTimerRemaining <= 0) return;
+            if (starTimeouts.has(index)) {
+                // Opnieuw klikken heft een lopende time-out op. Dit telt niet als nieuwe time-out.
+                starTimeouts.delete(index);
+            } else {
+                const student = currentStudentsData[index];
+                if (!student || !student.checkedIn || student.tags.includes('absent')) return;
+                const count = (starTimeoutCounts.get(index) || 0) + 1;
+                starTimeoutCounts.set(index, count);
+                starTimeouts.set(index, 60 + 15 * (count - 1));
+                if (count >= 3 && !student.tags.includes('behaviour')) {
+                    student.tags.push('behaviour');
+                    updateClassStarsDisplay();
+                }
+            }
+            renderMgmtGrid();
+        }
+
+        function addQuickStar(index, event) {
+            if(event) event.stopPropagation(); // Voorkomt dat de kaart in/uitklapt
+            currentStudentsData[index].tags.push('bonus_star');
+            renderMgmtGrid();
+            updateClassStarsDisplay();
+        }
+
+        function toggleCardExpansion(index) {
+            if (expandedCards.has(index)) expandedCards.delete(index);
+            else expandedCards.add(index);
             renderMgmtGrid();
         }
 
@@ -1126,53 +1998,61 @@
             currentStudentsData.forEach((student, index) => {
                 const isAbsent = student.tags.includes('absent');
                 const card = document.createElement('div');
-                card.className = `student-mgmt-card ${isAbsent ? 'absent-card' : ''}`;
+                card.className = `student-mgmt-card ${isAbsent ? 'absent-card' : ''} ${starTimeouts.has(index) ? 'star-timeout' : ''}`;
+
+                // Maak de hele kaart klikbaar
+                card.style.cursor = 'pointer';
+                card.onclick = () => toggleCardExpansion(index);
 
                 let badgesHTML = '';
-                if (isAbsent) {
-                    badgesHTML += `<span class="tag-badge absent">Absent</span>`;
-                } else {
-                    badgesHTML += `<span class="tag-badge present">Present</span>`;
-                }
+                if (isAbsent) badgesHTML += `<span class="tag-badge absent">Absent</span>`;
+                else badgesHTML += `<span class="tag-badge present">Present</span>`;
 
                 student.tags.forEach(tagId => {
                     if (tagId !== 'absent') {
                         const tagObj = availableTags.find(t => t.id === tagId);
-                        if (tagObj) {
-                            badgesHTML += `<span class="tag-badge" style="background-color: ${tagObj.color};">${esc(tagObj.label)}</span>`;
-                        }
+                        if (tagObj) badgesHTML += `<span class="tag-badge" style="background-color: ${tagObj.color};">${esc(tagObj.label)}</span>`;
                     }
                 });
 
                 let tagsSelectorHTML = '';
                 availableTags.forEach(tagObj => {
-                    const isActive = student.tags.includes(tagObj.id);
+                    // Tel hoe vaak de tag is toegevoegd (voor meerdere stars)
+                    const count = student.tags.filter(t => t === tagObj.id).length;
+                    const isActive = count > 0;
                     tagsSelectorHTML += `
-                        <button class="tag-toggle-btn ${isActive ? 'active' : ''}" 
-                                style="${isActive ? `background-color: ${tagObj.color}; border-color: ${tagObj.color};` : ''}"
-                                onclick="toggleStudentTag(${index}, '${tagObj.id}')">
-                            ${esc(tagObj.label)}
+                        <button class="tag-toggle-btn ${isActive ? 'active' : ''}"
+                                style="${isActive ? `background-color: ${tagObj.color}; border-color:${tagObj.color};` : ''}"
+                                onclick="event.stopPropagation(); toggleStudentTag(${index}, '${tagObj.id}')">
+                            ${esc(tagObj.label)} ${count > 1 ? `(${count})` : ''}
                         </button>
                     `;
                 });
 
+                const isExpanded = expandedCards.has(index);
+
                 card.innerHTML = `
                     <div>
-                        <div class="mgmt-header">
-                            <span class="mgmt-name">${esc(student.name)}${getSessionStarAndStreakDisplay(student)}</span>
-                            <button class="btn btn-secondary btn-sm" onclick="toggleAbsentStatus(${index})">
-                                ${isAbsent ? 'Set Present' : 'Set Absent'}
+                        <div class="mgmt-header" style="margin-bottom: 0.5rem; border-bottom: none; padding-bottom: 0;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <button type="button" class="mgmt-name timeout-name" aria-pressed="${starTimeouts.has(index)}" title="Click to ${starTimeouts.has(index) ? 'remove time-out' : 'give a time-out'}" onclick="toggleStarTimeout(${index}, event)">${esc(student.name)}${getSessionStarAndStreakDisplay(student)}${starTimeouts.has(index) ? ' ⏸' : ''}<span class="timeout-countdown" data-timeout-index="${index}">${starTimeouts.has(index) ? `⏳ ${Math.ceil(starTimeouts.get(index))}s` : ''}</span></button>
+                                <button class="btn btn-warning btn-sm" style="padding: 0.1rem 0.4rem; font-size: 0.9rem; border-radius: 50%;" onclick="addQuickStar(${index}, event)" title="Award an extra star">⭐+</button>
+                            </div>
+                            <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); toggleAbsentStatus(${index})">
+                                ${isAbsent ? 'Mark Present' : 'Mark Absent'}
                             </button>
                         </div>
-                        <div class="badges-container" style="margin-top: 0.5rem;">${badgesHTML}</div>
+                        <div class="badges-container" style="margin-bottom: 0;">${badgesHTML}</div>
                     </div>
-                    <div style="margin-top: 0.5rem;">
-                        <div style="font-size: 0.72rem; color: #94a3b8; margin-bottom: 0.3rem;">Add details / remarks:</div>
+
+                    <div style="margin-top: 0.8rem; display: ${isExpanded ? 'block' : 'none'}; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.8rem;">
+                        <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 0.4rem;">Select behaviour/details:</div>
                         <div class="tags-selector">${tagsSelectorHTML}</div>
                     </div>
                 `;
                 container.appendChild(card);
             });
+            updateStarTimerUI();
         }
 
         function toggleAbsentStatus(index) {
@@ -1185,6 +2065,7 @@
                 student.checkedIn = false;
             }
             renderMgmtGrid();
+            updateStarTimerUI();
         }
 
         function toggleStudentTag(studentIndex, tagId) {
@@ -1197,8 +2078,6 @@
             }
             renderMgmtGrid();
         }
-
-        // --- DYNAMIC PICKERS (1-5 AMOUNT) --- //
 
         function openAmountSelector(mode) {
             pickerMode = mode;
@@ -1270,11 +2149,10 @@
             container.innerHTML = '';
             pickedStudents.forEach((student) => {
                 const row = document.createElement('div');
-                row.style = "font-size: 1.5rem; font-weight: bold; color: #fbbf24; text-align: center; margin: 0.2rem 0;";
+                row.style = "font-size: 1.6rem; font-weight: bold; color: #fbbf24; text-align: center; margin: 0.3rem 0; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 0.5rem;";
                 row.innerText = "🎉 " + student.name + " 🎉";
                 container.appendChild(row);
             });
-            document.getElementById('random-picker-actions').style.display = 'flex';
         }
 
         function closeHwPicker() {
@@ -1286,10 +2164,10 @@
             container.innerHTML = '';
             pickedStudents.forEach((student) => {
                 const row = document.createElement('div');
-                row.style = "background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;";
+                row.style = "background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; border: 1px solid rgba(255,255,255,0.1);";
                 
                 const nameSpan = document.createElement('span');
-                nameSpan.style = "font-size: 1.1rem; font-weight: bold; color: #fbbf24;";
+                nameSpan.style = "font-size: 1.2rem; font-weight: bold; color: #fbbf24;";
                 nameSpan.innerText = student.name;
                 
                 const actionsDiv = document.createElement('div');
@@ -1312,9 +2190,9 @@
             const actionDiv = document.getElementById(`hw-actions-${index}`);
             if (actionDiv) {
                 if (tagId === 'hw_done') {
-                    actionDiv.innerHTML = `<span class="tag-badge present" style="font-size:0.8rem;">Well Done! 🌟</span>`;
+                    actionDiv.innerHTML = `<span class="tag-badge present" style="font-size:0.9rem; padding: 0.4rem 0.8rem;">Well Done! 🌟</span>`;
                 } else {
-                    actionDiv.innerHTML = `<span class="tag-badge absent" style="font-size:0.8rem;">Missing HW ❌</span>`;
+                    actionDiv.innerHTML = `<span class="tag-badge absent" style="font-size:0.9rem; padding: 0.4rem 0.8rem;">Missing HW ❌</span>`;
                 }
             }
         }
@@ -1326,32 +2204,131 @@
             if(rerender) renderMgmtGrid();
         }
 
+        function openGroupMaker() {
+            document.getElementById('group-maker-results').innerHTML = '<div style="text-align:center; color:#94a3b8; width:100%; grid-column: 1 / -1; font-size:1.1rem; padding: 2rem;">Choose the number of groups and click Generate.</div>';
+            document.getElementById('group-maker-modal').classList.add('active');
+        }
+
+        function closeGroupMaker() {
+            document.getElementById('group-maker-modal').classList.remove('active');
+        }
+
+        function generateGroups() {
+            const presentStudents = currentStudentsData.filter(s => !s.tags.includes('absent'));
+            
+            if (presentStudents.length === 0) {
+                showAlertModal('No students', 'There are no present students to make groups.');
+                return;
+            }
+
+            let numGroups = parseInt(document.getElementById('num-groups-input').value, 10);
+            
+            if (isNaN(numGroups) || numGroups < 2) numGroups = 2;
+            if (numGroups > 6) numGroups = 6;
+            
+            if (numGroups > presentStudents.length) {
+                numGroups = presentStudents.length;
+            }
+            document.getElementById('num-groups-input').value = numGroups;
+
+            let shuffled = [...presentStudents].sort(() => 0.5 - Math.random());
+            let groups = Array.from({length: numGroups}, () => []);
+            
+            shuffled.forEach((student, index) => {
+                groups[index % numGroups].push(student);
+            });
+
+            const container = document.getElementById('group-maker-results');
+            container.innerHTML = '';
+            
+            groups.forEach((group, index) => {
+                const groupCard = document.createElement('div');
+                groupCard.className = 'group-card';
+                
+                let html = `<h4>Groep ${index + 1}</h4>`;
+                group.forEach(s => {
+                    html += `<div class="group-student">${esc(s.name)}</div>`;
+                });
+                
+                groupCard.innerHTML = html;
+                container.appendChild(groupCard);
+            });
+        }
+
+        function openStarPicker() {
+            document.getElementById('star-selector-modal').classList.add('active');
+        }
+
+        function closeStarPicker() {
+            document.getElementById('star-selector-modal').classList.remove('active');
+        }
+
+        function closeStarResults() {
+            document.getElementById('star-results-modal').classList.remove('active');
+        }
+
+        function startStarPicker(amount) {
+            closeStarPicker();
+            
+            const eligibleStudents = currentStudentsData
+                .map((s, i) => ({ ...s, originalIndex: i }))
+                .filter(s => {
+                    const isAbsent = s.tags.includes('absent');
+                    const hasNeg = s.tags.some(t => t !== 'absent' && t !== 'hw_done' && t !== 'bonus_star');
+                    return !isAbsent && !hasNeg;
+                });
+                
+            if (eligibleStudents.length === 0) {
+                showAlertModal('No students', 'There are no eligible students without negative remarks to receive a bonus star.');
+                return;
+            }
+            
+            let actualAmount = Math.min(amount, eligibleStudents.length);
+            let shuffled = [...eligibleStudents].sort(() => 0.5 - Math.random());
+            let picked = shuffled.slice(0, actualAmount);
+            
+            const container = document.getElementById('star-results-list');
+            container.innerHTML = '';
+            
+            picked.forEach(p => {
+                const s = currentStudentsData[p.originalIndex];
+                if (!s.tags.includes('bonus_star')) {
+                    s.tags.push('bonus_star');
+                }
+                const row = document.createElement('div');
+                row.style = "font-size: 1.5rem; font-weight: bold; color: #fbbf24; text-align: center; margin: 0.4rem 0; background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 10px; border: 1px solid rgba(251, 191, 36, 0.3);";
+                row.innerText = "⭐ " + p.name + " ⭐";
+                container.appendChild(row);
+            });
+            
+            renderMgmtGrid();
+            document.getElementById('star-results-modal').classList.add('active');
+        }
+
         function saveCurrentLessonSession() {
             const now = new Date();
             const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
             const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
             let streakAlerts = [];
-            let negativeAlerts = []; // Array for storing warnings about 3x negative remarks
+            let negativeAlerts = [];
+            let trophyWinners = [];
 
             const history = getSavedHistory();
 
             const stDataClean = currentStudentsData.map(s => {
-                const hasNegative = s.tags.some(t => t !== 'absent' && t !== 'hw_done');
+                const hasNegative = s.tags.some(t => t !== 'absent' && t !== 'hw_done' && t !== 'bonus_star');
                 const isAbsent = !s.checkedIn;
                 
-                // Alert logic for multiple negative lessons
                 if (hasNegative) {
                     const pastNegativeCount = countNegativeLessons(history, activeClassName, s.name);
                     const newTotalNegativeCount = pastNegativeCount + 1;
 
-                    // Trigger alert if the count is a multiple of 3
                     if (newTotalNegativeCount > 0 && newTotalNegativeCount % 3 === 0) {
-                        negativeAlerts.push(`⚠️ Let op: ${esc(s.name)} heeft nu in ${newTotalNegativeCount} verschillende lessen een negatieve aantekening gehad!`);
+                        negativeAlerts.push(`⚠️ Attention: ${esc(s.name)} has now received a negative remark in ${newTotalNegativeCount} different lessons!`);
                     }
                 }
 
-                // Streak logic
                 let newStreak = s.baseStreak || 0;
                 if (hasNegative) {
                     newStreak = 0;
@@ -1359,8 +2336,10 @@
                     newStreak++;
                 }
 
-                if (newStreak > 0 && newStreak % 10 === 0 && (s.baseStreak || 0) % 10 !== 0) {
-                    streakAlerts.push(`${esc(s.name)} has reached a streak of ${newStreak}! 🔥`);
+                if (newStreak > 0 && newStreak % 10 === 0 && (s.baseStreak || 0) !== newStreak) {
+                    const trophyCount = (s.baseTrophies || 0) + 1;
+                    streakAlerts.push(`${esc(s.name)} has reached a streak of 10 and receives trophy #${trophyCount}! 🏆`);
+                    trophyWinners.push({ name: s.name, trophyCount, streak: newStreak });
                 }
 
                 return { name: s.name, checkedIn: s.checkedIn, tags: s.tags };
@@ -1380,16 +2359,19 @@
 
             let alertMsg = `The registration for '${activeClassName}' has been successfully saved!`;
             
-            // Append warnings to the alert message
             if (negativeAlerts.length > 0) {
-                alertMsg += `\n\n🚨 Waarschuwingen (Negatief gedrag):\n- ` + negativeAlerts.join('\n- ');
+                alertMsg += `\n\n🚨 Warnings (Negative Behaviour):\n- ` + negativeAlerts.join('\n- ');
             }
             if (streakAlerts.length > 0) {
                 alertMsg += `\n\n🏆 Streak Milestones:\n- ` + streakAlerts.join('\n- ');
             }
 
-            showAlertModal('Saved', alertMsg);
             showOverviewScreen();
+            if (trophyWinners.length > 0) {
+                showTrophyCelebration(trophyWinners, () => showAlertModal('Saved', alertMsg));
+            } else {
+                showAlertModal('Saved', alertMsg);
+            }
         }
 
         function confirmDeleteLesson(id) {
@@ -1425,6 +2407,7 @@
                 const stats = calculateAllTimeStats(historyWithoutEdit, lesson.className, s.name);
                 s.baseStars = stats.stars;
                 s.baseStreak = stats.streak;
+                s.baseTrophies = stats.trophies;
                 
                 if (!s.tags.includes('absent')) s.checkedIn = true;
             });
@@ -1432,6 +2415,18 @@
             document.getElementById('edit-mgmt-class-title').innerText = `Edit Class: ${esc(lesson.className)} (${esc(lesson.date)})`;
             hideAllScreens();
             document.getElementById('edit-history-screen').classList.add('active');
+            renderEditMgmtGrid();
+        }
+
+        function addEditQuickStar(index, event) {
+            if(event) event.stopPropagation();
+            editingStudentsData[index].tags.push('bonus_star');
+            renderEditMgmtGrid();
+        }
+
+        function toggleEditCardExpansion(index) {
+            if (expandedEditCards.has(index)) expandedEditCards.delete(index);
+            else expandedEditCards.add(index);
             renderEditMgmtGrid();
         }
 
@@ -1444,46 +2439,50 @@
                 const card = document.createElement('div');
                 card.className = `student-mgmt-card ${isAbsent ? 'absent-card' : ''}`;
 
+                card.style.cursor = 'pointer';
+                card.onclick = () => toggleEditCardExpansion(index);
+
                 let badgesHTML = '';
-                if (isAbsent) {
-                    badgesHTML += `<span class="tag-badge absent">Absent</span>`;
-                } else {
-                    badgesHTML += `<span class="tag-badge present">Present</span>`;
-                }
+                if (isAbsent) badgesHTML += `<span class="tag-badge absent">Absent</span>`;
+                else badgesHTML += `<span class="tag-badge present">Present</span>`;
 
                 student.tags.forEach(tagId => {
                     if (tagId !== 'absent') {
                         const tagObj = availableTags.find(t => t.id === tagId);
-                        if (tagObj) {
-                            badgesHTML += `<span class="tag-badge" style="background-color: ${tagObj.color};">${esc(tagObj.label)}</span>`;
-                        }
+                        if (tagObj) badgesHTML += `<span class="tag-badge" style="background-color: ${tagObj.color};">${esc(tagObj.label)}</span>`;
                     }
                 });
 
                 let tagsSelectorHTML = '';
                 availableTags.forEach(tagObj => {
-                    const isActive = student.tags.includes(tagObj.id);
+                    const count = student.tags.filter(t => t === tagObj.id).length;
+                    const isActive = count > 0;
                     tagsSelectorHTML += `
                         <button class="tag-toggle-btn ${isActive ? 'active' : ''}"
-                                style="${isActive ? `background-color: ${tagObj.color}; border-color: ${tagObj.color};` : ''}"
-                                onclick="toggleEditStudentTag(${index}, '${tagObj.id}')">
-                            ${esc(tagObj.label)}
+                                style="${isActive ? `background-color: ${tagObj.color}; border-color:${tagObj.color};` : ''}"
+                                onclick="event.stopPropagation(); toggleEditStudentTag(${index}, '${tagObj.id}')">
+                            ${esc(tagObj.label)} ${count > 1 ? `(${count})` : ''}
                         </button>
                     `;
                 });
 
+                const isExpanded = expandedEditCards.has(index);
+
                 card.innerHTML = `
                     <div>
-                        <div class="mgmt-header">
-                            <span class="mgmt-name">${esc(student.name)}${getSessionStarAndStreakDisplay(student)}</span>
-                            <button class="btn btn-secondary btn-sm" onclick="toggleEditAbsentStatus(${index})">
-                                ${isAbsent ? 'Set Present' : 'Set Absent'}
+                        <div class="mgmt-header" style="margin-bottom: 0.5rem; border-bottom: none; padding-bottom: 0;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span class="mgmt-name">${esc(student.name)}${getSessionStarAndStreakDisplay(student)}</span>
+                                <button class="btn btn-warning btn-sm" style="padding: 0.1rem 0.4rem; font-size: 0.9rem; border-radius: 50%;" onclick="addEditQuickStar(${index}, event)" title="Award an extra star">⭐+</button>
+                            </div>
+                            <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); toggleEditAbsentStatus(${index})">
+                                ${isAbsent ? 'Mark Present' : 'Mark Absent'}
                             </button>
                         </div>
-                        <div class="badges-container" style="margin-top: 0.5rem;">${badgesHTML}</div>
+                        <div class="badges-container" style="margin-bottom: 0;">${badgesHTML}</div>
                     </div>
-                    <div style="margin-top: 0.5rem;">
-                        <div style="font-size: 0.72rem; color: #94a3b8; margin-bottom: 0.3rem;">Add details / remarks:</div>
+                    <div style="margin-top: 0.8rem; display: ${isExpanded ? 'block' : 'none'}; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.8rem;">
+                        <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 0.4rem;">Select behaviour/details:</div>
                         <div class="tags-selector">${tagsSelectorHTML}</div>
                     </div>
                 `;
@@ -1528,6 +2527,43 @@
             showOverviewScreen();
         }
 
+        function openDetailModal(lessonId) {
+            const history = getSavedHistory();
+            const lesson = history.find(l => l.id === lessonId);
+            if (!lesson) return;
+
+            document.getElementById('detail-modal-title').innerText = `${esc(lesson.className)} (${esc(lesson.date)})`;
+            const contentDiv = document.getElementById('detail-modal-content');
+            
+            let html = '<div style="display: flex; flex-direction: column; gap: 0.5rem;">';
+            lesson.students.forEach(s => {
+                const isAbsent = s.tags.includes('absent');
+                let tagBadges = isAbsent ? '<span class="tag-badge absent">Absent</span>' : '<span class="tag-badge present">Present</span>';
+                s.tags.forEach(tId => {
+                    if (tId !== 'absent') {
+                        const tagDef = availableTags.find(at => at.id === tId);
+                        const label = tagDef ? tagDef.label : tId;
+                        const bgColor = tagDef ? tagDef.color : '#64748b';
+                        tagBadges += ` <span class="tag-badge" style="background-color: ${bgColor};">${esc(label)}</span>`;
+                    }
+                });
+
+                html += `
+                    <div style="background: rgba(255,255,255,0.03); padding: 0.6rem 0.8rem; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                        <span style="font-weight: 600;">${esc(s.name)}</span>
+                        <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">${tagBadges}</div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            contentDiv.innerHTML = html;
+            document.getElementById('detail-modal').classList.add('active');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detail-modal').classList.remove('active');
+        }
+
         function renderHistoryList() {
             const container = document.getElementById('history-container');
             container.innerHTML = '';
@@ -1539,7 +2575,7 @@
             }
 
             if (history.length === 0) {
-                container.innerHTML = '<div style="color: #94a3b8; font-size: 0.9rem;">No saved lessons available for this selection.</div>';
+                container.innerHTML = '<div style="color: #94a3b8; font-size: 1rem;">No saved lessons available for this selection.</div>';
                 return;
             }
             
@@ -1558,26 +2594,25 @@
                             const tagDef = availableTags.find(at => at.id === tId);
                             const label = tagDef ? tagDef.label : tId;
                             const bgColor = tagDef ? tagDef.color : '#64748b';
-                            return `<span style="display: inline-block; background-color: ${bgColor}; color: white; padding: 2px 5px; border-radius: 4px; font-size: 0.65rem; font-weight: bold; margin-left: 4px;">${esc(label)}</span>`;
+                            return `<span style="display: inline-block; background-color: ${bgColor}; color: white; padding: 3px 6px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; margin-left: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">${esc(label)}</span>`;
                         });
                         const stats = calculateAllTimeStats(fullHistory, lesson.className, s.name);
-                        const allTimeStars = formatStatsText(stats.stars, stats.streak);
-                        remarksHtml += `<div style="font-size: 0.8rem; margin-top: 0.3rem;"><strong>${esc(s.name)}${allTimeStars}:</strong> ${tagBadges.join('')}</div>`;
+                        const allTimeStars = formatStatsText(stats.stars, stats.streak, stats.trophies);
+                        remarksHtml += `<div style="font-size: 0.9rem; margin-top: 0.5rem; padding-bottom: 0.4rem; border-bottom: 1px dashed rgba(255,255,255,0.05);"><strong>${esc(s.name)}${allTimeStars}:</strong> ${tagBadges.join('')}</div>`;
                     }
                 });
                 
                 if (!remarksHtml) {
-                    remarksHtml = `<div style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.3rem; font-style: italic;">No remarks</div>`;
+                    remarksHtml = `<div style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem; font-style: italic;">No remarks</div>`;
                 }
 
-                // Show milestones achieved IN this specific lesson
                 const milestones = getLessonMilestones(fullHistory, lesson);
                 let milestoneHtml = '';
                 if (milestones.length > 0) {
                     milestoneHtml = `
-                        <div style="background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.5); padding: 0.5rem; border-radius: 6px; margin-bottom: 0.6rem;">
-                            <div style="font-size: 0.7rem; text-transform: uppercase; color: #fbbf24; font-weight: bold; margin-bottom: 0.2rem;">🏆 Streak Milestones in this lesson:</div>
-                            <div style="font-size: 0.85rem; color: #f8fafc; font-weight: 600;">${milestones.join(', ')}</div>
+                        <div style="background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.4); padding: 0.8rem; border-radius: 10px; margin-bottom: 1rem;">
+                            <div style="font-size: 0.8rem; text-transform: uppercase; color: #fbbf24; font-weight: bold; margin-bottom: 0.3rem;">🏆 Streak Milestones in this lesson:</div>
+                            <div style="font-size: 0.95rem; color: #f8fafc; font-weight: 600;">${milestones.join(', ')}</div>
                         </div>
                     `;
                 }
@@ -1586,19 +2621,19 @@
                 item.className = 'history-item';
                 item.style.alignItems = 'flex-start';
                 item.innerHTML = `
-                    <div style="flex: 1; padding-right: 10px;">
-                        <div style="font-weight: 700; color: #38bdf8; font-size: 1rem;">${esc(lesson.className)}</div>
-                        <div style="font-size: 0.78rem; color: #cbd5e1; margin-bottom: 0.5rem;">Date: ${esc(lesson.date)} | Present: ${presentCount} | Absent: ${absentCount}</div>
+                    <div style="flex: 1; padding-right: 20px;">
+                        <div style="font-weight: 800; color: #38bdf8; font-size: 1.25rem; margin-bottom: 0.3rem;">${esc(lesson.className)}</div>
+                        <div style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 1rem;">Date: ${esc(lesson.date)} | Present: <span style="color:#10b981; font-weight:bold;">${presentCount}</span> | Absent: <span style="color:#ef4444; font-weight:bold;">${absentCount}</span></div>
                         ${milestoneHtml}
-                        <div style="background: rgba(0,0,0,0.2); padding: 0.5rem; border-radius: 6px;">
-                            <div style="font-size: 0.7rem; text-transform: uppercase; color: #94a3b8; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.2rem; margin-bottom: 0.3rem;">Registrations:</div>
+                        <div style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px;">
+                            <div style="font-size: 0.85rem; text-transform: uppercase; color: #94a3b8; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.4rem; margin-bottom: 0.4rem;">Registrations:</div>
                             ${remarksHtml}
                         </div>
                     </div>
-                    <div class="flex-actions" style="flex-direction: column; justify-content: flex-start;">
-                        <button class="btn btn-secondary btn-sm" style="width: 100%;" onclick="openDetailModal(${lesson.id})">🔍 View</button>
-                        <button class="btn btn-warning btn-sm" style="width: 100%;" onclick="openEditLesson(${lesson.id})">✏️ Edit</button>
-                        <button class="btn btn-danger btn-sm" style="width: 100%;" onclick="confirmDeleteLesson(${lesson.id})">🗑️ Delete</button>
+                    <div class="flex-actions" style="flex-direction: column; justify-content: flex-start; gap: 0.8rem;">
+                        <button class="btn btn-info btn-sm" style="width: 100%; font-size: 0.95rem;" onclick="openDetailModal(${lesson.id})">🔍 View</button>
+                        <button class="btn btn-warning btn-sm" style="width: 100%; font-size: 0.95rem;" onclick="openEditLesson(${lesson.id})">✏️ Edit</button>
+                        <button class="btn btn-danger btn-sm" style="width: 100%; font-size: 0.95rem;" onclick="confirmDeleteLesson(${lesson.id})">🗑️ Delete</button>
                     </div>
                 `;
                 container.appendChild(item);
@@ -1633,14 +2668,14 @@
             const container = document.getElementById('period-results-container');
 
             if (!startDateVal || !endDateVal) {
-                container.innerHTML = '<div style="color: #94a3b8; font-size: 0.9rem;">Please select both a start and end date.</div>';
+                container.innerHTML = '<div style="color: #94a3b8; font-size: 1rem;">Please select both a start and end date.</div>';
                 return;
             }
 
             const filteredLessons = getFilteredLessonsForPeriod();
 
             if (filteredLessons.length === 0) {
-                container.innerHTML = '<div style="color: #94a3b8; font-size: 0.9rem;">No registrations found for the selected period and filters.</div>';
+                container.innerHTML = '<div style="color: #94a3b8; font-size: 1rem;">No registrations found for the selected period and filters.</div>';
                 return;
             }
 
@@ -1675,15 +2710,15 @@
             });
 
             const fullHistory = getSavedHistory(); 
-            let html = `<div style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 0.8rem;">Found <b>${filteredLessons.length}</b> lesson(s) in this period.</div>`;
+            let html = `<div style="font-size: 0.95rem; color: #cbd5e1; margin-bottom: 1rem;">Found <b>${filteredLessons.length}</b> lesson(s) in this period.</div>`;
 
             for (const [className, studentsObj] of Object.entries(aggregated)) {
                 html += `
-                    <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
-                        <div style="font-size: 1.05rem; font-weight: 700; color: #38bdf8; margin-bottom: 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.3rem;">
+                    <div class="overview-card">
+                        <div style="font-size: 1.25rem; font-weight: 800; color: #38bdf8; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.6rem;">
                             Class: ${esc(className)}
                         </div>
-                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <div style="display: flex; flex-direction: column; gap: 0.8rem;">
                 `;
 
                 for (const [studentName, stats] of Object.entries(studentsObj)) {
@@ -1702,15 +2737,15 @@
                     }
                     
                     const statValues = calculateAllTimeStats(fullHistory, className, studentName);
-                    const allTimeStars = formatStatsText(statValues.stars, statValues.streak);
+                    const allTimeStars = formatStatsText(statValues.stars, statValues.streak, statValues.trophies);
 
                     html += `
-                        <div style="background: rgba(255,255,255,0.04); padding: 0.6rem; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                        <div class="overview-row">
                             <div>
-                                <span style="font-weight: 600; font-size: 0.95rem;">${esc(studentName)}${allTimeStars}</span>
-                                <div style="font-size: 0.75rem; color: #94a3b8;">Total lessons registered: ${stats.lessonsCount}</div>
+                                <span style="font-weight: 700; font-size: 1.05rem;">${esc(studentName)}${allTimeStars}</span>
+                                <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.3rem;">Total lessons registered: ${stats.lessonsCount}</div>
                             </div>
-                            <div style="display: flex; flex-wrap: wrap; gap: 0.3rem; justify-content: flex-end;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: flex-end;">
                                 ${tagsSummary}
                             </div>
                         </div>
@@ -1719,6 +2754,32 @@
                 html += `</div></div>`;
             }
             container.innerHTML = html;
+        }
+
+        function downloadPeriodCsv() {
+            const filteredLessons = getFilteredLessonsForPeriod();
+            if (filteredLessons.length === 0) {
+                showAlertModal('Notice', 'No data found for the selected period to export.');
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,Class,Date,Student,Status,Remarks\r\n";
+            filteredLessons.forEach(lesson => {
+                lesson.students.forEach(s => {
+                    const isAbsent = s.tags.includes('absent');
+                    const status = isAbsent ? "Absent" : "Present";
+                    const remarks = s.tags.filter(t => t !== 'absent').join('; ');
+                    csvContent += `"${lesson.className}","${lesson.date}","${s.name}","${status}","${remarks}"\r\n`;
+                });
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `period_overview_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         function downloadPeriodPdf() {
@@ -1737,110 +2798,55 @@
                 return;
             }
 
-            const aggregated = {};
-            filteredLessons.forEach(lesson => {
-                const cName = lesson.className;
-                if (!aggregated[cName]) aggregated[cName] = {};
-                lesson.students.forEach(s => {
-                    if (!aggregated[cName][s.name]) {
-                        aggregated[cName][s.name] = { lessonsCount: 0, absentCount: 0, tagsCount: {} };
-                    }
-                    const sRecord = aggregated[cName][s.name];
-                    sRecord.lessonsCount++;
-                    if (s.tags.includes('absent')) sRecord.absentCount++;
-                    s.tags.forEach(t => {
-                        if (t !== 'absent') sRecord.tagsCount[t] = (sRecord.tagsCount[t] || 0) + 1;
-                    });
-                });
-            });
-            
-            const fullHistory = getSavedHistory(); 
-
             let printWindow = window.open('', '_blank');
             let htmlContent = `
-                <!DOCTYPE html>
                 <html>
                 <head>
-                    <title>Period Overview Report (${esc(startDateVal)} to ${esc(endDateVal)})</title>
+                    <title>Period Overview Report</title>
                     <style>
-                        body { font-family: Arial, sans-serif; color: #333; padding: 20px; line-height: 1.4; }
-                        h1 { color: #1e1b4b; border-bottom: 2px solid #38bdf8; padding-bottom: 5px; font-size: 20px; }
-                        .meta { font-size: 13px; color: #666; margin-bottom: 20px; }
-                        .class-section { margin-bottom: 25px; border: 1px solid #ddd; border-radius: 6px; padding: 15px; }
-                        .class-title { font-size: 16px; font-weight: bold; color: #7928ca; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-                        table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 13px; }
-                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                        th { background-color: #f4f4f4; color: #333; }
-                        .badge { display: inline-block; padding: 2px 6px; font-size: 11px; font-weight: bold; border-radius: 4px; margin-right: 3px; color: white; }
-                        .badge-absent { background: #dc2626; }
-                        .badge-present { background: #059669; }
-                        @media print {
-                            body { padding: 0; }
-                            button { display: none; }
-                            .badge { color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-                        }
+                        body { font-family: Arial, sans-serif; padding: 20px; color: #333; }
+                        h1 { color: #1e1b4b; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                        th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+                        th { background-color: #f3f4f6; }
                     </style>
                 </head>
                 <body>
-                    <h1>Check-in Period Overview Report</h1>
-                    <div class="meta">
-                        <strong>Period:</strong> ${esc(startDateVal)} until ${esc(endDateVal)} | <strong>Class Filter:</strong> ${esc(classFilter)} | <strong>Generated on:</strong> ${new Date().toLocaleDateString()}
-                    </div>
+                    <h1>Period Overview Report</h1>
+                    <p><b>Period:</b> ${startDateVal} to ${endDateVal} | <b>Class Filter:</b> ${classFilter}</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Class</th>
+                                <th>Date</th>
+                                <th>Student</th>
+                                <th>Status</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
             `;
 
-            for (const [className, studentsObj] of Object.entries(aggregated)) {
-                htmlContent += `
-                    <div class="class-section">
-                        <div class="class-title">Class: ${esc(className)}</div>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Student Name</th>
-                                    <th>Total Lessons</th>
-                                    <th>Attendance & Remarks Summary</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                `;
-
-                for (const [studentName, stats] of Object.entries(studentsObj)) {
-                    let badges = '';
-                    if (stats.absentCount > 0) {
-                        badges += `<span class="badge badge-absent">Absent: ${stats.absentCount}</span>`;
-                    }
-                    for (const [tId, count] of Object.entries(stats.tagsCount)) {
-                        const foundTag = availableTags.find(at => at.id === tId);
-                        const label = foundTag ? foundTag.label : tId;
-                        const bgColor = foundTag ? foundTag.color : '#64748b';
-                        badges += `<span class="badge" style="background-color: ${bgColor};">${esc(label)}: ${count}</span>`;
-                    }
-                    if (!badges) {
-                        badges = `<span class="badge badge-present">All present / No remarks</span>`;
-                    }
-                    
-                    const statValues = calculateAllTimeStats(fullHistory, className, studentName);
-                    const allTimeStars = formatStatsText(statValues.stars, statValues.streak);
-
+            filteredLessons.forEach(lesson => {
+                lesson.students.forEach(s => {
+                    const isAbsent = s.tags.includes('absent');
+                    const status = isAbsent ? "Absent" : "Present";
+                    const remarks = s.tags.filter(t => t !== 'absent').join(', ');
                     htmlContent += `
                         <tr>
-                            <td><strong>${esc(studentName)}${allTimeStars}</strong></td>
-                            <td>${stats.lessonsCount}</td>
-                            <td>${badges}</td>
+                            <td>${esc(lesson.className)}</td>
+                            <td>${esc(lesson.date)}</td>
+                            <td>${esc(s.name)}</td>
+                            <td>${status}</td>
+                            <td>${esc(remarks)}</td>
                         </tr>
                     `;
-                }
-
-                htmlContent += `
-                            </tbody>
-                        </table>
-                    </div>
-                `;
-            }
+                });
+            });
 
             htmlContent += `
-                    <div style="margin-top: 30px; text-align: center;">
-                        <button onclick="window.print()" style="padding: 10px 20px; font-size: 14px; background: #7928ca; color: white; border: none; border-radius: 5px; cursor: pointer;">🖨️ Print / Save as PDF</button>
-                    </div>
+                        </tbody>
+                    </table>
                 </body>
                 </html>
             `;
@@ -1848,45 +2854,107 @@
             printWindow.document.write(htmlContent);
             printWindow.document.close();
             printWindow.focus();
+            setTimeout(() => {
+                printWindow.print();
+            }, 500);
         }
 
-        function openDetailModal(lessonId) {
-            const history = getSavedHistory();
-            const lesson = history.find(l => l.id === lessonId);
-            if (!lesson) return;
+        function toggleTimerWidget() {
+            const container = document.getElementById('timer-widget-container');
+            if (container.style.display === 'flex') {
+                container.style.display = 'none';
+            } else {
+                container.style.display = 'flex';
+            }
+        }
 
-            document.getElementById('detail-modal-title').innerText = `Overview: ${esc(lesson.className)} (${esc(lesson.date)})`;
-            
-            let contentHTML = '<div style="display: flex; flex-direction: column; gap: 0.5rem;">';
-            lesson.students.forEach(s => {
-                const isAbsent = s.tags.includes('absent');
-                let tagLabels = isAbsent ? '<span class="tag-badge absent">Absent</span>' : '<span class="tag-badge present">Present</span>';
+        function setTimerMode(mode) {
+            timerMode = mode;
+            const btnStopwatch = document.getElementById('btn-mode-stopwatch');
+            const btnTimer = document.getElementById('btn-mode-timer');
+            const inputDiv = document.getElementById('timer-input-div');
+
+            if (mode === 'stopwatch') {
+                btnStopwatch.style.background = 'rgba(255,255,255,0.15)';
+                btnTimer.style.background = 'transparent';
+                inputDiv.style.display = 'none';
+                resetTimer();
+            } else {
+                btnTimer.style.background = 'rgba(255,255,255,0.15)';
+                btnStopwatch.style.background = 'transparent';
+                inputDiv.style.display = 'flex';
+                applyTimerInput();
+            }
+        }
+
+        function applyTimerInput() {
+            const minInput = parseInt(document.getElementById('timer-min-input').value, 10);
+            if (isNaN(minInput) || minInput <= 0) return;
+            timerTarget = minInput * 60;
+            timerTime = timerTarget;
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            const display = document.getElementById('timer-display');
+            let m, s;
+            if (timerMode === 'stopwatch') {
+                m = Math.floor(timerTime / 60);
+                s = timerTime % 60;
+            } else {
+                m = Math.floor(timerTime / 60);
+                s = timerTime % 60;
+            }
+            display.innerText = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+
+        function toggleTimerStart() {
+            const btnStart = document.getElementById('btn-timer-start');
+            if (!timerRunning) {
+                timerRunning = true;
+                btnStart.innerText = '⏸️ Pause';
+                btnStart.className = 'btn btn-warning btn-sm';
                 
-                s.tags.forEach(t => {
-                    if (t !== 'absent') {
-                        const found = availableTags.find(at => at.id === t);
-                        if (found) tagLabels += ` <span class="tag-badge" style="background-color: ${found.color};">${esc(found.label)}</span>`;
+                timerIntervalId = setInterval(() => {
+                    if (timerMode === 'stopwatch') {
+                        timerTime++;
+                    } else {
+                        if (timerTime > 0) {
+                            timerTime--;
+                        } else {
+                            clearInterval(timerIntervalId);
+                            timerRunning = false;
+                            btnStart.innerText = '▶️ Start';
+                            btnStart.className = 'btn btn-success btn-sm';
+                            showAlertModal('Timer', 'De timer is afgelopen!');
+                            return;
+                        }
                     }
-                });
-                
-                const statValues = calculateAllTimeStats(history, lesson.className, s.name);
-                const allTimeStars = formatStatsText(statValues.stars, statValues.streak);
-
-                contentHTML += `
-                    <div style="background: rgba(255,255,255,0.04); padding: 0.5rem; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-weight: 600;">${esc(s.name)}${allTimeStars}</span>
-                        <div>${tagLabels}</div>
-                    </div>
-                `;
-            });
-            contentHTML += '</div>';
-
-            document.getElementById('detail-modal-content').innerHTML = contentHTML;
-            document.getElementById('detail-modal').classList.add('active');
+                    updateTimerDisplay();
+                }, 1000);
+            } else {
+                timerRunning = false;
+                btnStart.innerText = '▶️ Start';
+                btnStart.className = 'btn btn-success btn-sm';
+                clearInterval(timerIntervalId);
+            }
         }
 
-        function closeDetailModal() {
-            document.getElementById('detail-modal').classList.remove('active');
+        function resetTimer() {
+            timerRunning = false;
+            clearInterval(timerIntervalId);
+            const btnStart = document.getElementById('btn-timer-start');
+            btnStart.innerText = '▶️ Start';
+            btnStart.className = 'btn btn-success btn-sm';
+
+            if (timerMode === 'stopwatch') {
+                timerTime = 0;
+            } else {
+                const minInput = parseInt(document.getElementById('timer-min-input').value, 10) || 5;
+                timerTarget = minInput * 60;
+                timerTime = timerTarget;
+            }
+            updateTimerDisplay();
         }
     </script>
 </body>
