@@ -123,7 +123,7 @@ button.status-action.is-exempt{background:#e2f3e8;color:#176940;border-color:#92
   <div class="card"><h2>1 · Toetssjabloon delen</h2><p>Exporteer alleen de toetsopzet, oefeningen en normering. <strong>Geen leerlingnamen of resultaten.</strong></p><label for="shareTemplate">Toetssjabloon</label><select id="shareTemplate"></select><div class="flex" style="margin-top:12px"><button onclick="exportSharedTemplate()">Download toetssjabloon</button><label class="file-btn">Importeer toetssjabloon<input type="file" style="display:none" accept=".json" onchange="importSharedTemplate(this.files[0]);this.value=''" /></label></div><p class="hint">Na import kun je het sjabloon via ‘Bestaande toets gebruiken in deze klas’ aan je klas koppelen.</p></div>
   <div class="card"><h2>2 · Klasresultaten uitwisselen</h2><p>Iedere docent exporteert alleen de eigen klas. De jaarverantwoordelijke importeert deze bestanden.</p><label for="shareClass">Te exporteren klas</label><select id="shareClass"></select><div class="flex" style="margin-top:12px"><button onclick="exportClassResults()">Download klasresultaten</button><label class="file-btn">Voeg klasresultaten toe<input type="file" style="display:none" accept=".json" onchange="importClassResults(this.files[0]);this.value=''" /></label></div><p class="hint">Bestaande klassen met dezelfde naam worden overgeslagen, niet overschreven. Toetsen worden alleen gecombineerd wanneer hun sjabloon-ID en inhoud overeenkomen.</p></div>
  </div>
- <div class="grid"><div class="card"><h2>Complete back-up</h2><p>Maak een volledige veiligheidskopie inclusief alle leerlinggegevens.</p><button onclick="exportBackup()">Download complete back-up</button></div><div class="card"><h2>Oude back-up veilig importeren</h2><p>Bij import worden bestaande klassen en toetsgegevens niet vervangen. Conflicten worden overgeslagen en gemeld.</p><label class="file-btn">Importeer volledige back-up<input type="file" style="display:none" accept=".json" onchange="importBackup(this.files[0]);this.value=''" /></label></div></div>
+ <div class="grid"><div class="card"><h2>Complete back-up</h2><p>Maak een volledige veiligheidskopie inclusief alle leerlinggegevens.</p><button onclick="exportBackup()">Download complete back-up</button></div><div class="card"><h2>Volledige back-up veilig importeren</h2><p>Ondersteunt ook back-ups uit eerdere versies. Nieuwe klassen worden toegevoegd; bestaande klassen met dezelfde naam worden niet overschreven. Als je een volledige werkplek wilt verplaatsen, importeer dan eerst op een apparaat zonder bestaande klassen.</p><label class="file-btn">Importeer volledige back-up<input type="file" style="display:none" accept=".json" onchange="importBackup(this.files[0]);this.value=''" /></label></div></div>
  <div class="card"><h2>Privacy en bewaren</h2><p>Leerlingnamen en resultaten blijven lokaal in je browser. Exporteerbestanden met persoonsgegevens alleen via door de school goedgekeurde kanalen en bewaar ze veilig.</p><p class="hint">Doe bij voorkeur eerst een volledige back-up voordat je veel bestanden importeert.</p></div>
  </section>
 </main><footer>EngliForce · Toetsanalyse · Alles wordt automatisch lokaal opgeslagen</footer>
@@ -230,7 +230,36 @@ function exportClassResults(){const c=db.classes.find(x=>x.id===$('shareClass').
 function classValid(c){return c&&typeof c.id==='string'&&typeof c.name==='string'&&c.name.trim()&&Array.isArray(c.students)&&Array.isArray(c.tests)&&c.students.every(s=>s&&typeof s.id==='string'&&typeof s.name==='string')&&c.tests.every(t=>t&&typeof t.id==='string'&&typeof t.templateId==='string'&&Array.isArray(t.exercises)&&t.scores&&typeof t.scores==='object'&&!Array.isArray(t.scores))}
 async function safeMergeClasses(classes,incomingTemplates,source){if(!Array.isArray(classes)||!Array.isArray(incomingTemplates))throw Error('Bestand bevat ongeldige gegevens.');if(!classes.every(classValid)||!incomingTemplates.every(validShareTemplate))throw Error('Ongeldige klas- of toetsgegevens.');const known=new Map(templates().map(t=>[t.id,t]));const supplied=new Map(incomingTemplates.map(t=>[t.id,t]));if(supplied.size!==incomingTemplates.length)throw Error('Dubbele sjabloon-ID in importbestand.');const existingNames=new Set(db.classes.map(c=>c.name.trim().toLocaleLowerCase('nl')));const added=[],skipped=[],newTemplates=new Map();const acceptedNames=new Set();for(const c of classes){const k=c.name.trim().toLocaleLowerCase('nl');if(existingNames.has(k)||acceptedNames.has(k)){skipped.push(`${c.name}: klasnaam bestaat al`);continue}let conflict='';for(const t of c.tests){const def=supplied.get(t.templateId)||known.get(t.templateId);if(!def){conflict='ontbrekend toetssjabloon';break}if(templateSignature(t)!==templateSignature(def)){conflict='toetsopzet wijkt af van sjabloon';break}const old=known.get(t.templateId);if(old&&templateSignature(old)!==templateSignature(def)){conflict='sjabloon-ID met afwijkende inhoud';break}if(!old)newTemplates.set(def.id,def)}if(conflict){skipped.push(`${c.name}: ${conflict}`);continue}const copy=structuredClone(c);if(db.classes.some(x=>x.id===copy.id)||added.some(x=>x.id===copy.id))copy.id=uid();added.push(copy);acceptedNames.add(k)}const preview=`${source}\n\nToe te voegen: ${added.length} klas(s) (${added.map(c=>c.name).join(', ')||'geen'}).\nOvergeslagen: ${skipped.length}${skipped.length?'\n'+skipped.slice(0,12).join('\n'):''}\n\nBestaande leerlingen, scores en toetsen blijven ongewijzigd. Doorgaan?`;if(!added.length){await announce(preview.replace('Doorgaan?','Er is niets geïmporteerd.'));return}if(!await modalConfirm(preview))return;for(const t of newTemplates.values())if(!known.has(t.id))templates().push(shareTemplateData(t));db.classes.push(...added);save();render();announce(`${added.length} klas(sen) toegevoegd, ${skipped.length} overgeslagen. Bestaande resultaten zijn behouden.`)}
 async function importClassResults(file){if(!file)return;try{const d=JSON.parse(await file.text());if(d.format!=='engliforce-class-results-v1'||!d.class)throw Error('Dit bestand bevat geen export van klasresultaten.');await safeMergeClasses([d.class],d.templates||[],'Klasresultaten importeren')}catch(e){announce('Resultatenimport mislukt: '+e.message)}}
-async function importBackup(file){if(!file)return;try{const d=JSON.parse(await file.text());if(!Array.isArray(d.classes))throw Error('Geen geldige EngliForce back-up.');await safeMergeClasses(d.classes,d.templates||[],'Volledige back-up veilig samenvoegen')}catch(e){announce('Back-up importeren mislukt: '+e.message)}}
+// Oudere EngliForce back-ups kenden nog geen centrale toetssjablonen.
+// Maak ontbrekende sjablonen alleen in een kopie van de import; raak lokale data niet aan.
+function normaliseBackupForMerge(data){
+ if(!data||!Array.isArray(data.classes))throw Error('Dit bestand is geen volledige EngliForce back-up. Kies een JSON-back-up uit “Download complete back-up”.');
+ const classes=structuredClone(data.classes), incoming=Array.isArray(data.templates)?structuredClone(data.templates):[];
+ const byId=new Map(incoming.filter(t=>t&&typeof t.id==='string').map(t=>[t.id,t]));
+ for(const c of classes){
+  if(!c||!Array.isArray(c.tests))throw Error('De back-up bevat een klas zonder geldige toetslijst.');
+  for(const t of c.tests){
+   if(!t||!Array.isArray(t.exercises)||!t.exercises.length)throw Error('Een toets mist de oefeningen.');
+   if(!t.id)t.id=uid();
+   if(!t.scores||typeof t.scores!=='object'||Array.isArray(t.scores))t.scores={};
+   if(!Array.isArray(t.norm))t.norm=[];
+   if(!t.templateId)t.templateId='legacy-'+t.id;
+   const existing=byId.get(t.templateId);
+   if(!existing){const created=shareTemplateData({...t,id:t.templateId});incoming.push(created);byId.set(created.id,created)}
+  }
+ }
+ return {classes,templates:incoming};
+}
+async function importBackup(file){
+ if(!file)return;
+ try{
+  const data=JSON.parse(await file.text());
+  if(data?.format==='engliforce-class-results-v1')throw Error('Dit is een klasresultatenbestand. Gebruik “Voeg klasresultaten toe”.');
+  if(data?.format==='engliforce-template-v1')throw Error('Dit is een toetssjabloon. Gebruik “Importeer toetssjabloon”.');
+  const converted=normaliseBackupForMerge(data);
+  await safeMergeClasses(converted.classes,converted.templates,'Volledige back-up veilig samenvoegen');
+ }catch(e){announce('Back-up importeren mislukt: '+(e instanceof SyntaxError?'Het bestand is geen leesbaar JSON-bestand.':e.message))}
+}
 
 migrateTemplates();
 function migrateTemplates(){templates();for(const c of db.classes)for(const t of c.tests||[]){if(!t.templateId)t.templateId=uid();if(!templates().some(x=>x.id===t.templateId))templates().push({id:t.templateId,name:t.name,exercises:structuredClone(t.exercises),norm:structuredClone(t.norm||[])})}}
