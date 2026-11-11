@@ -1668,7 +1668,7 @@
 
         function defaultSeatPositions(count) {
             // Three blocks of two columns and five rows, like the existing classroom plan.
-            const xs = [8, 21, 39, 61, 79, 92];
+            const xs = [8, 21, 44, 56, 79, 92];
             return Array.from({length:count}, (_, i) => {
                 const row = Math.floor(i / 6), col = i % 6;
                 const rows = Math.max(5, Math.ceil(count / 6));
@@ -1700,6 +1700,18 @@
             const saved = getSavedSeatingPlans()[activeClassName];
             seatingOrder = saved && Array.isArray(saved.order) ? [...saved.order] : [];
             seatingPositions = saved && Array.isArray(saved.positions) ? saved.positions.map(p=>({...p})) : [];
+            // Update the original middle pair only where desks have not been moved manually.
+            // This also fixes previously saved default plans without overwriting custom positions.
+            const rows = Math.max(5, Math.ceil(Math.max(SEAT_COUNT, currentStudentsData.length) / 6));
+            seatingPositions.forEach((pos, i) => {
+                const col = i % 6;
+                if (col !== 2 && col !== 3) return;
+                const oldX = col === 2 ? 39 : 61;
+                const defaultY = (Math.floor(i / 6) + .5) * 100 / rows;
+                if (Math.abs(pos.x - oldX) < .001 && Math.abs(pos.y - defaultY) < .001) {
+                    pos.x = col === 2 ? 44 : 56;
+                }
+            });
             ensurePlanState();
         }
 
