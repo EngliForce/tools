@@ -488,6 +488,22 @@
         }
         .class-stars-text { font-weight: 700; color: #fbbf24; font-size: 0.9rem; margin: 0; }
 
+        /* Vrij versleepbare tafels op een schaalbare klasplattegrond. */
+        .seating-plan-container.free-plan { position:relative; display:block; padding:0; flex:1 1 0; min-height:0; background:rgba(255,255,255,.025); border:1px dashed #64748b; border-radius:14px; overflow:hidden; touch-action:none; }
+        .free-plan .seat-item { position:absolute; width:12%; height:15%; transform:translate(-50%,-50%); min-width:0; min-height:0; touch-action:none; user-select:none; }
+        .free-plan .seat-item .student-board-card, .free-plan .seat-item .empty-desk {width:100%;height:100%;min-height:0;min-width:0;padding:3px;border-radius:9px;}
+        .free-plan.editing .seat-item { cursor:grab; }
+        .free-plan.editing .seat-item:active {cursor:grabbing;}
+        .free-plan .seat-item.dragging { z-index:8; filter:drop-shadow(0 0 8px #38bdf8); }
+        .free-plan .seat-item.selected-seat { z-index:5; outline:3px solid #fbbf24; border-radius:10px; }
+        .free-plan .seat-item .s-name {font-size:clamp(9px,1vw,14px); margin:0;line-height:1.15;overflow-wrap:anywhere;}
+        .free-plan .seat-item .s-status {font-size:clamp(8px,.75vw,11px);min-height:0;}
+        #plan-edit-toolbar {display:none;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;padding:6px;background:rgba(15,23,42,.88);border-radius:10px;margin-bottom:5px;flex-shrink:0;}
+        #plan-edit-toolbar.visible {display:flex;}
+        #plan-edit-toolbar .btn {padding:.35rem .65rem;font-size:.8rem;}
+        #plan-edit-hint {font-size:.78rem;color:#fde68a;}
+        .free-plan.editing .student-board-card:hover {transform:none;}
+        .free-plan .empty-desk span {font-size:1.2rem;opacity:.4;}
         /* Seating plan: drie tafelblokken naast elkaar, passend in de beschikbare schermhoogte. */
         .seating-plan-container {
             display: grid;
@@ -719,7 +735,8 @@
                                     <input type="checkbox" id="seating-toggle" onchange="toggleSeatingPlan()">
                                     <span class="slider"></span>
                                 </label>
-                                <button class="btn btn-info btn-sm" onclick="createNewSeatingPlan()" title="Generate a new random seating plan">🎲 New Plan</button>
+                                <button class="btn btn-info btn-sm" onclick="createNewSeatingPlan()" title="Randomly assign students to desks">🎲 New Plan</button>
+                                <button class="btn btn-secondary btn-sm" onclick="togglePlanEditor()" id="edit-plan-btn">✏️ Edit Plan</button>
                             </div>
                         </div>
                     </div>
@@ -729,6 +746,15 @@
                     </div>
                 </div>
                 
+                <div id="plan-edit-toolbar">
+                    <strong style="font-size:.82rem;color:#38bdf8">Edit seating plan</strong>
+                    <button class="btn btn-info btn-sm" id="plan-mode-desks" onclick="setPlanEditMode('desks')">🪑 Move desks</button>
+                    <button class="btn btn-secondary btn-sm" id="plan-mode-students" onclick="setPlanEditMode('students')">👥 Swap students</button>
+                    <span id="plan-edit-hint">Drag desks to move them</span>
+                    <button class="btn btn-secondary btn-sm" onclick="resetPlanPositions()">↺ Reset desk positions</button>
+                    <button class="btn btn-success btn-sm" onclick="saveSeatingPlan(true)">💾 Save plan</button>
+                    <button class="btn btn-secondary btn-sm" onclick="togglePlanEditor()">✓ Done</button>
+                </div>
                 <div id="checkin-grid-container" class="checkin-grid"></div>
                 
                 <div class="teacher-bottom-bar">
@@ -1118,6 +1144,10 @@
         
         let isSeatingPlan = false;
         let seatingOrder = [];
+        let seatingPositions = [];
+        let planEditing = false;
+        let planEditMode = "desks";
+        let selectedSwapSeat = null;
         let timerMode = 'stopwatch';
         let timerTime = 0; 
         let timerIntervalId = null;
@@ -1398,6 +1428,7 @@
             const classes = getSavedClasses();
             if (classes[name]) {
                 delete classes[name];
+                const plans=getSavedSeatingPlans();delete plans[name];localStorage.setItem(PLAN_STORAGE,JSON.stringify(plans));
                 localStorage.setItem('teacher_classes', JSON.stringify(classes));
                 document.getElementById('class-name').value = '';
                 document.getElementById('students-input').value = '';
@@ -1410,7 +1441,8 @@
         function exportData() {
             const data = {
                 classes: getSavedClasses(),
-                history: getSavedHistory()
+                history: getSavedHistory(),
+                seatingPlans: getSavedSeatingPlans()
             };
             const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
@@ -1430,6 +1462,7 @@
                     const data = JSON.parse(e.target.result);
                     if (data.classes) localStorage.setItem('teacher_classes', JSON.stringify(data.classes));
                     if (data.history) localStorage.setItem('teacher_lesson_history', JSON.stringify(data.history));
+                    if (data.seatingPlans) localStorage.setItem(PLAN_STORAGE, JSON.stringify(data.seatingPlans));
                     refreshClassDropdown();
                     loadSelectedClass();
                     showAlertModal('Success', 'Data imported successfully!');
@@ -1595,6 +1628,7 @@
             starTimerWins.clear();
             activeClassName = name;
             seatingOrder = [];
+            planEditing = false;
             const history = getSavedHistory();
             
             currentStudentsData = rawList.map(sName => {
@@ -1618,78 +1652,199 @@
             document.getElementById('checkin-screen').classList.add('active');
             document.getElementById('btn-to-settings').style.display = 'inline-flex';
 
+            loadSeatingPlan();
             document.getElementById('seating-toggle').checked = isSeatingPlan;
             renderCheckInGrid();
             updateClassStarsDisplay();
         }
 
+        const SEAT_COUNT = 30;
+        const PLAN_STORAGE = 'teacher_seating_plans';
+
+        function getSavedSeatingPlans() {
+            try { return JSON.parse(localStorage.getItem(PLAN_STORAGE) || '{}') || {}; }
+            catch (e) { return {}; }
+        }
+
+        function defaultSeatPositions(count) {
+            // Three blocks of two columns and five rows, like the existing classroom plan.
+            const xs = [8, 21, 39, 61, 79, 92];
+            return Array.from({length:count}, (_, i) => {
+                const row = Math.floor(i / 6), col = i % 6;
+                const rows = Math.max(5, Math.ceil(count / 6));
+                return {x: xs[col], y: (row + .5) * 100 / rows};
+            });
+        }
+
+        function ensurePlanState() {
+            const count = Math.max(SEAT_COUNT, currentStudentsData.length);
+            const defaults = defaultSeatPositions(count);
+            if (!Array.isArray(seatingPositions)) seatingPositions = [];
+            seatingPositions = Array.from({length:count}, (_, i) => {
+                const pos = seatingPositions[i];
+                return pos && Number.isFinite(pos.x) && Number.isFinite(pos.y)
+                    ? {x:Math.max(6, Math.min(94, pos.x)), y:Math.max(8, Math.min(92, pos.y))}
+                    : defaults[i];
+            });
+            // Store student identities instead of indices, so editing the class list does not scramble seats.
+            const names = currentStudentsData.map(s=>s.name);
+            const seen = new Set();
+            const valid = (Array.isArray(seatingOrder) ? seatingOrder : []).filter(name => {
+                if (typeof name !== 'string' || !names.includes(name) || seen.has(name)) return false;
+                seen.add(name); return true;
+            });
+            seatingOrder = valid.concat(names.filter(n => !seen.has(n)));
+        }
+
+        function loadSeatingPlan() {
+            const saved = getSavedSeatingPlans()[activeClassName];
+            seatingOrder = saved && Array.isArray(saved.order) ? [...saved.order] : [];
+            seatingPositions = saved && Array.isArray(saved.positions) ? saved.positions.map(p=>({...p})) : [];
+            ensurePlanState();
+        }
+
+        function saveSeatingPlan(notify=false) {
+            if (!activeClassName) return;
+            ensurePlanState();
+            try {
+                const plans = getSavedSeatingPlans();
+                plans[activeClassName] = {order:seatingOrder.slice(),positions:seatingPositions.map(p=>({...p}))};
+                localStorage.setItem(PLAN_STORAGE,JSON.stringify(plans));
+                if (notify) showAlertModal('Seating plan saved', `The seating plan for ${activeClassName} has been saved on this device.`);
+            } catch(e) {
+                showAlertModal('Save failed','The browser could not save the seating plan. Please export a backup.');
+            }
+        }
+
         function toggleSeatingPlan() {
             isSeatingPlan = document.getElementById('seating-toggle').checked;
+            if (!isSeatingPlan) planEditing = false;
             renderCheckInGrid();
         }
 
         function createNewSeatingPlan() {
             if (!currentStudentsData.length) return;
-            // Shuffle positions, never student records: check-ins, tags and star totals remain intact.
-            seatingOrder = currentStudentsData.map((_, i) => i);
-            for (let i = seatingOrder.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [seatingOrder[i], seatingOrder[j]] = [seatingOrder[j], seatingOrder[i]];
-            }
-            isSeatingPlan = true;
-            document.getElementById('seating-toggle').checked = true;
+            const names = currentStudentsData.map(s=>s.name);
+            for(let i=names.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[names[i],names[j]]=[names[j],names[i]];}
+            seatingOrder=names;
+            ensurePlanState();
+            isSeatingPlan=true;
+            document.getElementById('seating-toggle').checked=true;
+            saveSeatingPlan();
             hideAllScreens();
             document.getElementById('checkin-screen').classList.add('active');
             renderCheckInGrid();
         }
 
-        function createStudentCard(student, index) {
-            const card = document.createElement('div');
-            card.className = `student-board-card ${student.checkedIn ? 'checked-in' : ''}`;
-            card.onclick = () => toggleCheckIn(index);
-            card.innerHTML = `
-                <div class="s-name">${esc(student.name)}${getSessionStarAndStreakDisplay(student)}</div>
-                <div class="s-status">${student.checkedIn ? '<div class="check-icon">✓</div>' : 'Click to check in'}</div>
-            `;
+        function togglePlanEditor() {
+            if(!currentStudentsData.length) return;
+            if(planEditing) {saveSeatingPlan();planEditing=false;selectedSwapSeat=null;}
+            else { isSeatingPlan=true; document.getElementById('seating-toggle').checked=true;planEditing=true;planEditMode='desks'; }
+            hideAllScreens();
+            document.getElementById('checkin-screen').classList.add('active');
+            renderCheckInGrid();
+        }
+
+        function setPlanEditMode(mode){
+            planEditMode=mode;
+            selectedSwapSeat=null;
+            renderCheckInGrid();
+        }
+
+        function resetPlanPositions(){
+            seatingPositions=defaultSeatPositions(Math.max(SEAT_COUNT,currentStudentsData.length));
+            saveSeatingPlan();
+            renderCheckInGrid();
+        }
+
+        function createStudentCard(student,index){
+            const card=document.createElement('div');
+            card.className=`student-board-card ${student.checkedIn?'checked-in':''}`;
+            card.onclick=()=>{if(!planEditing)toggleCheckIn(index);};
+            card.innerHTML=`<div class="s-name">${esc(student.name)}${getSessionStarAndStreakDisplay(student)}</div><div class="s-status">${student.checkedIn?'<div class="check-icon">✓</div>':'Click to check in'}</div>`;
             return card;
         }
 
-        function renderCheckInGrid() {
-            const container = document.getElementById('checkin-grid-container');
-            container.innerHTML = '';
-            document.getElementById('seating-plan-instruction').style.display = isSeatingPlan ? 'block' : 'none';
-
-            if (!isSeatingPlan) {
-                container.className = 'checkin-grid';
-                currentStudentsData.forEach((student, index) => {
-                    container.appendChild(createStudentCard(student, index));
-                });
-            } else {
-                container.className = 'seating-plan-container';
-                const rows = 5; 
-                const cols = 2;
-                
-                for (let b = 0; b < 3; b++) {
-                    const block = document.createElement('div');
-                    block.className = 'seating-block';
-                    
-                    for (let r = 0; r < rows; r++) {
-                        for (let c = 0; c < cols; c++) {
-                            const slotIndex = b * (rows * cols) + r * cols + c;
-                            if (slotIndex < currentStudentsData.length) {
-                                const studentIndex = seatingOrder.length === currentStudentsData.length ? seatingOrder[slotIndex] : slotIndex;
-                                block.appendChild(createStudentCard(currentStudentsData[studentIndex], studentIndex));
-                            } else {
-                                const empty = document.createElement('div');
-                                empty.className = 'empty-desk';
-                                empty.innerHTML = '<span style="font-size: 2rem; opacity: 0.1; filter: grayscale(1);">🪑</span>';
-                                block.appendChild(empty);
-                            }
-                        }
-                    }
-                    container.appendChild(block);
-                }
+        function renderCheckInGrid(){
+            const container=document.getElementById('checkin-grid-container');
+            container.innerHTML='';
+            const toolbar=document.getElementById('plan-edit-toolbar');
+            toolbar.classList.toggle('visible',planEditing);
+            document.getElementById('edit-plan-btn').innerText=planEditing?'✓ Done':'✏️ Edit Plan';
+            document.getElementById('seating-plan-instruction').style.display=(isSeatingPlan&&!planEditing)?'block':'none';
+            if(!isSeatingPlan){
+                container.className='checkin-grid';
+                currentStudentsData.forEach((student,i)=>container.appendChild(createStudentCard(student,i)));
+                return;
             }
+            ensurePlanState();
+            container.className='seating-plan-container free-plan'+(planEditing?' editing':'');
+            document.getElementById('plan-mode-desks').className='btn btn-sm '+(planEditMode==='desks'?'btn-info':'btn-secondary');
+            document.getElementById('plan-mode-students').className='btn btn-sm '+(planEditMode==='students'?'btn-info':'btn-secondary');
+            document.getElementById('plan-edit-hint').textContent=planEditMode==='desks'?'Drag desks to move them':'Drag a student onto another seat to swap';
+            const indexByName=new Map(currentStudentsData.map((student,i)=>[student.name,i]));
+            seatingPositions.forEach((pos,slot)=>{
+                const seat=document.createElement('div');
+                seat.className='seat-item';
+                seat.style.left=pos.x+'%';seat.style.top=pos.y+'%';
+                seat.dataset.slot=slot;
+                const name=seatingOrder[slot];
+                if(name!==undefined && indexByName.has(name)){
+                    seat.appendChild(createStudentCard(currentStudentsData[indexByName.get(name)],indexByName.get(name)));
+                }else{
+                    const empty=document.createElement('div');empty.className='empty-desk';empty.innerHTML='<span>🪑</span>';seat.appendChild(empty);
+                }
+                if(planEditing) wireSeatDrag(seat,slot,container);
+                container.appendChild(seat);
+            });
+        }
+
+        function wireSeatDrag(element,slot,board){
+            let start=null, moved=false;
+            element.addEventListener('pointerdown',e=>{
+                if(e.button!==0 && e.pointerType==='mouse')return;
+                e.preventDefault(); e.stopPropagation();
+                start={x:e.clientX,y:e.clientY,pos:{...seatingPositions[slot]}};moved=false;
+                element.setPointerCapture(e.pointerId);
+                element.classList.add('dragging');
+            });
+            element.addEventListener('pointermove',e=>{
+                if(!start)return;
+                const dx=e.clientX-start.x,dy=e.clientY-start.y;
+                if(Math.abs(dx)+Math.abs(dy)>5)moved=true;
+                if(planEditMode==='desks'){
+                    const bounds=board.getBoundingClientRect();
+                    const x=Math.max(6,Math.min(94,start.pos.x+dx/bounds.width*100));
+                    const y=Math.max(8,Math.min(92,start.pos.y+dy/bounds.height*100));
+                    seatingPositions[slot]={x,y};element.style.left=x+'%';element.style.top=y+'%';
+                }
+            });
+            const finish=e=>{
+                if(!start)return;
+                const didMove=moved;start=null;element.classList.remove('dragging');
+                if(planEditMode==='students'){
+                    let other=null;
+                    if(didMove){
+                        const bounds=board.getBoundingClientRect();
+                        const x=(e.clientX-bounds.left)/bounds.width*100;
+                        const y=(e.clientY-bounds.top)/bounds.height*100;
+                        let best=Infinity;
+                        seatingPositions.forEach((p,i)=>{
+                            const distance=Math.hypot((p.x-x)*bounds.width/100,(p.y-y)*bounds.height/100);
+                            if(distance<best){best=distance;other=i;}
+                        });
+                        if(best>Math.max(65,bounds.width*.085))other=null;
+                    }else if(selectedSwapSeat===null){selectedSwapSeat=slot;}
+                    else{other=slot;}
+                    if(other!==null && (didMove || selectedSwapSeat!==null) && other!==(didMove?slot:selectedSwapSeat)){
+                        const from=didMove?slot:selectedSwapSeat;
+                        [seatingOrder[from],seatingOrder[other]]=[seatingOrder[other],seatingOrder[from]];
+                        selectedSwapSeat=null;saveSeatingPlan();renderCheckInGrid();
+                    }else if(!didMove){renderCheckInGrid();const marked=board.querySelector(`[data-slot="${selectedSwapSeat}"]`);if(marked)marked.classList.add('selected-seat');}
+                }else if(didMove)saveSeatingPlan();
+            };
+            element.addEventListener('pointerup',finish);
+            element.addEventListener('pointercancel',()=>{start=null;element.classList.remove('dragging');});
         }
 
         function toggleCheckIn(index) {
