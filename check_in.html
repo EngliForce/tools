@@ -1700,19 +1700,22 @@
             const saved = getSavedSeatingPlans()[activeClassName];
             seatingOrder = saved && Array.isArray(saved.order) ? [...saved.order] : [];
             seatingPositions = saved && Array.isArray(saved.positions) ? saved.positions.map(p=>({...p})) : [];
-            // Update the original middle pair only where desks have not been moved manually.
-            // This also fixes previously saved default plans without overwriting custom positions.
-            const rows = Math.max(5, Math.ceil(Math.max(SEAT_COUNT, currentStudentsData.length) / 6));
-            seatingPositions.forEach((pos, i) => {
-                const col = i % 6;
-                if (col !== 2 && col !== 3) return;
-                const oldX = col === 2 ? 39 : 61;
-                const defaultY = (Math.floor(i / 6) + .5) * 100 / rows;
-                if (Math.abs(pos.x - oldX) < .001 && Math.abs(pos.y - defaultY) < .001) {
-                    pos.x = col === 2 ? 44 : 56;
+            // One-time repair of the entire middle block: each row has two desks
+            // immediately alongside each other, both on the same horizontal line.
+            // Previous versions saved scattered coordinates; repairing only the old
+            // default coordinates did not fix those previously dragged/saved desks.
+            // The version flag prevents future user drags from being overwritten.
+            if (!saved || saved.middleBlockLayoutVersion !== 2) {
+                const defaults = defaultSeatPositions(Math.max(SEAT_COUNT, currentStudentsData.length));
+                for (let i = 0; i < defaults.length; i++) {
+                    const col = i % 6;
+                    if (col === 2 || col === 3) {
+                        seatingPositions[i] = {...defaults[i]};
+                    }
                 }
-            });
+            }
             ensurePlanState();
+            if (saved && saved.middleBlockLayoutVersion !== 2) saveSeatingPlan();
         }
 
         function saveSeatingPlan(notify=false) {
@@ -1720,7 +1723,7 @@
             ensurePlanState();
             try {
                 const plans = getSavedSeatingPlans();
-                plans[activeClassName] = {order:seatingOrder.slice(),positions:seatingPositions.map(p=>({...p}))};
+                plans[activeClassName] = {order:seatingOrder.slice(),positions:seatingPositions.map(p=>({...p})),middleBlockLayoutVersion:2};
                 localStorage.setItem(PLAN_STORAGE,JSON.stringify(plans));
                 if (notify) showAlertModal('Seating plan saved', `The seating plan for ${activeClassName} has been saved on this device.`);
             } catch(e) {
