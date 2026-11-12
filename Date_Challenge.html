@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#238c38">
+<title>Date Challenge | EngliForce</title>
+<style>
+  :root { --navy:#082139; --ink:#102d43; --lime:#49ce68; --gold:#ffc946; --pink:#ec3c82; --white:#f6fbff; }
+  * { box-sizing: border-box; }
+  html,body { margin:0; min-height:100%; }
+  body { font-family:Arial, Helvetica, sans-serif; color:white; background: #0b2137 url("data:image/webp;base64,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") center center / 100% 100% fixed no-repeat; }
+  button, select, input { font:inherit; }
+  button { cursor:pointer; }
+  button:focus-visible, input:focus-visible, select:focus-visible { outline:4px solid #ffcf48; outline-offset:3px; }
+  .app { display:grid; grid-template-rows:clamp(105px,16.8vh,150px) minmax(0,1fr) auto; height:100vh; height:100dvh; min-height:610px; }
+  .hero { position:relative; display:flex; justify-content:center; align-items:center; flex-direction:column; padding:6px 250px 8px; text-align:center; }
+  .hero-title { font-weight:900; color:#fff; letter-spacing:.075em; font-size:clamp(41px,5.15vw,78px); line-height:1; text-shadow:0 3px 1px #0a5f24, 0 5px 14px rgba(0,0,0,.25); }
+  .hero-year { font-size:clamp(17px,1.6vw,24px); font-weight:800; letter-spacing:.14em; color:#e2ffdf; margin-top:6px; text-shadow:0 1px 4px rgba(0,0,0,.25); }
+  .brand { position:absolute; left:3%; top:50%; transform:translateY(-50%); text-align:left; }
+  .brand div:first-child { font-size:clamp(14px,1.4vw,22px); font-weight:900; letter-spacing:.10em; }
+  .brand div:last-child { font-size:clamp(11px,.85vw,14px); margin-top:5px; font-weight:600; color:#e1ffe4; }
+  .round { position:absolute; right:3%; top:50%; transform:translateY(-50%); background:rgba(1,50,17,.22); border:1px solid rgba(255,255,255,.3); border-radius:14px; padding:12px 18px; min-width:125px; }
+  .round small { display:block; font-size:11px; letter-spacing:.1em; font-weight:700; color:#e5ffe8; }
+  .round strong { display:block; font-size:27px; line-height:1.2; }
+  .main { min-height:0; width:min(1600px,96%); margin:0 auto; padding:clamp(12px,2vh,20px) 0; display:grid; grid-template-columns:minmax(0,1.8fr) minmax(340px,.85fr); gap:clamp(12px,1.7vw,26px); }
+  .calendar-wrap { min-height:0; display:flex; flex-direction:column; position:relative; background:linear-gradient(160deg,#eff8ff,#dcefff 60%,#c8e1f3); color:#1a3e59; border:5px solid rgba(244,251,255,.92); border-radius:24px; padding:clamp(12px,1.6vw,25px); box-shadow:0 13px 35px rgba(0,0,0,.28), inset 0 3px 5px #fff; }
+  .calendar-wrap::before, .calendar-wrap::after { content:""; position:absolute; top:-10px; width:56px; height:14px; background:#acc8b8; border-radius:6px; border:3px solid #e9fcf1; box-shadow:0 3px 4px #0003; }
+  .calendar-wrap::before{left:24%;} .calendar-wrap::after{right:24%;}
+  .calendar-top { position:relative; min-height:78px; display:flex; justify-content:center; align-items:center; padding:3px 9px 12px; }
+  .cal-month-block { display:flex; align-items:center; flex-direction:column; gap:1px; text-align:center; }
+  .cal-month { font-size:clamp(30px,3.1vw,51px); font-weight:900; line-height:1; color:#173b57; text-transform:uppercase; letter-spacing:.07em; }
+  .cal-year { font-size:clamp(15px,1.15vw,18px); font-weight:800; color:#4a6c80; letter-spacing:.13em; }
+  .cal-help { position:absolute; right:8px; top:50%; transform:translateY(-50%); font-size:clamp(12px,.92vw,15px); font-weight:700; color:#55748e; text-align:right; }
+  .weekday-grid { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:5px; margin-bottom:8px; }
+  .weekday { padding:10px 0; background:#9acae7; text-align:center; border-radius:9px; color:#234563; font-size:clamp(17px,1.7vw,26px); font-weight:900; }
+  .day-grid { flex:1; min-height:0; display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); grid-template-rows:repeat(6,minmax(0,1fr)); gap:clamp(4px,.45vw,8px); }
+  .day { border:2px solid rgba(255,255,255,.67); background:rgba(255,255,255,.53); color:#173a58; border-radius:9px; display:grid; place-items:center; min-height:0; position:relative; transition:background .16s,border-color .16s; }
+  .day:not(.empty):hover { background:#fff; border-color:#7ab7d5; }
+  .day.empty { background:rgba(141,185,211,.16); border:0; cursor:default; }
+  .day .num { display:grid; place-items:center; width:clamp(40px,3.9vw,65px); height:clamp(40px,3.9vw,65px); border-radius:50%; font-size:clamp(23px,2.55vw,41px); font-weight:900; line-height:1; }
+  .day.selected { background:#fff2f6; border:3px solid #e972a0; }
+  .day.selected .num { border:4px solid var(--pink); background:#fff; color:#8d0847; box-shadow:0 0 0 6px rgba(236,60,130,.13); }
+  .day.selected:not(.revealed) .num span { animation:dateBlink 1.12s steps(1,end) infinite; }
+  .day.selected:not(.revealed) .num { animation:ringGlow 1.12s ease-in-out infinite; }
+  .day.selected.revealed { border-color:#3ea85b; background:#e2ffeb; }
+  .day.selected.revealed .num { color:#176738; border-color:#2baa60; box-shadow:0 0 0 5px #36b76a26; }
+  @keyframes dateBlink { 0%,47%,100%{opacity:1} 48%,77%{opacity:0} 78%{opacity:1} }
+  @keyframes ringGlow {0%,100%{box-shadow:0 0 0 6px #ec3c8220}50%{box-shadow:0 0 0 10px #ec3c823c}}
+  .side { display:flex; flex-direction:column; min-height:0; border:1px solid #96bfe34f; border-radius:24px; background:linear-gradient(165deg,rgba(9,37,63,.88),rgba(6,27,47,.94)); box-shadow:0 12px 35px #0003; padding:clamp(16px,2vw,29px); }
+  .side-heading { font-size:clamp(16px,1.3vw,22px); font-weight:900; color:#b6e4f2; letter-spacing:.13em; margin-bottom:15px; }
+  .before { flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; gap:20px; padding:8px; }
+  .pencil { width:92px; height:92px; border:2px solid rgba(147,233,176,.35); background:#31a85524; border-radius:25px; display:grid; place-items:center; font-size:45px; transform:rotate(-5deg); }
+  .before-title { font-size:clamp(24px,2.1vw,37px); line-height:1.12; font-weight:900; }
+  .before-desc { font-size:clamp(17px,1.3vw,22px); color:#c0d8e7; line-height:1.5; max-width:345px; }
+  .before-note { font-size:clamp(14px,.95vw,16px); color:#d0eeaf; background:#62b84b1a; border:1px solid #5dbd503b; border-radius:10px; padding:12px 14px; }
+  .answer-area { flex:1; min-height:0; display:flex; flex-direction:column; gap:14px; }
+  .answer-box { flex:1; display:flex; flex-direction:column; justify-content:space-evenly; gap:12px; background:#eaf5ff; color:#102e49; border-radius:16px; padding:clamp(14px,1.5vw,22px); border:2px solid #fff; box-shadow:inset 0 -3px 2px #1655771c; }
+  .answer-box.us { background:#e8f5ec; }
+  .answer-head { font-size:clamp(16px,1.15vw,19px); letter-spacing:.045em; font-weight:900; display:flex; gap:8px; align-items:center; color:#17597f; }
+  .answer-box.us .answer-head { color:#227744; }
+  .flag { font-size:27px; }
+  .answer-label { font-size:13px; color:#5e788a; font-weight:800; text-transform:uppercase; letter-spacing:.09em; margin:0 0 3px; }
+  .answer-value { font-size:clamp(21px,1.68vw,29px); line-height:1.22; font-weight:900; margin:0; overflow-wrap:break-word; }
+  .answer-spoken { font-size:clamp(18px,1.3vw,23px); font-weight:700; font-style:italic; }
+  .side-foot { text-align:center; margin-top:14px; color:#add5e5; font-size:clamp(13px,1vw,16px); }
+  .toolbar { border-top:1px solid #ffffff26; background:rgba(0,11,26,.75); min-height:84px; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px max(2%,calc((100vw - 1600px)/2)); }
+  .settings, .actions { display:flex; align-items:center; gap:12px; }
+  .settings label { display:flex; align-items:center; gap:8px; font-size:15px; font-weight:800; color:#bdd9e7; }
+  .settings select, .settings input { border:1px solid #8db5ca; border-radius:10px; height:45px; background:#17344a; color:#fff; font-weight:800; padding:0 10px; }
+  .settings input { width:91px; text-align:center; }
+  .settings select { max-width:180px; }
+  .btn { border:0; border-radius:12px; display:inline-flex; align-items:center; justify-content:center; min-height:53px; padding:10px 23px; font-size:clamp(15px,1.18vw,19px); font-weight:900; gap:10px; box-shadow:0 4px 0 #0005; transition:filter .15s,transform .15s; white-space:nowrap; }
+  .btn:hover { filter:brightness(1.09); transform:translateY(-1px); }
+  .btn:active { transform:translateY(2px); box-shadow:0 2px 0 #0005; }
+  .btn-check { color:#142534; background:#ffd049; }
+  .btn-next { color:#073b24; background:#67e69a; }
+  .btn-full { background:#26445b; color:white; border:1px solid #7796a8; padding:10px 14px; }
+  .keyhint { color:#99b7ca; font-size:12px; font-weight:600; white-space:nowrap; }
+  [hidden] { display:none!important; }
+  @media (max-width:1170px) { .main{grid-template-columns:minmax(0,1.5fr) minmax(305px,.85fr)} .side{padding:16px} .answer-box{padding:12px} .toolbar{gap:8px} .keyhint{display:none} .btn{padding:10px 15px} .settings label{font-size:13px} }
+  @media (max-width:960px) { body{background-size:cover;} .app{height:auto;min-height:100dvh;grid-template-rows:120px auto auto;} .hero{padding:6px 145px} .hero-title{font-size:clamp(34px,6vw,58px)} .brand div:last-child{display:none} .brand div:first-child{font-size:13px} .round{min-width:70px;padding:7px} .round strong{font-size:19px} .main{width:96%;grid-template-columns:1fr;gap:16px} .calendar-wrap{min-height:510px} .side{min-height:260px} .before{padding:12px} .before .pencil{display:none} .answer-area{display:grid;grid-template-columns:1fr 1fr} .answer-box{min-height:195px} .answer-value{font-size:23px} .toolbar{flex-wrap:wrap;justify-content:center;padding:12px;gap:14px} }
+  @media (max-width:570px) { .calendar-top{min-height:69px} .cal-month{font-size:26px} .cal-year{font-size:13px} .cal-help{position:static;transform:none;font-size:10px} .calendar-top{justify-content:space-between;gap:6px} .hero{padding:5px 73px} .hero-title{font-size:34px} .hero-year{font-size:13px} .brand div:first-child{font-size:10px} .round{right:1%;min-width:48px;padding:6px 5px} .round small{font-size:9px} .round strong{font-size:16px} .calendar-wrap{min-height:410px;padding:9px} .cal-label{font-size:16px} .cal-help{font-size:11px} .weekday{font-size:15px;padding:8px 0} .day-grid{gap:3px} .day{border-width:1px;border-radius:5px} .day .num{width:34px;height:34px;font-size:21px} .day.selected .num{border-width:3px} .answer-area{grid-template-columns:1fr} .answer-box{min-height:160px} .settings{width:100%;justify-content:center} .settings label{font-size:12px} .settings select{max-width:140px} .settings input{width:75px} .actions{width:100%;justify-content:center;flex-wrap:wrap} .btn{padding:10px 15px;font-size:15px} .brand{left:2%} }
+  @media (prefers-reduced-motion: reduce) { .day.selected:not(.revealed) .num span, .day.selected:not(.revealed) .num { animation-duration:2s; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="hero">
+    <div class="brand"><div>ENGLIFORCE</div><div>Make English your superpower!</div></div>
+    <div class="hero-title">DATE CHALLENGE</div>
+    <div class="round"><small>VRAAG</small><strong id="roundNumber">01</strong></div>
+  </header>
+  <main class="main">
+    <section class="calendar-wrap" aria-label="Kalender">
+      <div class="calendar-top"><div class="cal-month-block"><div class="cal-month" id="calendarMonth">MAART</div><div class="cal-year" id="calendarYear">2026</div></div><div class="cal-help">Welk getal knippert?</div></div>
+      <div class="weekday-grid" aria-label="Dagen van de week">
+        <div class="weekday">MA</div><div class="weekday">DI</div><div class="weekday">WO</div><div class="weekday">DO</div><div class="weekday">VR</div><div class="weekday">ZA</div><div class="weekday">ZO</div>
+      </div>
+      <div class="day-grid" id="dayGrid" aria-live="off"></div>
+    </section>
+    <aside class="side" aria-label="Antwoorden">
+      <div class="side-heading">DATES IN ENGLISH</div>
+      <div class="before" id="beforeAnswer">
+        <div class="pencil" aria-hidden="true">✏️</div>
+        <div class="before-title">Schrijf de datum op!</div>
+        <div class="before-desc">Schrijf de <b>weekdag en datum</b> op in <b>Brits</b> én <b>Amerikaans</b> Engels.</div>
+        <div class="before-note">Klaar? De docent klikt op <b>CHECK</b>.</div>
+      </div>
+      <div class="answer-area" id="answerArea" hidden aria-live="polite">
+        <div class="answer-box">
+          <div class="answer-head"><span class="flag" aria-hidden="true">🇬🇧</span> BRITISH ENGLISH</div>
+          <div><p class="answer-label">Schrijven</p><p class="answer-value" id="britishWritten"></p></div>
+          <div><p class="answer-label">Zeggen</p><p class="answer-value answer-spoken" id="britishSpoken"></p></div>
+        </div>
+        <div class="answer-box us">
+          <div class="answer-head"><span class="flag" aria-hidden="true">🇺🇸</span> AMERICAN ENGLISH</div>
+          <div><p class="answer-label">Schrijven</p><p class="answer-value" id="americanWritten"></p></div>
+          <div><p class="answer-label">Zeggen</p><p class="answer-value answer-spoken" id="americanSpoken"></p></div>
+        </div>
+      </div>
+      <div class="side-foot" id="sideFoot">Controleer daarna je antwoorden.</div>
+    </aside>
+  </main>
+  <footer class="toolbar">
+    <div class="settings">
+      <label>JAAR <input type="number" id="yearInput" min="1900" max="2100" step="1" value="2026" aria-label="Kalenderjaar"></label>
+      <label>MAAND <select id="monthSelect" aria-label="Maand kiezen">
+        <option value="all">Willekeurig</option>
+        <option value="0">Januari</option><option value="1">Februari</option><option value="2">Maart</option><option value="3">April</option>
+        <option value="4">Mei</option><option value="5">Juni</option><option value="6">Juli</option><option value="7">Augustus</option>
+        <option value="8">September</option><option value="9">Oktober</option><option value="10">November</option><option value="11">December</option>
+      </select></label>
+    </div>
+    <div class="actions">
+      <span class="keyhint">ENTER = Check &nbsp;·&nbsp; SPATIE = Volgende</span>
+      <button class="btn btn-check" id="checkBtn" type="button">✓ CHECK</button>
+      <button class="btn btn-next" id="nextBtn" type="button">VOLGENDE DATUM →</button>
+      <button class="btn btn-full" id="fullBtn" type="button" title="Volledig scherm" aria-label="Volledig scherm">⛶</button>
+    </div>
+  </footer>
+</div>
+<script>
+'use strict';
+(() => {
+  const monthsNL=['JANUARI','FEBRUARI','MAART','APRIL','MEI','JUNI','JULI','AUGUSTUS','SEPTEMBER','OKTOBER','NOVEMBER','DECEMBER'];
+  const monthsEN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const weekdaysEN=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const ordinalBase=['','first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth','eleventh','twelfth','thirteenth','fourteenth','fifteenth','sixteenth','seventeenth','eighteenth','nineteenth'];
+  const byId=id=>document.getElementById(id);
+  const grid=byId('dayGrid');
+  let pool=[];
+  let current=null;
+  let revealed=false;
+  let question=0;
+  function ordinal(num){
+    if(num<20) return ordinalBase[num];
+    if(num===20) return 'twentieth';
+    if(num===30) return 'thirtieth';
+    if(num>20 && num<30) return 'twenty-'+ordinalBase[num-20];
+    if(num===31) return 'thirty-first';
+    return '';
+  }
+  function allowedYear(){
+    const v=Number(byId('yearInput').value);
+    return Number.isInteger(v)&&v>=1900&&v<=2100?v:2026;
+  }
+  function allDates(){
+    const year=allowedYear(); const restrict=byId('monthSelect').value;
+    const months=restrict==='all'?Array.from({length:12},(_,i)=>i):[Number(restrict)];
+    const dates=[];
+    for(const month of months){
+      const length=new Date(year,month+1,0).getDate();
+      for(let day=1;day<=length;day++) dates.push({year,month,day});
+    }
+    for(let i=dates.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [dates[i],dates[j]]=[dates[j],dates[i]]; }
+    return dates;
+  }
+  function chooseNext(){
+    if(!pool.length) pool=allDates();
+    if(current && pool.length>1){
+      const last=pool[pool.length-1];
+      if(last.month===current.month && last.day===current.day){
+        const swapIndex=Math.floor(Math.random()*(pool.length-1));
+        [pool[swapIndex],pool[pool.length-1]]=[pool[pool.length-1],pool[swapIndex]];
+      }
+    }
+    current=pool.pop();
+    revealed=false;
+    question++;
+    render();
+  }
+  function selectDate(day){
+    if(!current)return;
+    current={...current,day};
+    // Prevent the manually selected date being drawn immediately as a random question.
+    pool=pool.filter(date=>date.month!==current.month || date.day!==day);
+    revealed=false;
+    render();
+  }
+  function render(){
+    const {year,month,day}=current;
+    byId('calendarMonth').textContent=monthsNL[month];
+    byId('calendarYear').textContent=year;
+    byId('roundNumber').textContent=String(question).padStart(2,'0');
+    byId('beforeAnswer').hidden=revealed;
+    byId('answerArea').hidden=!revealed;
+    byId('sideFoot').textContent=revealed?'Goed nagekeken? Ga naar de volgende datum.':'Controleer daarna je antwoorden.';
+    byId('checkBtn').textContent=revealed?'✓ GECONTROLEERD':'✓ CHECK';
+    byId('checkBtn').disabled=revealed;
+    byId('checkBtn').style.opacity=revealed?'.7':'1';
+    const start=(new Date(year,month,1).getDay()+6)%7; // Monday-first calendar
+    const days=new Date(year,month+1,0).getDate();
+    const frag=document.createDocumentFragment();
+    for(let i=0;i<42;i++){
+      const val=i-start+1;
+      const b=document.createElement('button');
+      b.type='button';
+      b.className='day';
+      if(val<1 || val>days){ b.classList.add('empty'); b.disabled=true; b.setAttribute('aria-hidden','true'); }
+      else {
+        const s=document.createElement('span');
+        s.className='num';
+        const number=document.createElement('span');number.textContent=val;s.append(number);b.append(s);
+        b.title=`Kies ${val} ${monthsNL[month].toLowerCase()} ${year}`;
+        b.setAttribute('aria-label',`${val} ${monthsNL[month].toLowerCase()} ${year}`);
+        if(val===day){ b.classList.add('selected'); if(revealed)b.classList.add('revealed'); b.setAttribute('aria-current','date'); }
+        b.addEventListener('click',()=>selectDate(val));
+      }
+      frag.appendChild(b);
+    }
+    grid.replaceChildren(frag);
+    if(revealed){
+      const name=monthsEN[month];
+      const weekday=weekdaysEN[new Date(year,month,day).getDay()];
+      byId('britishWritten').textContent=`${weekday} ${day} ${name}`;
+      byId('britishSpoken').textContent=`${weekday} the ${ordinal(day)} of ${name}`;
+      byId('americanWritten').textContent=`${weekday}, ${name} ${day}`;
+      byId('americanSpoken').textContent=`${weekday} ${name} ${ordinal(day)}`;
+    }
+  }
+  function check(){if(current&&!revealed){revealed=true;render();}}
+  byId('checkBtn').addEventListener('click',check);
+  byId('nextBtn').addEventListener('click',chooseNext);
+  function restart(){pool=[];question=0;current=null;chooseNext();}
+  byId('monthSelect').addEventListener('change',restart);
+  byId('yearInput').addEventListener('change',()=>{byId('yearInput').value=allowedYear();restart();});
+  document.addEventListener('keydown',e=>{
+    const active=document.activeElement;
+    if(active && ['INPUT','SELECT','TEXTAREA'].includes(active.tagName))return;
+    if(e.code==='Space'){e.preventDefault();chooseNext();}
+    else if(e.code==='Enter' && active.tagName!=='BUTTON'){e.preventDefault();check();}
+  });
+  byId('fullBtn').addEventListener('click',async()=>{
+    try {
+      if(!document.fullscreenElement){await document.documentElement.requestFullscreen();}
+      else {await document.exitFullscreen();}
+    }catch(e){ /* Fullscreen can be blocked in embedded viewers. */ }
+  });
+  restart();
+})();
+</script>
+</body>
+</html>
