@@ -63,7 +63,7 @@ function reconcileSubjectNames(){
   }
   m.cijfers=grades;
   m.vakken=uniqueSubjects((m.vakken||[]).map(v=>names.get(subjectKey(v))||v));
-  m.flex=uniqueSubjects((m.flex||[]).map(v=>isDutch(v)?'Nederlands':(names.get(subjectKey(v))||v)));
+  m.flex=uniqueSubjects((m.flex||[]).map(v=>isDutch(v)?'Ne':(names.get(subjectKey(v))||v)));
  }
 }
 function numericPromotionStatus(m){
@@ -89,7 +89,7 @@ function renderList(){const list=$('studentList');list.replaceChildren();const v
 function getCurrent(){return students.find(s=>s.id===currentId)}
 function selectStudent(id){currentId=id;const s=getCurrent();$('empty').classList.toggle('hide',!!s);$('editor').classList.toggle('hide',!s);if(!s){renderList();return}const m=getMeeting();$('name').value=s.name;for(const f of fields)$(f).value=m[f]??'';for(const k of lists)renderChips(k,m[k]);$('meetingSelect').value=String(currentMeeting);$('printMeeting').textContent='Rapportvergadering '+(currentMeeting+1);$('studentTitle').textContent=s.name||'(zonder naam)';const currentVisible=visibleStudents();const i=currentVisible.findIndex(x=>x.id===id);$('position').textContent=i<0?'Leerling buiten het huidige filter':`Leerling ${i+1} van ${currentVisible.length} in selectie`;$('prev').disabled=i<=0;$('next').disabled=i<0||i===currentVisible.length-1;for(const k of ['schoolLevel','routeGoal'])$(k).value=m[k];for(const k of voteControls)$(k).value=m[k]??'';renderVoteSummary();updateAutomaticTotals();renderPromotion();renderAdvice(m.advies);$('saveStatus').textContent='✓ Automatisch lokaal opgeslagen';renderList()}
 function renderAdvice(selected){const e=$('advies');e.replaceChildren();for(const v of ['',...new Set([...settings.advies,selected].filter(Boolean))]){let o=document.createElement('option');o.value=v;o.textContent=v||'— Kies advies —';e.append(o)}e.value=selected||''}
-function renderChips(key,selected){const el=$(key);el.replaceChildren();const opts=key==='geboden'||key==='extra'?settings.hulp:key==='flex'?[...settings.vakken,'Nederlands']:settings.vakken;const m=getMeeting();for(const val of uniqueSubjects([...opts,...selected,...(key==='vakken'?Object.keys(m.cijfers):[])])){if(key==='vakken'&&isDutch(val))continue;if(key==='vakken'){
+function renderChips(key,selected){const el=$(key);el.replaceChildren();const opts=key==='geboden'||key==='extra'?settings.hulp:key==='flex'?['Ne',...settings.vakken]:settings.vakken;const m=getMeeting();for(const val of uniqueSubjects([...opts,...selected,...(key==='vakken'?Object.keys(m.cijfers):[])])){if(key==='vakken'&&isDutch(val))continue;if(key==='vakken'){
  const row=document.createElement('div');row.className='subjectRow';const name=document.createElement('strong');name.textContent=val;name.style.marginRight='auto';name.style.minWidth='45px';
  const grade=document.createElement('input');grade.type='text';grade.inputMode='decimal';grade.className='grade';grade.placeholder='Cijfer of -';grade.setAttribute('aria-label','Cijfer of streepje voor '+val);grade.value=m.cijfers[val]||'';
   const trend=document.createElement('span');trend.className='gradeTrend';trend.setAttribute('aria-live','polite');
